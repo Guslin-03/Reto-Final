@@ -10,4 +10,5 @@
     <string name="nombre">Nombre</string>
     <string name="primer_apellido">Primer Apellido</string>
     <string name="segundo_apellido">Segundo Apellido</string>
+    <string name="logo_elorrchat">Logo ElorrChat</string>
 </resources>
