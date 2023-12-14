@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.parcelize")
     id("kotlin-kapt")
 }
 
@@ -62,7 +63,14 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.19")
 
-    "ROOM"
+    // ADD retrofit + gson para la conversion de strings en json a objetos y viceversa
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // ADD para utilizar viewmodels
+    api("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+
+    //ROOM
     val room_version = "2.5.0"
     implementation("androidx.room:room-runtime:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
