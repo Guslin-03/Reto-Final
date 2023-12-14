@@ -2,6 +2,7 @@
     <string name="app_name">Reto_Final</string>
     <string name="logo_inicial">Logo Inicial</string>
     <string name="contrase_a_actual">Contraseña Actual</string>
+    <string name="contrase_a">Contraseña</string>
     <string name="email">Correo</string>
     <string name="login">Iniciar Sesión</string>
     <string name="rememberMe">Recuérdame</string>
