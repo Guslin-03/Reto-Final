@@ -47,22 +47,31 @@
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
+    <ImageView
+        android:id="@+id/profile_picture"
+        android:layout_width="145dp"
+        android:layout_height="138dp"
+        app:layout_constraintBottom_toTopOf="@+id/name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_song_activity"
+        app:srcCompat="@drawable/user1" />
+
     <EditText
-        android:id="@+id/apellido2"
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autofillHints=""
         android:ems="10"
-        android:hint="@string/segundo_apellido"
-        android:inputType="textNoSuggestions"
+        android:hint="@string/nombre"
+        android:inputType="textPersonName"
         android:minHeight="48dp"
         android:textColorHint="#85736E6C"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/address"
+        app:layout_constraintBottom_toTopOf="@+id/apellido1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/apellido1" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_picture" />
 
     <EditText
         android:id="@+id/apellido1"
@@ -82,40 +91,37 @@
         app:layout_constraintTop_toBottomOf="@+id/name" />
 
     <EditText
-        android:id="@+id/name"
+        android:id="@+id/apellido2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autofillHints=""
         android:ems="10"
-        android:hint="@string/nombre"
+        android:hint="@string/segundo_apellido"
         android:inputType="textNoSuggestions"
         android:minHeight="48dp"
         android:textColorHint="#85736E6C"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/apellido1"
+        app:layout_constraintBottom_toTopOf="@+id/address"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+        app:layout_constraintTop_toBottomOf="@+id/apellido1" />
 
     <EditText
-        android:id="@+id/dni"
+        android:id="@+id/address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="54dp"
         android:autofillHints=""
-        android:editable="false"
         android:ems="10"
-        android:hint="@string/dni"
+        android:hint="@string/direcci_n"
         android:inputType="textNoSuggestions"
         android:minHeight="48dp"
         android:textColorHint="#85736E6C"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/mobile_phone_number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phone_number" />
+        app:layout_constraintTop_toBottomOf="@+id/apellido2" />
 
     <EditText
         android:id="@+id/mobile_phone_number"
@@ -130,7 +136,6 @@
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/phone_number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/address" />
 
@@ -147,39 +152,47 @@
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/dni"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mobile_phone_number" />
 
     <EditText
-        android:id="@+id/address"
+        android:id="@+id/dni"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autofillHints=""
+        android:editable="false"
         android:ems="10"
-        android:hint="@string/direcci_n"
-        android:inputType="phone"
+        android:hint="@string/dni"
+        android:inputType="textNoSuggestions"
         android:minHeight="48dp"
         android:textColorHint="#85736E6C"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/mobile_phone_number"
+        app:layout_constraintBottom_toTopOf="@+id/next"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/apellido2" />
+        app:layout_constraintTop_toBottomOf="@+id/phone_number" />
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="152dp"
-        android:layout_height="143dp"
-        android:layout_marginStart="130dp"
-        android:layout_marginTop="9dp"
-        android:layout_marginEnd="130dp"
-        app:layout_constraintBottom_toTopOf="@+id/name"
+    <Button
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#0D47A1"
+        android:text="@string/volver"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/next"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dni" />
+
+    <Button
+        android:id="@+id/next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#0D47A1"
+        android:text="@string/siguiente"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_song_activity"
-        tools:srcCompat="@tools:sample/avatars" />
-
+        app:layout_constraintStart_toEndOf="@+id/back"
+        app:layout_constraintTop_toBottomOf="@+id/dni" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

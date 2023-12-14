@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    tools:ignore="ExtraText">
 
     <ImageView
         android:id="@+id/imageView"
@@ -12,7 +13,6 @@
         android:layout_height="132dp"
         app:layout_constraintBottom_toTopOf="@+id/guidelineSuperior"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/initial_logo"
@@ -37,19 +37,17 @@
         android:id="@+id/guidelineSuperior"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/email"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/contrase_a"
         android:inputType="textPassword"
         android:minHeight="48dp"
+        android:orientation="horizontal"
         android:textAlignment="viewStart"
-        android:textColorHint="#85736E6C"
         android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/email"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_percent="0.25"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintGuide_percent="0.25171"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -73,8 +71,7 @@
         android:id="@+id/password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:backgroundTint="@color/button_tint_selector"
+        android:backgroundTint="@color/blue_green"
         android:ems="10"
         android:hint="@string/contrase_a"
         android:inputType="textPassword"
@@ -84,7 +81,6 @@
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/rememberMe"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email" />
 
@@ -99,6 +95,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineInferior"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="513dp" />
+
     <Button
         android:id="@+id/login"
         android:layout_width="wrap_content"
@@ -108,18 +111,6 @@
         app:layout_constraintBottom_toTopOf="@+id/change_password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rememberMe" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineInferior"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_percent="0.7"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rememberMe" />
+        app:layout_constraintTop_toBottomOf="@+id/guidelineInferior" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

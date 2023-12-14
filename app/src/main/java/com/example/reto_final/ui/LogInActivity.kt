@@ -14,17 +14,26 @@ class LogInActivity : AppCompatActivity(){
         binding = LoginActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.login.setOnContextClickListener {
+        binding.login.setOnClickListener {
             logIn()
+        }
+
+        binding.changePassword.setOnClickListener {
+            changePassword()
         }
 
     }
 
-    private fun logIn(): Boolean {
+    private fun logIn() {
+        val intent = Intent(this, PersonalConfigurationActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun changePassword() {
         val intent = Intent(this, ChangePasswordActivity::class.java)
         startActivity(intent)
         finish()
-        return true
     }
 
 }
