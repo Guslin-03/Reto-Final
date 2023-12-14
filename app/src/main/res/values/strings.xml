@@ -1,13 +1,25 @@
 <resources>
     <string name="app_name">Reto_Final</string>
     <string name="logo_inicial">Logo Inicial</string>
-    <string name="password"> Contraseña </string>
+    <string name="contrase_a_actual">Contraseña Actual</string>
     <string name="email">Correo</string>
     <string name="login">Iniciar Sesión</string>
     <string name="rememberMe">Recuérdame</string>
-    <string name="change_password">Cambiar Contraseña</string>
-    <string name="configuraci_n_de_usuario">Configuración de Usuario</string>
+    <string name="configuraci_n_de_usuario">Perfil - Personal</string>
     <string name="nombre">Nombre</string>
     <string name="primer_apellido">Primer Apellido</string>
     <string name="segundo_apellido">Segundo Apellido</string>
+    <string name="tel_fono_m_vil">Teléfono Móvil</string>
+    <string name="dni">DNI</string>
+    <string name="tel_fono_fijo">Teléfono Fijo</string>
+    <string name="direcci_n">Dirección</string>
+    <string name="perfil_escolar">Perfil - Escolar</string>
+    <string name="curso">Curso</string>
+    <string name="fct_dual">FCT-DUAL</string>
+    <string name="ciclo">Ciclo</string>
+    <string name="repetir_contrase_a">Repetir Contraseña</string>
+    <string name="logo_simplificado">logo simplificado</string>
+    <string name="cambio_de_contrase_a">Cambio de Contraseña</string>
+    <string name="cambiar_contrase_a">Cambiar Contraseña</string>
+    <string name="nueva_contrase_a">Nueva Contraseña</string>
 </resources>
