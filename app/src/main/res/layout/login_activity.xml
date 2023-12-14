@@ -15,7 +15,8 @@
         app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/initial_logo_copia" />
+        app:srcCompat="@drawable/initial_logo_copia"
+        android:contentDescription="@string/logo_elorrchat" />
 
     <Button
         android:id="@+id/forgot"
@@ -42,7 +43,7 @@
         android:inputType="textPassword"
         android:minHeight="48dp"
         android:textAlignment="viewStart"
-        android:textColorHint="#85736E6C"
+        android:textColorHint="#8D6E63"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/rememberMe"
         app:layout_constraintEnd_toEndOf="parent"
