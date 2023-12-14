@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/initial_logo" />
+        app:srcCompat="@drawable/initial_logo_copia" />
 
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/loadingIcon"

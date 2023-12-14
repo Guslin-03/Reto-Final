@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">Reto_Final</string>
     <string name="logo_inicial">Logo Inicial</string>
+    <string name="password"> Contraseña </string>
+    <string name="email">Correo</string>
+    <string name="login">Iniciar Sesión</string>
+    <string name="rememberMe">Recuérdame</string>
+    <string name="change_password">Cambiar Contraseña</string>
+    <string name="configuraci_n_de_usuario">Configuración de Usuario</string>
+    <string name="nombre">Nombre</string>
+    <string name="primer_apellido">Primer Apellido</string>
+    <string name="segundo_apellido">Segundo Apellido</string>
 </resources>
