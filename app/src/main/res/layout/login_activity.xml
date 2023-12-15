@@ -15,23 +15,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/initial_logo"
+        app:srcCompat="@drawable/no_edit_logo"
         android:contentDescription="@string/logo_elorrchat" />
-
-    <Button
-        android:id="@+id/change_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#27FFFFFF"
-        android:text="@string/cambiar_contrase_a"
-        android:textColor="#1E1E1E"
-        android:textSize="14sp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login"
-        app:rippleColor="#0D47A1" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineSuperior"
@@ -39,17 +24,9 @@
         android:layout_height="wrap_content"
         android:autofillHints=""
         android:ems="10"
-        android:hint="@string/contrase_a"
-        android:inputType="textPassword"
         android:minHeight="48dp"
         android:orientation="horizontal"
-        android:textAlignment="viewStart"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_percent="0.25171"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintGuide_percent="0.25" />
 
     <EditText
         android:id="@+id/email"
@@ -61,7 +38,6 @@
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
         android:textColorHint="#85736E6C"
-        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -71,14 +47,11 @@
         android:id="@+id/password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/blue_green"
         android:ems="10"
         android:hint="@string/contrase_a"
         android:inputType="textPassword"
         android:minHeight="48dp"
-        android:textAlignment="viewStart"
         android:textColorHint="#85736E6C"
-        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/rememberMe"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -100,7 +73,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="513dp" />
+        app:layout_constraintGuide_percent="0.85" />
 
     <Button
         android:id="@+id/login"
@@ -108,9 +81,21 @@
         android:layout_height="wrap_content"
         android:backgroundTint="#0D47A1"
         android:text="@string/login"
-        app:layout_constraintBottom_toTopOf="@+id/change_password"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/change_password"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guidelineInferior" />
+        app:layout_constraintTop_toTopOf="@+id/guidelineInferior" />
+
+    <Button
+        android:id="@+id/change_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#0D47A1"
+        android:text="@string/cambiar_contrase_a"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/login"
+        app:layout_constraintTop_toTopOf="@+id/guidelineInferior" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

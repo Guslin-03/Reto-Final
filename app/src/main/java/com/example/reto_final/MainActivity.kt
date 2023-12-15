@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         if (isNetworkAvailable()) {
-            handler.postDelayed({ logIn() }, 3000)
+            handler.postDelayed({ logIn() }, 1000)
         } else {
             networkRetry()
         }

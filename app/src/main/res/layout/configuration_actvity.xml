@@ -6,12 +6,12 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_song_activity"
+        android:id="@+id/toolbar_personal_configuration"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="#0D47A1"
         android:elevation="4dp"
-        app:title=""
+        app:title=" "
         app:layout_collapseMode="pin"
         app:layout_scrollFlags="scroll|enterAlways"
         tools:ignore="MissingConstraints" >
@@ -25,12 +25,13 @@
 
             <!-- Icono -->
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/resumeLogo"
                 android:layout_width="63dp"
                 android:layout_height="61dp"
-                app:srcCompat="@drawable/pruebalogo1_removebg_preview"
+                app:srcCompat="@drawable/resume_logo"
                 tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="16dp" />
+                tools:layout_editor_absoluteY="16dp"
+                android:contentDescription="@string/logo_simplificado" />
 
             <TextView
                 android:id="@+id/configuration_title"
@@ -50,47 +51,39 @@
         android:id="@+id/guidelineSuperior"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:autofillHints=""
         android:ems="10"
-        android:hint="@string/contrase_a"
-        android:inputType="textPassword"
         android:minHeight="48dp"
         android:orientation="horizontal"
-        android:textAlignment="viewStart"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/email"
-        app:layout_constraintGuide_percent="0.25"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintGuide_percent="0.25" />
 
     <EditText
         android:id="@+id/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autofillHints=""
-        android:editable="false"
         android:ems="10"
         android:hint="@string/email"
-        android:inputType="textEmailAddress"
         android:minHeight="48dp"
+        android:focusable="false"
+        android:inputType="textEmailAddress"
         android:textColorHint="#85736E6C"
-        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/degree"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guidelineSuperior" />
+        app:layout_constraintTop_toBottomOf="@+id/guidelineSuperior"
+        tools:ignore="TextFields" />
 
     <EditText
         android:id="@+id/course"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autofillHints=""
-        android:editable="false"
+        android:focusable="false"
         android:ems="10"
         android:hint="@string/curso"
         android:inputType="number"
         android:minHeight="48dp"
         android:textColorHint="#85736E6C"
-        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/DUAL"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -101,13 +94,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autofillHints=""
-        android:editable="false"
         android:ems="10"
         android:hint="@string/ciclo"
         android:inputType="textNoSuggestions"
+        android:focusable="false"
         android:minHeight="48dp"
         android:textColorHint="#85736E6C"
-        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/course"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -118,24 +110,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autofillHints=""
-        android:editable="false"
         android:ems="10"
+        android:focusable="false"
         android:hint="@string/fct_dual"
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
         android:textColorHint="#85736E6C"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/guidelineInferior"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/course" />
+        app:layout_constraintTop_toBottomOf="@+id/course"
+        tools:ignore="TextContrastCheck" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineInferior"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.70" />
+        app:layout_constraintGuide_percent="0.85" />
 
     <Button
         android:id="@+id/back"

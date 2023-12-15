@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Reto_Final</string>
+    <string name="cambio_de_contrase_a">Pasahitza Aldatu</string>
+    <string name="configuraci_n_de_usuario">Profila - Pertsonala</string>
+    <string name="perfil_escolar">Profila - Eskolarra</string>
+    <string name="logo_inicial">Logo Iniziala</string>
+    <string name="logo_elorrchat">ElorrChat Logo</string>
+    <string name="logo_simplificado">Logo Simplifikatua</string>
+    <string name="contrase_a_actual">Oraigo Pasahitza</string>
+    <string name="contrase_a">Pasahitza</string>
+    <string name="repetir_contrase_a">Pasahitza Errepikatu</string>
+    <string name="nueva_contrase_a">Pasahitz Berria</string>
+    <string name="nombre">Izena*</string>
+    <string name="apellido">Abizena*</string>
+    <string name="tel_fono_m_vil">Mugikor Telefonoa*</string>
+    <string name="tel_fono_fijo">Telefono Erdia</string>
+    <string name="dni">NAN*</string>
+    <string name="direcci_n">Helbidea*</string>
+    <string name="curso">Ikasturtea</string>
+    <string name="fct_dual">LHZF-DUALA</string>
+    <string name="ciclo">Zikloa</string>
+    <string name="email">Posta</string>
+    <string name="siguiente">Hurrengoa</string>
+    <string name="volver">Itzuli</string>
+    <string name="cerrar_sesi_n">Saioa Itxi</string>
+    <string name="login">Saioa Hasteko</string>
+    <string name="cambiar_contrase_a">Pasahitza Aldatu</string>
+    <string name="rememberMe">Gogoratu nirea</string>
+</resources>
