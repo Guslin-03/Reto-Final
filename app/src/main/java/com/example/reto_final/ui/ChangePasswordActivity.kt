@@ -1,6 +1,7 @@
 package com.example.reto_final.ui
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
@@ -10,6 +11,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
 import com.example.reto_final.databinding.ChangePasswordActivityBinding
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 class ChangePasswordActivity : AppCompatActivity() {
 
@@ -23,8 +26,8 @@ class ChangePasswordActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbarPersonalConfiguration)
 
         binding.changePassword.setOnClickListener {
-            //if (checkData()) backToLogIn()
-            backToLogIn()
+            if (checkData()) backToLogIn()
+            //backToLogIn()
         }
 
         binding.back.setOnClickListener {
@@ -52,9 +55,10 @@ class ChangePasswordActivity : AppCompatActivity() {
 
         if (currentPassword.isEmpty()  || newPassword1.isEmpty() || newPassword2.isEmpty()) {
             Toast.makeText(this, "Ningún campo puede estar vacío", Toast.LENGTH_LONG).show()
-            binding.currentPassword.setHintTextColor(Color.RED)
-            binding.newPassword1.setHintTextColor(Color.RED)
-            binding.newPassword2.setHintTextColor(Color.RED)
+            binding.currentPasswordLayout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
+            binding.newPassword1Layout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
+            binding.newPassword2Layout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
+
             return false
         }
 
@@ -62,9 +66,9 @@ class ChangePasswordActivity : AppCompatActivity() {
             if (newPassword1 == newPassword2) {
                 if (newPassword1 == "Elorrieta00") {
                     Toast.makeText(this, "La nueva contraseña es igual a la contraseña por defecto", Toast.LENGTH_LONG).show()
-                    binding.currentPassword.setHintTextColor(Color.RED)
-                    binding.newPassword1.setHintTextColor(Color.RED)
-                    binding.newPassword2.setHintTextColor(Color.RED)
+                    binding.currentPasswordLayout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
+                    binding.newPassword1Layout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
+                    binding.newPassword2Layout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
                     return false
                 }
 
@@ -75,8 +79,8 @@ class ChangePasswordActivity : AppCompatActivity() {
                     binding.newPassword1.setTextColor(Color.RED)
                     binding.newPassword2.setTextColor(Color.BLACK)
 
-                    binding.newPassword1.setHintTextColor(Color.BLACK)
-                    binding.newPassword2.setHintTextColor(Color.BLACK)
+                    binding.newPassword1Layout.defaultHintTextColor = ColorStateList.valueOf(Color.BLACK)
+                    binding.newPassword2Layout.defaultHintTextColor = ColorStateList.valueOf(Color.BLACK)
                     return false
                 }
             } else {
@@ -84,16 +88,16 @@ class ChangePasswordActivity : AppCompatActivity() {
                 binding.newPassword1.setTextColor(Color.RED)
                 binding.newPassword2.setTextColor(Color.RED)
 
-                binding.newPassword1.setHintTextColor(Color.BLACK)
-                binding.newPassword2.setHintTextColor(Color.BLACK)
+                binding.newPassword1Layout.defaultHintTextColor = ColorStateList.valueOf(Color.BLACK)
+                binding.newPassword2Layout.defaultHintTextColor = ColorStateList.valueOf(Color.BLACK)
                 return false
             }
 
         }else {
             Toast.makeText(this, "La anterior contraseña y la nueva son iguales", Toast.LENGTH_LONG).show()
-            binding.currentPassword.setHintTextColor(Color.RED)
-            binding.newPassword1.setHintTextColor(Color.RED)
-            binding.newPassword2.setHintTextColor(Color.RED)
+            binding.currentPasswordLayout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
+            binding.newPassword1Layout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
+            binding.newPassword2Layout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
             return false
         }
 
