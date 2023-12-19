@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/configuration_activity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_personal_configuration"
@@ -54,73 +55,67 @@
         android:ems="10"
         android:minHeight="48dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.25" />
+        app:layout_constraintGuide_percent="0.15" />
 
     <EditText
         android:id="@+id/email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
         android:autofillHints=""
         android:ems="10"
-        android:hint="@string/email"
-        android:minHeight="48dp"
         android:focusable="false"
+        android:hint="@string/email"
         android:inputType="textEmailAddress"
+        android:minHeight="48dp"
         android:textColorHint="#85736E6C"
-        app:layout_constraintBottom_toTopOf="@+id/degree"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/DUAL"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/guidelineSuperior"
         tools:ignore="TextFields" />
 
-    <EditText
-        android:id="@+id/course"
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/DUAL"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:focusable="false"
-        android:ems="10"
-        android:hint="@string/curso"
-        android:inputType="number"
-        android:minHeight="48dp"
-        android:textColorHint="#85736E6C"
-        app:layout_constraintBottom_toTopOf="@+id/DUAL"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/degree" />
-
-    <EditText
-        android:id="@+id/degree"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="@string/ciclo"
-        android:inputType="textNoSuggestions"
-        android:focusable="false"
-        android:minHeight="48dp"
-        android:textColorHint="#85736E6C"
-        app:layout_constraintBottom_toTopOf="@+id/course"
+        android:text="@string/fct_dual"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/degree"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email" />
 
-    <EditText
-        android:id="@+id/DUAL"
-        android:layout_width="wrap_content"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/degree"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:ems="10"
-        android:focusable="false"
-        android:hint="@string/fct_dual"
-        android:inputType="textEmailAddress"
-        android:minHeight="48dp"
-        android:textColorHint="#85736E6C"
-        app:layout_constraintBottom_toBottomOf="@+id/guidelineInferior"
+        app:layout_constraintBottom_toTopOf="@+id/course_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/course"
-        tools:ignore="TextContrastCheck" />
+        app:layout_constraintTop_toBottomOf="@+id/DUAL"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="@string/ciclo"
+            android:inputType="none" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/course_list"
+        android:layout_width="wrap_content"
+        android:layout_height="300dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineInferior"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/degree" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineInferior"

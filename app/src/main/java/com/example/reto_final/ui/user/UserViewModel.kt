@@ -1,4 +1,4 @@
-package com.example.reto_final.ui
+package com.example.reto_final.ui.user
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto_final.data.AuthRequest
-import com.example.reto_final.data.ChangePasswordRequest
 import com.example.reto_final.data.User
 import com.example.reto_final.data.repository.CommonUserRepository
 import com.example.reto_final.utils.Resource
@@ -19,14 +18,12 @@ class UserViewModel(
     private val userRepository: CommonUserRepository
 ) : ViewModel() {
 
-    private val _created = MutableLiveData<Resource<Integer>>()
-    val created : LiveData<Resource<Integer>> get() = _created
-
-    private val _found= MutableLiveData<Resource<User>>()
-    val found : LiveData<Resource<User>> get() = _found
-
-    private val _update= MutableLiveData<Resource<Void>>()
-    val update : LiveData<Resource<Void>> get() = _update
+//    private val _created = MutableLiveData<Resource<Integer>>()
+//    val created : LiveData<Resource<Integer>> get() = _created
+//    private val _found= MutableLiveData<Resource<User>>()
+//    val found : LiveData<Resource<User>> get() = _found
+//    private val _update= MutableLiveData<Resource<Void>>()
+//    val update : LiveData<Resource<Void>> get() = _update
     private val _user= MutableLiveData<Resource<User>>()
     val user : LiveData<Resource<User>> get() = _user
 
@@ -42,13 +39,13 @@ class UserViewModel(
 //    }
     private suspend fun searchUser(email:String, password:String) : Resource<User> {
         return withContext(Dispatchers.IO) {
-            val user = AuthRequest(email, password)
+            val user = AuthRequest(email, password, "Nombre")
             userRepository.login(user)
         }
     }
     fun onSearchUser(email:String, password:String) {
         viewModelScope.launch {
-            _found.value = searchUser(email,password)
+            _user.value = searchUser(email,password)
         }
     }
 

@@ -3,13 +3,16 @@ package com.example.reto_final.ui
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
+import com.example.reto_final.data.User
 import com.example.reto_final.databinding.PersonalConfigurationActvityBinding
+import com.example.reto_final.utils.MyApp
 
 class PersonalConfigurationActivity : AppCompatActivity() {
 
@@ -22,8 +25,13 @@ class PersonalConfigurationActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbarPersonalConfiguration)
 
+        val user = MyApp.userPreferences.getUser()
+        if(user != null) {
+            setData(user)
+        }
+
         binding.next.setOnClickListener {
-            //if (checkData()) nextConfiguration()
+            if (checkData()) nextConfiguration()
             nextConfiguration()
         }
 
@@ -41,6 +49,15 @@ class PersonalConfigurationActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun setData(user: User) {
+        binding.name.setText(user.name)
+        binding.surname.setText(user.surname)
+        binding.address.setText(user.address)
+        binding.mobilePhoneNumber.setText(user.phoneNumber1.toString())
+        binding.phoneNumber.setText(user.phoneNumber2.toString())
+        binding.dni.setText(user.DNI)
     }
 
     private fun checkData(): Boolean {

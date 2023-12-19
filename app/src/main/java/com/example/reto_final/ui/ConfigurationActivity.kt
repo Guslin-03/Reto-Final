@@ -2,24 +2,51 @@ package com.example.reto_final.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
-import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
+import com.example.reto_final.data.Module
+import com.example.reto_final.data.User
 import com.example.reto_final.databinding.ConfigurationActvityBinding
+import com.example.reto_final.ui.module.ModuleAdapter
+import com.example.reto_final.utils.MyApp
 
 class ConfigurationActivity : AppCompatActivity() {
 
     private lateinit var binding: ConfigurationActvityBinding
+    private lateinit var moduleAdapter: ModuleAdapter
+    private lateinit var nombresDeGrados: Array<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ConfigurationActvityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        moduleAdapter = ModuleAdapter()
+        binding.courseList.adapter = moduleAdapter
         setSupportActionBar(binding.toolbarPersonalConfiguration)
+
+        val user = MyApp.userPreferences.getUser()
+        if(user != null) {
+            setData(user)
+            nombresDeGrados = user.degrees.map { it.name }.toTypedArray()
+        }
+
+        val autoCompleteTextView = findViewById<AutoCompleteTextView>(R.id.autoCompleteText)
+
+        val adapterItems = ArrayAdapter(this, R.layout.item_degree, nombresDeGrados)
+
+        autoCompleteTextView.setAdapter(adapterItems)
+
+        autoCompleteTextView.setOnItemClickListener { parent, _, position, _ ->
+            val selectedItem = parent.getItemAtPosition(position).toString()
+            moduleAdapter.submitList(user?.let { obtenerModulesPorNombre(it, selectedItem) })
+        }
 
         binding.next.setOnClickListener {
             changePassword()
@@ -35,11 +62,24 @@ class ConfigurationActivity : AppCompatActivity() {
                     backToLogIn()
                     true
                 }
-
                 else -> false // Manejo predeterminado para otros elementos
             }
         }
 
+    }
+
+    private fun obtenerModulesPorNombre(user: User, nombreDegree: String): MutableList<Module> {
+        val degreeEncontrado = user.degrees.find { it.name == nombreDegree }
+        if (degreeEncontrado != null) {
+            return degreeEncontrado.modules.toMutableList()
+        }
+        return emptyList<Module>().toMutableList()
+    }
+
+    private fun setData(user: User) {
+        binding.email.setText(user.email)
+        if (user.FCTDUAL == 1) binding.DUAL.isChecked = true
+        binding.DUAL.isEnabled = false
     }
 
     private fun backToLogIn() {

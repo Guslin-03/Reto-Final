@@ -13,7 +13,7 @@
     <string name="nueva_contrase_a">New Password</string>
     <string name="nombre">Name*</string>
     <string name="apellido">Surname*</string>
-    <string name="tel_fono_m_vil">Reto_Final</string>
+    <string name="tel_fono_m_vil">Movile Phone*</string>
     <string name="tel_fono_fijo">Landline Phone</string>
     <string name="dni">DNI*</string>
     <string name="direcci_n">Address*</string>

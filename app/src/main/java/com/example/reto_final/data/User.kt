@@ -7,33 +7,34 @@ import kotlinx.parcelize.Parcelize
 data class User(
 
     val id: Int,
-    val dni: String,
+    val DNI: String,
     val name: String,
     val surname: String,
     val phoneNumber1: Int,
-    val phoneNumber2: String,
+    val phoneNumber2: Int,
     val address: String,
-    val photo: Int,
-    val FCTDUAL: Boolean,
+    val photo: String,
+    val FCTDUAL: Int,
     val email: String,
+    val degrees: Array<Degree>,
     val department_id: Int,
-    val accessToken: String
+    val token: String
 
 ): Parcelable {
     constructor(
-        dni: String,
+        DNI: String,
         name: String,
         surname: String,
         phoneNumber1: Int,
-        phoneNumber2: String,
+        phoneNumber2: Int,
         address: String,
-        photo: Int,
-        FCTDUAL: Boolean,
+        photo: String,
+        FCTDUAL: Int,
         email: String,
         department_id: Int
     ) : this(
         id = 0,
-        dni = dni,
+        DNI = DNI,
         name = name,
         surname = surname,
         phoneNumber1 = phoneNumber1,
@@ -42,8 +43,9 @@ data class User(
         photo = photo,
         FCTDUAL = FCTDUAL,
         email = email,
+        degrees = emptyArray(),
         department_id = department_id,
-        accessToken = ""
+        token = ""
     )
 
 }
