@@ -4,19 +4,26 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
+import com.example.reto_final.data.repository.RemoteUserDataSource
 import com.example.reto_final.databinding.ChangePasswordActivityBinding
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
+import com.example.reto_final.ui.user.UserViewModel
+import com.example.reto_final.ui.user.UserViewModelFactory
+import com.example.reto_final.utils.MyApp
+import com.example.reto_final.utils.Resource
 
 class ChangePasswordActivity : AppCompatActivity() {
 
     private lateinit var binding: ChangePasswordActivityBinding
+    private val userRepository = RemoteUserDataSource()
+    private val viewModel: UserViewModel by viewModels { UserViewModelFactory(userRepository) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,9 +31,9 @@ class ChangePasswordActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbarPersonalConfiguration)
-
+        val user = MyApp.userPreferences.getUser()
         binding.changePassword.setOnClickListener {
-            if (checkData()) backToLogIn()
+            if (checkData()) viewModel.onChangePassword(binding.newPassword1.text.toString())
             //backToLogIn()
         }
 
@@ -39,10 +46,27 @@ class ChangePasswordActivity : AppCompatActivity() {
         binding.toolbarPersonalConfiguration.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.closeSesion -> {
+                    if (user != null) {
+                        viewModel.onLogOut()
+                    }
                     backToLogIn()
                     true
                 }
                 else -> false // Manejo predeterminado para otros elementos
+            }
+        }
+
+        viewModel.update.observe(this) {
+            when (it.status) {
+                Resource.Status.SUCCESS -> {
+                    viewModel.onLogOut()
+                }
+                Resource.Status.ERROR -> {
+                    Log.i("Prueba", ""+it.message)
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+                }
             }
         }
 
@@ -54,7 +78,7 @@ class ChangePasswordActivity : AppCompatActivity() {
         val newPassword2 = binding.newPassword2.text.toString()
 
         if (currentPassword.isEmpty()  || newPassword1.isEmpty() || newPassword2.isEmpty()) {
-            Toast.makeText(this, "Ningún campo puede estar vacío", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.toast_empty_1, Toast.LENGTH_LONG).show()
             binding.currentPasswordLayout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
             binding.newPassword1Layout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
             binding.newPassword2Layout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
@@ -64,8 +88,8 @@ class ChangePasswordActivity : AppCompatActivity() {
 
         if (currentPassword != newPassword1) {
             if (newPassword1 == newPassword2) {
-                if (newPassword1 == "Elorrieta00") {
-                    Toast.makeText(this, "La nueva contraseña es igual a la contraseña por defecto", Toast.LENGTH_LONG).show()
+                if (newPassword1 == "elorrieta00") {
+                    Toast.makeText(this, R.string.toast_password_default, Toast.LENGTH_LONG).show()
                     binding.currentPasswordLayout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
                     binding.newPassword1Layout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
                     binding.newPassword2Layout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
@@ -75,7 +99,7 @@ class ChangePasswordActivity : AppCompatActivity() {
                 if (newPassword1.length >= 8) {
                     return true
                 } else {
-                    Toast.makeText(this, "La nueva contraseña debe tener 8 caracteres o más", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.toast_password_lenght, Toast.LENGTH_LONG).show()
                     binding.newPassword1.setTextColor(Color.RED)
                     binding.newPassword2.setTextColor(Color.BLACK)
 
@@ -84,7 +108,7 @@ class ChangePasswordActivity : AppCompatActivity() {
                     return false
                 }
             } else {
-                Toast.makeText(this, "Las dos contraseñas no coinciden", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.toast_password_matches, Toast.LENGTH_LONG).show()
                 binding.newPassword1.setTextColor(Color.RED)
                 binding.newPassword2.setTextColor(Color.RED)
 
@@ -94,7 +118,7 @@ class ChangePasswordActivity : AppCompatActivity() {
             }
 
         }else {
-            Toast.makeText(this, "La anterior contraseña y la nueva son iguales", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.toast_password_old_new_matches, Toast.LENGTH_LONG).show()
             binding.currentPasswordLayout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
             binding.newPassword1Layout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
             binding.newPassword2Layout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)

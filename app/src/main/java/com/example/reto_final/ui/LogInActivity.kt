@@ -46,13 +46,13 @@ class LogInActivity : AppCompatActivity(){
         }
 
         binding.login.setOnClickListener {
-//            var email = binding.email.text.toString()
-//            email = lowerCaseEmail(email)
-//            val password = binding.password.text.toString()
-//            if(checkData()){
-//                viewModel.onSearchUser(email, password)
-//            }
-            logIn()
+            var email = binding.email.text.toString()
+            email = lowerCaseEmail(email)
+            val password = binding.password.text.toString()
+            if(checkData()){
+                viewModel.onSearchUser(email, password)
+            }
+//            logIn()
         }
 
         binding.changePassword.setOnClickListener {
@@ -66,7 +66,6 @@ class LogInActivity : AppCompatActivity(){
                     if (userResource != null && userResource.status == Resource.Status.SUCCESS) {
                         val user = userResource.data
                         if (user != null && binding.rememberMe.isChecked) {
-                            Log.i("prueba", "prueba3" + binding.rememberMe.isChecked)
                             MyApp.userPreferences.saveUser(user)
                             MyApp.userPreferences.saveRememberMeState(binding.rememberMe.isChecked)
                             MyApp.userPreferences.savePass(binding.password.text.toString())
@@ -74,16 +73,23 @@ class LogInActivity : AppCompatActivity(){
                             MyApp.userPreferences.saveUser(user)
                             MyApp.userPreferences.saveRememberMeState(false)
                         }
+                        if (user != null) {
+                            MyApp.userPreferences.saveAuthToken(user.token)
+                        }
                     }
-                    logIn()
+
+                    if (binding.password.text.toString() == "elorrieta00") {
+                        logIn()
+                        Toast.makeText(this, R.string.toast_edit_profile, Toast.LENGTH_LONG).show()
+                    }else {
+                        chat()
+                    }
                 }
                 Resource.Status.ERROR -> {
-                    Log.i("Prueba", "" + it.message)
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG)
-                        .show()
+                    Log.i("Prueba", ""+it.message)
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
-
                 }
             }
         }
@@ -95,14 +101,13 @@ class LogInActivity : AppCompatActivity(){
         val password = binding.password.text.toString()
 
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Ningún campo puede estar vacío", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.toast_empty_1, Toast.LENGTH_LONG).show()
             binding.email.setHintTextColor(Color.RED)
             binding.password.setHintTextColor(Color.RED)
             return false
         }
-        val emailCorrecto = validarEmail(email)
-        if (!emailCorrecto) {
-            Toast.makeText(this, "El correo tiene un formato erróneo", Toast.LENGTH_LONG).show()
+        if (!validarEmail(email)) {
+            Toast.makeText(this, R.string.toast_format_email, Toast.LENGTH_LONG).show()
             binding.email.setTextColor(Color.RED)
             binding.password.setTextColor(Color.BLACK)
 
@@ -111,18 +116,17 @@ class LogInActivity : AppCompatActivity(){
             return false
         }
 
-        return if (password.length >= 8) {
-            true
-        } else {
-            Toast.makeText(this, "La contraseña debe tener 8 caracteres o más", Toast.LENGTH_LONG
-            ).show()
+        if (password.length < 8) {
+            Toast.makeText(this, R.string.toast_password_lenght, Toast.LENGTH_LONG).show()
             binding.email.setTextColor(Color.BLACK)
             binding.password.setTextColor(Color.RED)
 
             binding.email.setHintTextColor(Color.BLACK)
             binding.password.setHintTextColor(Color.BLACK)
-            false
+            return false
         }
+
+        return true
 
     }
 
@@ -136,6 +140,12 @@ class LogInActivity : AppCompatActivity(){
 
     private fun logIn() {
         val intent = Intent(this, PersonalConfigurationActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun chat() {
+        val intent = Intent(this, ChatActivity::class.java)
         startActivity(intent)
         finish()
     }

@@ -12,7 +12,7 @@ class MyApp : Application() {
     }
     override fun onCreate(){
         super.onCreate()
-        context=this
-        userPreferences=UserPreferences()
+        context = this
+        userPreferences = UserPreferences()
     }
 }

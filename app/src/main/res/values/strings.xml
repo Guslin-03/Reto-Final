@@ -34,8 +34,27 @@
     <string name="cerrar_sesi_n">Cerrar Sesión</string>
     <string name="login">Iniciar Sesión</string>
     <string name="cambiar_contrase_a">Cambiar Contraseña</string>
+    <string name="confirmar">Confirmar</string>
 
     //CHECK-BOXS
     <string name="rememberMe">Recuérdame</string>
+
+    //TEXT-VIEWS
+    <string name="paso_1_3">Paso 1 de 3</string>
+    <string name="paso_2_3">Paso 2 de 3</string>
+    <string name="paso_3_3">Paso 3 de 3</string>
+
+    //TOAST
+    <string name="toast_edit_profile">A continuación, valide su Información</string>
+    <string name="toast_empty_1">Ningún campo puede estar vacío</string>
+    <string name="toast_format_email">El correo tiene un formato erróneo</string>
+    <string name="toast_password_lenght">La contraseña debe tener al menos 8 caracteres</string>
+    <string name="toast_empty_2">Hay campos obligatorios sin rellenar</string>
+    <string name="toast_format_mobile_phone">El formato del teléfono móvil es erróneo</string>
+    <string name="toast_format_landline_phone">El formato del teléfono fijo es erróneo</string>
+    <string name="toast_format_DNI">El DNI debe tener el formato 00000000A</string>
+    <string name="toast_password_default">La nueva contraseña es igual a la contraseña por defecto</string>
+    <string name="toast_password_matches">Las dos contraseñas no coinciden</string>
+    <string name="toast_password_old_new_matches">La anterior contraseña y la nueva son iguales</string>
 
 </resources>

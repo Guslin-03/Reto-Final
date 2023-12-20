@@ -27,4 +27,19 @@
     <string name="login">Saioa Hasteko</string>
     <string name="cambiar_contrase_a">Pasahitza Aldatu</string>
     <string name="rememberMe">Gogoratu nirea</string>
+    <string name="paso_1_3">1 pausua 3etik</string>
+    <string name="confirmar">Berrestea</string>
+    <string name="paso_2_3">2 pausua 3etik</string>
+    <string name="paso_3_3">3 pausua 3etik</string>
+    <string name="toast_edit_profile">Hurrengoan, zure informazioa egiaztatu</string>
+    <string name="toast_empty_1">Ezin da hutsik egon inongo eremuan</string>
+    <string name="toast_format_email">Posta elektronikoak formatu okerra dauka</string>
+    <string name="toast_password_lenght">Pasahitza gutxienez 8 karaktere izan behar du</string>
+    <string name="toast_empty_2">Bete beharreko eremuak hutsik daude</string>
+    <string name="toast_format_landline_phone">Telefono fijoaren formatua okerra da</string>
+    <string name="toast_format_mobile_phone">Mugikorraren telefonoaren formatua okerra da</string>
+    <string name="toast_format_DNI">NAN-ak 00000000A formatua izan behar du</string>
+    <string name="toast_password_default">Pasahitz berria berezko pasahitzarekin berdina da</string>
+    <string name="toast_password_matches">Bi pasahitzak ez datoz bat</string>
+    <string name="toast_password_old_new_matches">Aurreko pasahitza eta berria berdinak dira</string>
 </resources>

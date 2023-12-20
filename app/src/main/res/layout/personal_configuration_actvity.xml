@@ -185,4 +185,15 @@
         app:layout_constraintStart_toEndOf="@+id/back"
         app:layout_constraintTop_toBottomOf="@+id/guidelineInferior" />
 
+    <TextView
+        android:id="@+id/textViewNumberPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/paso_1_3"
+        android:textColor="#BA7C7C7C"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/back" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

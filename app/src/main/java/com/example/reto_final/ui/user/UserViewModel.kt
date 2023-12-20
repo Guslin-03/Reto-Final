@@ -14,29 +14,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class UserViewModel(
-    private val userRepository: CommonUserRepository
-) : ViewModel() {
+class UserViewModel(private val userRepository: CommonUserRepository) : ViewModel() {
 
-//    private val _created = MutableLiveData<Resource<Integer>>()
-//    val created : LiveData<Resource<Integer>> get() = _created
-//    private val _found= MutableLiveData<Resource<User>>()
-//    val found : LiveData<Resource<User>> get() = _found
-//    private val _update= MutableLiveData<Resource<Void>>()
-//    val update : LiveData<Resource<Void>> get() = _update
     private val _user= MutableLiveData<Resource<User>>()
     val user : LiveData<Resource<User>> get() = _user
+    private val _update= MutableLiveData<Resource<Void>>()
+    val update : LiveData<Resource<Void>> get() = _update
 
-//    private suspend fun createUser(user : User) : Resource<Integer> {
-//        return withContext(Dispatchers.IO) {
-//            userRepository.signIn(user)
-//        }
-//    }
-//    fun onCreateUser(user: User) {
-//        viewModelScope.launch {
-//            _created.value = createUser(user)
-//        }
-//    }
     private suspend fun searchUser(email:String, password:String) : Resource<User> {
         return withContext(Dispatchers.IO) {
             val user = AuthRequest(email, password, "Nombre")
@@ -49,26 +33,27 @@ class UserViewModel(
         }
     }
 
-//    fun onUpdateUser(email: String, oldPassword: String, password: String) {
-//        viewModelScope.launch {
-//            _update.value = updateUser(email, oldPassword, password)
-//        }
-//    }
-//
-//    private suspend fun updateUser(email: String, oldPassword: String, password: String) : Resource<Void> {
-//        return withContext(Dispatchers.IO) {
-//            val changePasswordRequest = ChangePasswordRequest(email,oldPassword,password)
-//            userRepository.updateUser(changePasswordRequest)
-//        }
-//    }
-    fun getUserInfo(){
-        viewModelScope.launch {
-            _user.value = getInfo()
+    private  suspend fun logOut() : Resource<Void> {
+        return withContext(Dispatchers.IO) {
+            userRepository.logout()
         }
     }
-    private suspend fun getInfo() : Resource<User> {
+
+    fun onLogOut() {
+        viewModelScope.launch {
+            logOut()
+        }
+    }
+
+    fun onChangePassword(password: String) {
+        viewModelScope.launch {
+            _update.value = changePassword(password)
+        }
+    }
+
+    private suspend fun changePassword(password: String) : Resource<Void> {
         return withContext(Dispatchers.IO) {
-            userRepository.getUserInfo()
+            userRepository.changePassword(password)
         }
     }
 
