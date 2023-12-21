@@ -1,6 +1,7 @@
 package com.example.reto_final.data.repository
 
 import com.example.reto_final.data.AuthRequest
+import com.example.reto_final.data.ChangePasswordRequest
 import com.example.reto_final.data.repository.remote.BaseDataSource
 import com.example.reto_final.data.repository.remote.RetrofitClient
 import com.example.reto_final.utils.Resource
@@ -15,8 +16,8 @@ class RemoteUserDataSource: BaseDataSource(), CommonUserRepository {
         RetrofitClient.apiInterface.logout()
     }
 
-    override suspend fun changePassword(password: String) = getResult {
-        RetrofitClient.apiInterface.changePassword(password)
+    override suspend fun changePassword(changePasswordRequest: ChangePasswordRequest) = getResult {
+        RetrofitClient.apiInterface.changePassword(changePasswordRequest)
     }
 
 }

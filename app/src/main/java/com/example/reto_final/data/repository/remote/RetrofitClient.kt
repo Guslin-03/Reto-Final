@@ -1,7 +1,6 @@
 package com.example.reto_final.data.repository.remote
-import android.util.Log
-import com.example.reto_final.utils.MyApp
 
+import com.example.reto_final.utils.MyApp
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import retrofit2.Retrofit
@@ -13,10 +12,6 @@ object RetrofitClient {
 
     private val client = OkHttpClient.Builder().addInterceptor { chain ->
         val authToken= MyApp.userPreferences.fetchAuthToken()
-        if (authToken != null) {
-            Log.i("Prueba", authToken)
-        }
-        Log.i("Prueba", "authToken")
         val newRequest: Request = chain.request().newBuilder()
             .addHeader("Authorization", "Bearer $authToken")
             .build()

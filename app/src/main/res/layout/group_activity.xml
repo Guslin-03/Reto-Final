@@ -31,14 +31,15 @@
                 android:layout_height="61dp"
                 app:srcCompat="@drawable/resume_logo"
                 tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="16dp" />
+                tools:layout_editor_absoluteY="16dp"
+                android:contentDescription="@string/logo_simplificado" />
 
             <TextView
                 android:id="@+id/configuration_title"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="@string/configuraci_n_de_usuario"
+                android:text="@string/elorrchat"
                 android:textColor="#ECE4E4"
                 android:textSize="24sp"
                 android:textStyle="bold"

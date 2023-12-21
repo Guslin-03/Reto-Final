@@ -1,4 +1,4 @@
-package com.example.reto_final.ui
+package com.example.reto_final.ui.register
 
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -14,12 +14,13 @@ import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
 import com.example.reto_final.data.repository.RemoteUserDataSource
 import com.example.reto_final.databinding.ChangePasswordActivityBinding
+import com.example.reto_final.ui.LogInActivity
 import com.example.reto_final.ui.user.UserViewModel
 import com.example.reto_final.ui.user.UserViewModelFactory
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
 
-class ChangePasswordActivity : AppCompatActivity() {
+class RegisterChangePasswordActivity : AppCompatActivity() {
 
     private lateinit var binding: ChangePasswordActivityBinding
     private val userRepository = RemoteUserDataSource()
@@ -32,8 +33,16 @@ class ChangePasswordActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbarPersonalConfiguration)
         val user = MyApp.userPreferences.getUser()
+
         binding.changePassword.setOnClickListener {
-            if (checkData()) viewModel.onChangePassword(binding.newPassword1.text.toString())
+
+            if (user != null) {
+                if (checkData())  {
+                    Log.i("Prueba", "PRUEBA")
+                    viewModel.onChangePassword(user.email ,binding.currentPassword.text.toString(), binding.newPassword1.text.toString())
+                }
+            }
+
             //backToLogIn()
         }
 
@@ -56,13 +65,28 @@ class ChangePasswordActivity : AppCompatActivity() {
             }
         }
 
+        viewModel.logOut.observe(this) {
+            when (it.status) {
+                Resource.Status.SUCCESS -> {
+                    backToLogIn()
+                    MyApp.userPreferences.removeData()
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+                }
+            }
+        }
+
         viewModel.update.observe(this) {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
                     viewModel.onLogOut()
+                    backToLogIn()
+                    MyApp.userPreferences.removeData()
                 }
                 Resource.Status.ERROR -> {
-                    Log.i("Prueba", ""+it.message)
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
@@ -135,7 +159,7 @@ class ChangePasswordActivity : AppCompatActivity() {
 
     private fun backToConfigurationActivity() {
         //Pasariamos el Objeto User por parametro para settear los valores en los campos por defecto
-        val intent = Intent(this, ConfigurationActivity::class.java)
+        val intent = Intent(this, RegisterConfigurationActivity::class.java)
         startActivity(intent)
         finish()
     }
@@ -143,9 +167,8 @@ class ChangePasswordActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.top_menu,menu)
 
-        // Cambiar el color del icono del botón de desbordamiento
         binding.toolbarPersonalConfiguration.overflowIcon?.let {
-            val color = ContextCompat.getColor(this, R.color.white) // Reemplaza R.color.white por el color deseado
+            val color = ContextCompat.getColor(this, R.color.white)
             val newIcon = DrawableCompat.wrap(it)
             DrawableCompat.setTint(newIcon, color)
             binding.toolbarPersonalConfiguration.overflowIcon = newIcon

@@ -29,10 +29,11 @@
                 android:id="@+id/resumeLogo"
                 android:layout_width="63dp"
                 android:layout_height="61dp"
+                android:contentDescription="@string/logo_simplificado"
                 app:srcCompat="@drawable/resume_logo"
+                tools:ignore="ImageContrastCheck"
                 tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="16dp"
-                android:contentDescription="@string/logo_simplificado" />
+                tools:layout_editor_absoluteY="16dp" />
 
             <TextView
                 android:id="@+id/configuration_title"
@@ -103,7 +104,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:hint="@string/ciclo"
-            android:inputType="none" />
+            android:inputType="none"
+            tools:ignore="SpeakableTextPresentCheck" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -150,12 +152,13 @@
         android:id="@+id/textViewNumberPage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/paso_3_3"
+        android:text="@string/paso_2_3"
         android:textColor="#BA7C7C7C"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/back" />
+        app:layout_constraintTop_toBottomOf="@+id/back"
+        tools:ignore="TextContrastCheck" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

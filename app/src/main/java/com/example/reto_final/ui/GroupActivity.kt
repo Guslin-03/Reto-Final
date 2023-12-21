@@ -2,15 +2,15 @@ package com.example.reto_final.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.reto_final.databinding.ChatActivityBinding
+import com.example.reto_final.databinding.GroupActivityBinding
 
-class ChatActivity: AppCompatActivity() {
+class GroupActivity: AppCompatActivity() {
 
-    private lateinit var binding: ChatActivityBinding
+    private lateinit var binding: GroupActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ChatActivityBinding.inflate(layoutInflater)
+        binding = GroupActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }
 

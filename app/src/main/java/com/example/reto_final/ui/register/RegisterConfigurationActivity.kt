@@ -1,4 +1,4 @@
-package com.example.reto_final.ui
+package com.example.reto_final.ui.register
 
 import android.content.Intent
 import android.os.Bundle
@@ -14,12 +14,13 @@ import com.example.reto_final.data.Module
 import com.example.reto_final.data.User
 import com.example.reto_final.data.repository.RemoteUserDataSource
 import com.example.reto_final.databinding.ConfigurationActvityBinding
+import com.example.reto_final.ui.LogInActivity
 import com.example.reto_final.ui.module.ModuleAdapter
 import com.example.reto_final.ui.user.UserViewModel
 import com.example.reto_final.ui.user.UserViewModelFactory
 import com.example.reto_final.utils.MyApp
 
-class ConfigurationActivity : AppCompatActivity() {
+class RegisterConfigurationActivity : AppCompatActivity() {
 
     private lateinit var binding: ConfigurationActvityBinding
     private lateinit var moduleAdapter: ModuleAdapter
@@ -97,14 +98,14 @@ class ConfigurationActivity : AppCompatActivity() {
     }
 
     private fun changePassword() {
-        val intent = Intent(this, ChangePasswordActivity::class.java)
+        val intent = Intent(this, RegisterChangePasswordActivity::class.java)
         startActivity(intent)
         finish()
     }
 
     private fun backToPersonalConfiguration() {
         //Pasariamos el Objeto User por parametro para settear los valores en los campos por defecto
-        val intent = Intent(this, PersonalConfigurationActivity::class.java)
+        val intent = Intent(this, RegisterPersonalConfigurationActivity::class.java)
         startActivity(intent)
         finish()
     }

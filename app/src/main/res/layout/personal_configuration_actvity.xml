@@ -29,7 +29,9 @@
                 android:id="@+id/resumeLogo"
                 android:layout_width="63dp"
                 android:layout_height="61dp"
+                android:contentDescription="@string/logo_simplificado"
                 app:srcCompat="@drawable/resume_logo"
+                tools:ignore="ImageContrastCheck"
                 tools:layout_editor_absoluteX="16dp"
                 tools:layout_editor_absoluteY="16dp" />
 
@@ -55,7 +57,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_personal_configuration"
-        app:srcCompat="@drawable/user1" />
+        app:srcCompat="@drawable/user1"
+        android:contentDescription="@string/imagen_perfil" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineSuperior"
@@ -79,7 +82,8 @@
         app:layout_constraintBottom_toTopOf="@+id/surname"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guidelineSuperior" />
+        app:layout_constraintTop_toBottomOf="@+id/guidelineSuperior"
+        tools:ignore="TextContrastCheck" />
 
     <EditText
         android:id="@+id/surname"
@@ -94,7 +98,8 @@
         app:layout_constraintBottom_toTopOf="@+id/address"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
+        app:layout_constraintTop_toBottomOf="@+id/name"
+        tools:ignore="TextContrastCheck" />
 
     <EditText
         android:id="@+id/address"
@@ -109,7 +114,8 @@
         app:layout_constraintBottom_toTopOf="@+id/mobile_phone_number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/surname" />
+        app:layout_constraintTop_toBottomOf="@+id/surname"
+        tools:ignore="TextContrastCheck" />
 
     <EditText
         android:id="@+id/mobile_phone_number"
@@ -124,7 +130,8 @@
         app:layout_constraintBottom_toTopOf="@+id/phone_number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/address" />
+        app:layout_constraintTop_toBottomOf="@+id/address"
+        tools:ignore="TextContrastCheck" />
 
     <EditText
         android:id="@+id/phone_number"
@@ -139,7 +146,8 @@
         app:layout_constraintBottom_toTopOf="@+id/dni"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mobile_phone_number" />
+        app:layout_constraintTop_toBottomOf="@+id/mobile_phone_number"
+        tools:ignore="TextContrastCheck" />
 
     <EditText
         android:id="@+id/dni"
@@ -194,6 +202,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/back" />
+        app:layout_constraintTop_toBottomOf="@+id/back"
+        tools:ignore="TextContrastCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

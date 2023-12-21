@@ -42,4 +42,5 @@
     <string name="toast_password_default">The new password is the same as the default password</string>
     <string name="toast_password_matches">The two passwords do not match</string>
     <string name="toast_password_old_new_matches">The previous password and the new one are the same</string>
+    <string name="imagen_perfil">Profile Picture</string>
 </resources>

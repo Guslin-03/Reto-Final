@@ -42,4 +42,5 @@
     <string name="toast_password_default">Pasahitz berria berezko pasahitzarekin berdina da</string>
     <string name="toast_password_matches">Bi pasahitzak ez datoz bat</string>
     <string name="toast_password_old_new_matches">Aurreko pasahitza eta berria berdinak dira</string>
+    <string name="imagen_perfil">Profila Irudia</string>
 </resources>

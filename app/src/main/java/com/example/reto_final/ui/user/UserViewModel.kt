@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto_final.data.AuthRequest
+import com.example.reto_final.data.ChangePasswordRequest
 import com.example.reto_final.data.User
 import com.example.reto_final.data.repository.CommonUserRepository
 import com.example.reto_final.utils.Resource
@@ -21,39 +22,43 @@ class UserViewModel(private val userRepository: CommonUserRepository) : ViewMode
     private val _update= MutableLiveData<Resource<Void>>()
     val update : LiveData<Resource<Void>> get() = _update
 
-    private suspend fun searchUser(email:String, password:String) : Resource<User> {
+    private val _logOut = MutableLiveData<Resource<Void>>()
+    val logOut : LiveData<Resource<Void>> get() = _logOut
+
+    private suspend fun logIn(email:String, password:String) : Resource<User> {
         return withContext(Dispatchers.IO) {
-            val user = AuthRequest(email, password, "Nombre")
+            val user = AuthRequest(email, password, android.os.Build.MODEL)
             userRepository.login(user)
         }
     }
-    fun onSearchUser(email:String, password:String) {
+    fun onLogIn(email:String, password:String) {
         viewModelScope.launch {
-            _user.value = searchUser(email,password)
-        }
-    }
-
-    private  suspend fun logOut() : Resource<Void> {
-        return withContext(Dispatchers.IO) {
-            userRepository.logout()
+            _user.value = logIn(email,password)
         }
     }
 
     fun onLogOut() {
         viewModelScope.launch {
-            logOut()
+            _logOut.value = logOut()
         }
     }
 
-    fun onChangePassword(password: String) {
-        viewModelScope.launch {
-            _update.value = changePassword(password)
-        }
-    }
-
-    private suspend fun changePassword(password: String) : Resource<Void> {
+    private suspend fun logOut() : Resource<Void> {
         return withContext(Dispatchers.IO) {
-            userRepository.changePassword(password)
+            userRepository.logout()
+        }
+    }
+
+    fun onChangePassword(email: String, oldPassword: String, password: String) {
+        viewModelScope.launch {
+            val changePasswordRequest = ChangePasswordRequest(email, oldPassword, password)
+            _update.value = changePassword(changePasswordRequest)
+        }
+    }
+
+    private suspend fun changePassword(changePasswordRequest: ChangePasswordRequest) : Resource<Void> {
+        return withContext(Dispatchers.IO) {
+            userRepository.changePassword(changePasswordRequest)
         }
     }
 

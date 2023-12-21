@@ -1,4 +1,4 @@
-package com.example.reto_final.ui
+package com.example.reto_final.ui.register
 
 import android.Manifest
 import android.app.AlertDialog
@@ -25,6 +25,7 @@ import com.example.reto_final.R
 import com.example.reto_final.data.User
 import com.example.reto_final.data.repository.RemoteUserDataSource
 import com.example.reto_final.databinding.PersonalConfigurationActvityBinding
+import com.example.reto_final.ui.LogInActivity
 import com.example.reto_final.ui.user.UserViewModel
 import com.example.reto_final.ui.user.UserViewModelFactory
 import com.example.reto_final.utils.MyApp
@@ -34,9 +35,8 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
-import java.net.URI
 
-class PersonalConfigurationActivity : AppCompatActivity() {
+class RegisterPersonalConfigurationActivity : AppCompatActivity() {
 
     private lateinit var binding: PersonalConfigurationActvityBinding
     private val userRepository = RemoteUserDataSource()
@@ -198,7 +198,7 @@ class PersonalConfigurationActivity : AppCompatActivity() {
     }
 
     private fun nextConfiguration() {
-        val intent = Intent(this, ConfigurationActivity::class.java)
+        val intent = Intent(this, RegisterConfigurationActivity::class.java)
         startActivity(intent)
         finish()
     }

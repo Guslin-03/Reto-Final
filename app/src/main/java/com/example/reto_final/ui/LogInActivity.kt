@@ -14,6 +14,8 @@ import androidx.core.content.ContextCompat
 import com.example.reto_final.R
 import com.example.reto_final.data.repository.RemoteUserDataSource
 import com.example.reto_final.databinding.LoginActivityBinding
+import com.example.reto_final.ui.register.RegisterChangePasswordActivity
+import com.example.reto_final.ui.register.RegisterPersonalConfigurationActivity
 import com.example.reto_final.ui.user.UserViewModel
 import com.example.reto_final.ui.user.UserViewModelFactory
 import com.example.reto_final.utils.MyApp
@@ -50,7 +52,7 @@ class LogInActivity : AppCompatActivity(){
             email = lowerCaseEmail(email)
             val password = binding.password.text.toString()
             if(checkData()){
-                viewModel.onSearchUser(email, password)
+                viewModel.onLogIn(email, password)
             }
 //            logIn()
         }
@@ -139,19 +141,19 @@ class LogInActivity : AppCompatActivity(){
     }
 
     private fun logIn() {
-        val intent = Intent(this, PersonalConfigurationActivity::class.java)
+        val intent = Intent(this, RegisterPersonalConfigurationActivity::class.java)
         startActivity(intent)
         finish()
     }
 
     private fun chat() {
-        val intent = Intent(this, ChatActivity::class.java)
+        val intent = Intent(this, GroupActivity::class.java)
         startActivity(intent)
         finish()
     }
 
     private fun changePassword() {
-        val intent = Intent(this, ChangePasswordActivity::class.java)
+        val intent = Intent(this, RegisterChangePasswordActivity::class.java)
         startActivity(intent)
         finish()
     }
