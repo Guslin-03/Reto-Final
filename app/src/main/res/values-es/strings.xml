@@ -57,4 +57,7 @@
     <string name="perfil">Perfil</string>
     <string name="paso_1_2">Paso 1 de 2</string>
     <string name="paso_2_2">Paso 2 de 2</string>
+    <string name="toast_success_changes">Cambios realizados con éxito</string>
+    <string name="toast_success_password">Contraseña modificada con éxito</string>
+    <string name="lista_de_ciclos">Lista de módulos</string>
 </resources>

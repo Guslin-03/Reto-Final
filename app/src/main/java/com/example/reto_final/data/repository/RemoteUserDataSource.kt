@@ -20,4 +20,12 @@ class RemoteUserDataSource: BaseDataSource(), CommonUserRepository {
         RetrofitClient.apiInterface.changePassword(changePasswordRequest)
     }
 
+    override suspend fun register(registerRequest: RegisterRequest) = getResult {
+        RetrofitClient.apiInterface.register(registerRequest)
+    }
+
+    override suspend fun updateProfile(profileRequest: ProfileRequest) = getResult {
+        RetrofitClient.apiInterface.updateProfile(profileRequest)
+    }
+
 }

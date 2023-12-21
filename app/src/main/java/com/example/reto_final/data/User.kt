@@ -1,22 +1,24 @@
 package com.example.reto_final.data
 
 import android.os.Parcelable
+import com.example.reto_final.data.repository.Rol
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class User(
 
     val id: Int,
-    val DNI: String,
-    val name: String,
-    val surname: String,
-    val phoneNumber1: Int,
-    val phoneNumber2: Int,
-    val address: String,
+    var DNI: String,
+    var name: String,
+    var surname: String,
+    var phoneNumber1: Int,
+    var phoneNumber2: Int,
+    var address: String,
     val photo: String,
     val FCTDUAL: Int,
     val email: String,
     val degrees: Array<Degree>,
+    val roles: Array<Rol>,
     val department_id: Int,
     val token: String
 
@@ -44,6 +46,7 @@ data class User(
         FCTDUAL = FCTDUAL,
         email = email,
         degrees = emptyArray(),
+        roles = emptyArray(),
         department_id = department_id,
         token = ""
     )

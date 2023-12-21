@@ -1,12 +1,12 @@
-package com.example.reto_final.data
+package com.example.reto_final.data.repository
+
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Module (
+data class Rol (
 
     val id: Int,
-    val name: String,
-    val code: String
+    val name: String
 
 ) : Parcelable

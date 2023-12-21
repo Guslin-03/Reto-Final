@@ -33,7 +33,18 @@ class RegisterChangePasswordActivity : AppCompatActivity() {
 
             if (user != null) {
                 if (checkData())  {
-                    viewModel.onChangePassword(user.email ,binding.currentPassword.text.toString(), binding.newPassword1.text.toString())
+                    viewModel.onRegister(
+                        user.DNI,
+                        user.name,
+                        user.surname,
+                        user.phoneNumber1,
+                        user.phoneNumber2,
+                        user.address,
+                        "photo",
+                        user.email,
+                        binding.currentPassword.text.toString(),
+                        binding.newPassword1.text.toString()
+                    )
                 }
             }
             //backToLogIn()
@@ -46,6 +57,7 @@ class RegisterChangePasswordActivity : AppCompatActivity() {
         viewModel.logOut.observe(this) {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
+                    Toast.makeText(this, R.string.toast_success_changes, Toast.LENGTH_LONG).show()
                     backToLogIn()
                     MyApp.userPreferences.removeData()
                 }
@@ -57,7 +69,7 @@ class RegisterChangePasswordActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.update.observe(this) {
+        viewModel.register.observe(this) {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
                     viewModel.onLogOut()

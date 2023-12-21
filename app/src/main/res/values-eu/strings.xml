@@ -46,4 +46,7 @@
     <string name="perfil">Profila</string>
     <string name="paso_1_2">1 pausua 2etik</string>
     <string name="paso_2_2">2 pausua 2etik</string>
+    <string name="toast_success_changes">Ondo egindako aldaketak</string>
+    <string name="toast_success_password">Kontraseña ondo aldatua</string>
+    <string name="lista_de_ciclos">Modulu-zerrenda</string>
 </resources>

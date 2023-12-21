@@ -13,4 +13,8 @@ interface CommonUserRepository {
 
     suspend fun changePassword(changePasswordRequest: ChangePasswordRequest): Resource<Void>
 
+    suspend fun register(registerRequest: RegisterRequest): Resource<Void>
+
+    suspend fun updateProfile(profileRequest: ProfileRequest): Resource<Void>
+
 }

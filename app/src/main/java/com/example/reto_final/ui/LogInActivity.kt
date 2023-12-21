@@ -48,13 +48,13 @@ class LogInActivity : AppCompatActivity(){
         }
 
         binding.login.setOnClickListener {
-            var email = binding.email.text.toString()
-            email = lowerCaseEmail(email)
-            val password = binding.password.text.toString()
-            if(checkData()){
-                viewModel.onLogIn(email, password)
-            }
-//            logIn()
+//            var email = binding.email.text.toString()
+//            email = lowerCaseEmail(email)
+//            val password = binding.password.text.toString()
+//            if(checkData()){
+//                viewModel.onLogIn(email, password)
+//            }+
+            logIn()
         }
 
         binding.changePassword.setOnClickListener {

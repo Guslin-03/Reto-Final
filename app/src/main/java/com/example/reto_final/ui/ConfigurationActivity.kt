@@ -2,8 +2,10 @@ package com.example.reto_final.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.reto_final.R
@@ -15,6 +17,7 @@ import com.example.reto_final.ui.module.ModuleAdapter
 import com.example.reto_final.ui.user.UserViewModel
 import com.example.reto_final.ui.user.UserViewModelFactory
 import com.example.reto_final.utils.MyApp
+import com.example.reto_final.utils.Resource
 
 class ConfigurationActivity : AppCompatActivity() {
 
@@ -41,18 +44,49 @@ class ConfigurationActivity : AppCompatActivity() {
         val adapterItems = ArrayAdapter(this, R.layout.item_degree, nombresDeGrados)
 
         autoCompleteTextView.setAdapter(adapterItems)
-
+        if (nombresDeGrados.isNotEmpty()) {
+            val primeraOpcion = nombresDeGrados[0]
+            autoCompleteTextView.setText(primeraOpcion, false)
+            autoCompleteTextView.setSelection(0)
+        }
         autoCompleteTextView.setOnItemClickListener { parent, _, position, _ ->
             val selectedItem = parent.getItemAtPosition(position).toString()
             moduleAdapter.submitList(user?.let { obtenerModulesPorNombre(it, selectedItem) })
         }
 
         binding.next.setOnClickListener {
-            backToGroupActivity()
+
+            if (user != null) {
+                Log.i("Prueba", ""+user.name)
+                viewModel.onUpdateProfile(
+                    user.DNI,
+                    user.name,
+                    user.surname,
+                    user.phoneNumber1,
+                    user.phoneNumber2,
+                    user.address,
+                    "photo",
+                    user.email
+                )
+            }
+//            backToGroupActivity()
         }
 
         binding.back.setOnClickListener {
             backToPersonalConfiguration()
+        }
+
+        viewModel.updateProfile.observe(this) {
+            when (it.status) {
+                Resource.Status.SUCCESS -> {
+                    backToGroupActivity()
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+                }
+            }
         }
 
     }

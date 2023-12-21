@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -43,12 +44,24 @@ class RegisterPersonalConfigurationActivity : AppCompatActivity() {
         }
 
         binding.next.setOnClickListener {
-            if (checkData()) nextConfiguration()
-            nextConfiguration()
+            if (user != null) {
+                if (checkData(user)) nextConfiguration()
+//                nextConfiguration()
+            }
         }
 
         binding.back.setOnClickListener {
-            backToLogIn()
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("¿Seguro que deseas continuar?")
+            builder.setMessage("Se perderán las modificaciones realizadas")
+
+            builder.setPositiveButton("Continuar") { _, _ ->
+                backToLogIn()
+            }
+            builder.setNegativeButton("Cancelar", null)
+
+            val dialog = builder.create()
+            dialog.show()
         }
 
         binding.profilePicture.setOnClickListener { pickPhoto() }
@@ -106,7 +119,7 @@ class RegisterPersonalConfigurationActivity : AppCompatActivity() {
         binding.dni.setText(user.DNI)
     }
 
-    private fun checkData(): Boolean {
+    private fun checkData(user: User): Boolean {
         val hintColor = ContextCompat.getColor(this, R.color.hint)
         val name = binding.name.text.toString()
         val surname = binding.surname.text.toString()
@@ -166,6 +179,14 @@ class RegisterPersonalConfigurationActivity : AppCompatActivity() {
             binding.phoneNumber.setHintTextColor(hintColor)
             return false
         }
+
+        user.DNI = binding.dni.text.toString()
+        user.name = binding.name.text.toString()
+        user.surname = binding.surname.text.toString()
+        user.phoneNumber1 = binding.mobilePhoneNumber.text.toString().toInt()
+        user.phoneNumber2 = binding.phoneNumber.text.toString().toInt()
+        user.address = binding.address.text.toString()
+        MyApp.userPreferences.saveUser(user)
 
         return true
     }

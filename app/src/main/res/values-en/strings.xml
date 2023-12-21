@@ -46,4 +46,7 @@
     <string name="perfil">Profile</string>
     <string name="paso_1_2">Step 1 of 2</string>
     <string name="paso_2_2">Step 2 of 2</string>
+    <string name="toast_success_changes">Changes made successfully</string>
+    <string name="toast_success_password">Password successfully changed</string>
+    <string name="lista_de_ciclos">Modules list</string>
 </resources>

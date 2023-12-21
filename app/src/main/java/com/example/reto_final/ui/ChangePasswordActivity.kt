@@ -1,5 +1,6 @@
 package com.example.reto_final.ui
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -40,12 +41,23 @@ class ChangePasswordActivity: AppCompatActivity() {
         }
 
         binding.back.setOnClickListener {
-            backToGroupActivity()
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("¿Deseas continuar?")
+            builder.setMessage("Se perderán las modificaciones realizadas")
+
+            builder.setPositiveButton("Continuar") { _, _ ->
+                backToGroupActivity()
+            }
+            builder.setNegativeButton("Cancelar", null)
+
+            val dialog = builder.create()
+            dialog.show()
         }
 
         viewModel.logOut.observe(this) {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
+                    Toast.makeText(this, R.string.toast_success_password, Toast.LENGTH_LONG).show()
                     backToLogIn()
                     MyApp.userPreferences.removeData()
                 }
@@ -57,7 +69,7 @@ class ChangePasswordActivity: AppCompatActivity() {
             }
         }
 
-        viewModel.update.observe(this) {
+        viewModel.updatePassword.observe(this) {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
                     viewModel.onLogOut()

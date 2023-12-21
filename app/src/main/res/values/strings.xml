@@ -62,5 +62,8 @@
     <string name="toast_password_default">La nueva contraseña es igual a la contraseña por defecto</string>
     <string name="toast_password_matches">Las dos contraseñas no coinciden</string>
     <string name="toast_password_old_new_matches">La anterior contraseña y la nueva son iguales</string>
+    <string name="toast_success_changes">Cambios realizados con éxito</string>
+    <string name="toast_success_password">Contraseña modificada con éxito</string>
+    <string name="lista_de_ciclos">Lista de módulos</string>
 
 </resources>

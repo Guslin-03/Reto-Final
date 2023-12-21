@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -44,11 +45,24 @@ class PersonalConfigurationActivity: AppCompatActivity() {
         }
 
         binding.next.setOnClickListener {
-            if (checkData()) nextConfiguration()
+            if (user != null) {
+                if (checkData(user)) nextConfiguration()
+//                nextConfiguration()
+            }
         }
 
         binding.back.setOnClickListener {
-            backToGroupActivity()
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("¿Deseas continuar?")
+            builder.setMessage("Se perderán las modificaciones realizadas")
+
+            builder.setPositiveButton("Continuar") { _, _ ->
+                backToGroupActivity()
+            }
+            builder.setNegativeButton("Cancelar", null)
+
+            val dialog = builder.create()
+            dialog.show()
         }
 
         binding.profilePicture.setOnClickListener { pickPhoto() }
@@ -106,7 +120,7 @@ class PersonalConfigurationActivity: AppCompatActivity() {
         binding.dni.setText(user.DNI)
     }
 
-    private fun checkData(): Boolean {
+    private fun checkData(user: User): Boolean {
         val hintColor = ContextCompat.getColor(this, R.color.hint)
         val name = binding.name.text.toString()
         val surname = binding.surname.text.toString()
@@ -166,6 +180,14 @@ class PersonalConfigurationActivity: AppCompatActivity() {
             binding.phoneNumber.setHintTextColor(hintColor)
             return false
         }
+
+        user.DNI = binding.dni.text.toString()
+        user.name = binding.name.text.toString()
+        user.surname = binding.surname.text.toString()
+        user.phoneNumber1 = binding.mobilePhoneNumber.text.toString().toInt()
+        user.phoneNumber2 = binding.phoneNumber.text.toString().toInt()
+        user.address = binding.address.text.toString()
+        MyApp.userPreferences.saveUser(user)
 
         return true
     }
