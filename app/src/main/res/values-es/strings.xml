@@ -54,4 +54,7 @@
         <string name="toast_password_matches">Las dos contraseñas no coinciden</string>
         <string name="toast_password_old_new_matches">La anterior contraseña y la nueva son iguales</string>
     <string name="imagen_perfil">Imagen de Perfil</string>
+    <string name="perfil">Perfil</string>
+    <string name="paso_1_2">Paso 1 de 2</string>
+    <string name="paso_2_2">Paso 2 de 2</string>
 </resources>

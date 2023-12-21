@@ -1,4 +1,4 @@
-package com.example.reto_final.ui.register
+package com.example.reto_final.ui
 
 import android.Manifest
 import android.app.AlertDialog
@@ -19,7 +19,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.reto_final.R
 import com.example.reto_final.data.User
 import com.example.reto_final.databinding.PersonalConfigurationActvityBinding
-import com.example.reto_final.ui.LogInActivity
 import com.example.reto_final.utils.MyApp
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -28,7 +27,7 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 
-class RegisterPersonalConfigurationActivity : AppCompatActivity() {
+class PersonalConfigurationActivity: AppCompatActivity() {
 
     private lateinit var binding: PersonalConfigurationActvityBinding
 
@@ -37,6 +36,8 @@ class RegisterPersonalConfigurationActivity : AppCompatActivity() {
         binding = PersonalConfigurationActvityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.textViewNumberPage.setText(R.string.paso_1_2)
+
         val user = MyApp.userPreferences.getUser()
         if(user != null) {
             setData(user)
@@ -44,11 +45,10 @@ class RegisterPersonalConfigurationActivity : AppCompatActivity() {
 
         binding.next.setOnClickListener {
             if (checkData()) nextConfiguration()
-            nextConfiguration()
         }
 
         binding.back.setOnClickListener {
-            backToLogIn()
+            backToGroupActivity()
         }
 
         binding.profilePicture.setOnClickListener { pickPhoto() }
@@ -76,7 +76,7 @@ class RegisterPersonalConfigurationActivity : AppCompatActivity() {
 
     private fun pickPhotoFromGallery() {
         Dexter.withContext(this).withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-            .withListener(object : PermissionListener{
+            .withListener(object : PermissionListener {
 
                 override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
                     val intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -170,28 +170,6 @@ class RegisterPersonalConfigurationActivity : AppCompatActivity() {
         return true
     }
 
-    private fun nextConfiguration() {
-        val intent = Intent(this, RegisterConfigurationActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
-
-    private fun backToLogIn() {
-        val intent = Intent(this, LogInActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
-
-    private fun validatePhone(cadena: String): Boolean {
-        val regex = Regex("\\d{9}")
-        return cadena.matches(regex)
-    }
-
-    private fun validateDNI(cadena: String): Boolean {
-        val regex = Regex("\\d{8}[A-Z]")
-        return cadena.matches(regex)
-    }
-
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -216,6 +194,28 @@ class RegisterPersonalConfigurationActivity : AppCompatActivity() {
 
         }
 
+    }
+
+    private fun validatePhone(cadena: String): Boolean {
+        val regex = Regex("\\d{9}")
+        return cadena.matches(regex)
+    }
+
+    private fun validateDNI(cadena: String): Boolean {
+        val regex = Regex("\\d{8}[A-Z]")
+        return cadena.matches(regex)
+    }
+
+    private fun backToGroupActivity() {
+        val intent = Intent(this, GroupActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun nextConfiguration() {
+        val intent = Intent(this, ConfigurationActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
 }

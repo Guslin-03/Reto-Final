@@ -1,4 +1,4 @@
-package com.example.reto_final.ui.register
+package com.example.reto_final.ui
 
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -7,16 +7,16 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.example.reto_final.R
 import com.example.reto_final.data.repository.RemoteUserDataSource
 import com.example.reto_final.databinding.ChangePasswordActivityBinding
-import com.example.reto_final.ui.LogInActivity
 import com.example.reto_final.ui.user.UserViewModel
 import com.example.reto_final.ui.user.UserViewModelFactory
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
 
-class RegisterChangePasswordActivity : AppCompatActivity() {
+class ChangePasswordActivity: AppCompatActivity() {
 
     private lateinit var binding: ChangePasswordActivityBinding
     private val userRepository = RemoteUserDataSource()
@@ -26,11 +26,11 @@ class RegisterChangePasswordActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ChangePasswordActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.textViewNumberPage.isVisible = false
 
         val user = MyApp.userPreferences.getUser()
 
         binding.changePassword.setOnClickListener {
-
             if (user != null) {
                 if (checkData())  {
                     viewModel.onChangePassword(user.email ,binding.currentPassword.text.toString(), binding.newPassword1.text.toString())
@@ -40,7 +40,7 @@ class RegisterChangePasswordActivity : AppCompatActivity() {
         }
 
         binding.back.setOnClickListener {
-            backToConfigurationActivity()
+            backToGroupActivity()
         }
 
         viewModel.logOut.observe(this) {
@@ -90,7 +90,8 @@ class RegisterChangePasswordActivity : AppCompatActivity() {
             if (newPassword1 == newPassword2) {
                 if (newPassword1 == "elorrieta00") {
                     Toast.makeText(this, R.string.toast_password_default, Toast.LENGTH_LONG).show()
-                    binding.currentPasswordLayout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
+                    binding.currentPasswordLayout.defaultHintTextColor = ColorStateList.valueOf(
+                        Color.RED)
                     binding.newPassword1Layout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
                     binding.newPassword2Layout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
                     return false
@@ -127,15 +128,14 @@ class RegisterChangePasswordActivity : AppCompatActivity() {
 
     }
 
-    private fun backToLogIn() {
-        val intent = Intent(this, LogInActivity::class.java)
+    private fun backToGroupActivity() {
+        val intent = Intent(this, GroupActivity::class.java)
         startActivity(intent)
         finish()
     }
 
-    private fun backToConfigurationActivity() {
-        //Pasariamos el Objeto User por parametro para settear los valores en los campos por defecto
-        val intent = Intent(this, RegisterConfigurationActivity::class.java)
+    private fun backToLogIn() {
+        val intent = Intent(this, LogInActivity::class.java)
         startActivity(intent)
         finish()
     }

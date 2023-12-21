@@ -37,6 +37,7 @@
     <string name="login">Iniciar Sesión</string>
     <string name="cambiar_contrase_a">Cambiar Contraseña</string>
     <string name="confirmar">Confirmar</string>
+    <string name="perfil">Perfil</string>
 
     //CHECK-BOXS
     <string name="rememberMe">Recuérdame</string>
@@ -45,6 +46,9 @@
     <string name="paso_1_3">Paso 1 de 3</string>
     <string name="paso_2_3">Paso 2 de 3</string>
     <string name="paso_3_3">Paso 3 de 3</string>
+
+    <string name="paso_1_2">Paso 1 de 2</string>
+    <string name="paso_2_2">Paso 2 de 2</string>
 
     //TOAST
     <string name="toast_edit_profile">A continuación, valide su Información</string>

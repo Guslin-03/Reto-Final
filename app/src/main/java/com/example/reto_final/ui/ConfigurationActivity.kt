@@ -1,31 +1,35 @@
-package com.example.reto_final.ui.register
+package com.example.reto_final.ui
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.reto_final.R
 import com.example.reto_final.data.Module
 import com.example.reto_final.data.User
+import com.example.reto_final.data.repository.RemoteUserDataSource
 import com.example.reto_final.databinding.ConfigurationActvityBinding
-import com.example.reto_final.ui.LogInActivity
 import com.example.reto_final.ui.module.ModuleAdapter
+import com.example.reto_final.ui.user.UserViewModel
+import com.example.reto_final.ui.user.UserViewModelFactory
 import com.example.reto_final.utils.MyApp
 
-class RegisterConfigurationActivity : AppCompatActivity() {
+class ConfigurationActivity : AppCompatActivity() {
 
     private lateinit var binding: ConfigurationActvityBinding
     private lateinit var moduleAdapter: ModuleAdapter
     private lateinit var nombresDeGrados: Array<String>
+    private val userRepository = RemoteUserDataSource()
+    private val viewModel: UserViewModel by viewModels { UserViewModelFactory(userRepository) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ConfigurationActvityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        moduleAdapter = ModuleAdapter()
-        binding.courseList.adapter = moduleAdapter
-
+        binding.next.setText(R.string.confirmar)
+        binding.textViewNumberPage.setText(R.string.paso_2_2)
         val user = MyApp.userPreferences.getUser()
         if(user != null) {
             setData(user)
@@ -44,7 +48,7 @@ class RegisterConfigurationActivity : AppCompatActivity() {
         }
 
         binding.next.setOnClickListener {
-            changePassword()
+            backToGroupActivity()
         }
 
         binding.back.setOnClickListener {
@@ -67,15 +71,15 @@ class RegisterConfigurationActivity : AppCompatActivity() {
         binding.DUAL.isEnabled = false
     }
 
-    private fun changePassword() {
-        val intent = Intent(this, RegisterChangePasswordActivity::class.java)
+    private fun backToPersonalConfiguration() {
+        //Pasariamos el Objeto User por parametro para settear los valores en los campos por defecto
+        val intent = Intent(this, PersonalConfigurationActivity::class.java)
         startActivity(intent)
         finish()
     }
 
-    private fun backToPersonalConfiguration() {
-        //Pasariamos el Objeto User por parametro para settear los valores en los campos por defecto
-        val intent = Intent(this, RegisterPersonalConfigurationActivity::class.java)
+    private fun backToGroupActivity() {
+        val intent = Intent(this, GroupActivity::class.java)
         startActivity(intent)
         finish()
     }

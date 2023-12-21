@@ -43,4 +43,7 @@
     <string name="toast_password_matches">Bi pasahitzak ez datoz bat</string>
     <string name="toast_password_old_new_matches">Aurreko pasahitza eta berria berdinak dira</string>
     <string name="imagen_perfil">Profila Irudia</string>
+    <string name="perfil">Profila</string>
+    <string name="paso_1_2">1 pausua 2etik</string>
+    <string name="paso_2_2">2 pausua 2etik</string>
 </resources>
