@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +12,7 @@ import com.example.reto_final.data.Module
 import com.example.reto_final.data.User
 import com.example.reto_final.data.repository.RemoteUserDataSource
 import com.example.reto_final.databinding.ConfigurationActvityBinding
+import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.ui.module.ModuleAdapter
 import com.example.reto_final.ui.user.UserViewModel
 import com.example.reto_final.ui.user.UserViewModelFactory
@@ -26,30 +26,28 @@ class ConfigurationActivity : AppCompatActivity() {
     private lateinit var nombresDeGrados: Array<String>
     private val userRepository = RemoteUserDataSource()
     private val viewModel: UserViewModel by viewModels { UserViewModelFactory(userRepository) }
+    private val user = MyApp.userPreferences.getUser()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ConfigurationActvityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        moduleAdapter = ModuleAdapter()
+        binding.moduleList.adapter = moduleAdapter
         binding.next.setText(R.string.confirmar)
         binding.textViewNumberPage.setText(R.string.paso_2_2)
-        val user = MyApp.userPreferences.getUser()
+
         if(user != null) {
             setData(user)
             nombresDeGrados = user.degrees.map { it.name }.toTypedArray()
         }
 
-        val autoCompleteTextView = findViewById<AutoCompleteTextView>(R.id.autoCompleteText)
-
         val adapterItems = ArrayAdapter(this, R.layout.item_degree, nombresDeGrados)
 
-        autoCompleteTextView.setAdapter(adapterItems)
-        if (nombresDeGrados.isNotEmpty()) {
-            val primeraOpcion = nombresDeGrados[0]
-            autoCompleteTextView.setText(primeraOpcion, false)
-            autoCompleteTextView.setSelection(0)
-        }
-        autoCompleteTextView.setOnItemClickListener { parent, _, position, _ ->
+        binding.autoCompleteText.setAdapter(adapterItems)
+        setDefaultData()
+
+        binding.autoCompleteText.setOnItemClickListener { parent, _, position, _ ->
             val selectedItem = parent.getItemAtPosition(position).toString()
             moduleAdapter.submitList(user?.let { obtenerModulesPorNombre(it, selectedItem) })
         }
@@ -87,6 +85,19 @@ class ConfigurationActivity : AppCompatActivity() {
                 Resource.Status.LOADING -> {
                 }
             }
+        }
+
+    }
+
+    private fun setDefaultData() {
+
+        if (nombresDeGrados.isNotEmpty()) {
+            val primeraOpcion = nombresDeGrados[0]
+            binding.autoCompleteText.setText(primeraOpcion, false)
+            binding.autoCompleteText.setSelection(0)
+
+            moduleAdapter.submitList(user?.let { obtenerModulesPorNombre(it, primeraOpcion) })
+
         }
 
     }

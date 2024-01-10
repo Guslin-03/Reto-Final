@@ -24,7 +24,7 @@ class RegisterConfigurationActivity : AppCompatActivity() {
         binding = ConfigurationActvityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         moduleAdapter = ModuleAdapter()
-        binding.courseList.adapter = moduleAdapter
+        binding.moduleList.adapter = moduleAdapter
 
         val user = MyApp.userPreferences.getUser()
         if(user != null) {

@@ -38,7 +38,7 @@
         <activity android:name=".ui.register.RegisterConfigurationActivity" android:exported="true" android:label="RegisterConfiguration">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".MainActivity"/>
         </activity>
-        <activity android:name=".ui.GroupActivity" android:exported="true" android:label="Chat">
+        <activity android:name=".ui.group.GroupActivity" android:exported="true" android:label="Chat">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".MainActivity"/>
         </activity>
         <activity android:name=".ui.ChangePasswordActivity" android:exported="true" android:label="ChangePassword">

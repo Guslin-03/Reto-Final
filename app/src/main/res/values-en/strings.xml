@@ -11,7 +11,7 @@
     <string name="contrase_a">Password</string>
     <string name="repetir_contrase_a">Repeat Password</string>
     <string name="nueva_contrase_a">New Password</string>
-    <string name="nombre">Name*</string>
+    <string name="name">Name*</string>
     <string name="apellido">Surname*</string>
     <string name="tel_fono_m_vil">Movile Phone*</string>
     <string name="tel_fono_fijo">Landline Phone</string>
@@ -49,4 +49,6 @@
     <string name="toast_success_changes">Changes made successfully</string>
     <string name="toast_success_password">Password successfully changed</string>
     <string name="lista_de_ciclos">Modules list</string>
+    <string name="code">Code</string>
+    <string name="name_Module">Name</string>
 </resources>

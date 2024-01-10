@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.reto_final.data.Module
 import com.example.reto_final.databinding.ItemModuleBinding
 
-class ModuleAdapter : ListAdapter<Module, ModuleAdapter.ModuleViewHolder>(SongDiffCallback()) {
+class ModuleAdapter : ListAdapter<Module, ModuleAdapter.ModuleViewHolder>(ModuleDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ModuleViewHolder {
         val binding =
             ItemModuleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -24,20 +24,21 @@ class ModuleAdapter : ListAdapter<Module, ModuleAdapter.ModuleViewHolder>(SongDi
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(module: Module) {
-            binding.textViewName.text = module.name
+            binding.moduleName.text = module.name
+            binding.moduleCode.text = module.code
         }
     }
 
 }
 
-class SongDiffCallback : DiffUtil.ItemCallback<Module>() {
+class ModuleDiffCallback : DiffUtil.ItemCallback<Module>() {
 
     override fun areItemsTheSame(oldItem: Module, newItem: Module): Boolean {
         return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: Module, newItem: Module): Boolean {
-        return (oldItem.id == newItem.id && oldItem.name == newItem.name)
+        return (oldItem.id == newItem.id && oldItem.name == newItem.name && oldItem.code == newItem.code)
     }
 
 }

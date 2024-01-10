@@ -11,7 +11,7 @@
     <string name="contrase_a">Pasahitza</string>
     <string name="repetir_contrase_a">Pasahitza Errepikatu</string>
     <string name="nueva_contrase_a">Pasahitz Berria</string>
-    <string name="nombre">Izena*</string>
+    <string name="name">Izena*</string>
     <string name="apellido">Abizena*</string>
     <string name="tel_fono_m_vil">Mugikor Telefonoa*</string>
     <string name="tel_fono_fijo">Telefono Erdia</string>
@@ -49,4 +49,6 @@
     <string name="toast_success_changes">Ondo egindako aldaketak</string>
     <string name="toast_success_password">Kontraseña ondo aldatua</string>
     <string name="lista_de_ciclos">Modulu-zerrenda</string>
+    <string name="code">Kodea</string>
+    <string name="name_Module">Izena</string>
 </resources>

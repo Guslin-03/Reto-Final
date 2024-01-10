@@ -19,7 +19,7 @@
     <string name="contrase_a">Contraseña</string>
     <string name="repetir_contrase_a">Repetir Contraseña</string>
     <string name="nueva_contrase_a">Nueva Contraseña</string>
-    <string name="nombre">Nombre*</string>
+    <string name="name">Nombre*</string>
     <string name="apellido">Apellido*</string>
     <string name="tel_fono_m_vil">Teléfono Móvil*</string>
     <string name="tel_fono_fijo">Teléfono Fijo</string>
@@ -49,6 +49,9 @@
 
     <string name="paso_1_2">Paso 1 de 2</string>
     <string name="paso_2_2">Paso 2 de 2</string>
+
+    <string name="code">Código</string>
+    <string name="name_Module">Nombre</string>
 
     //TOAST
     <string name="toast_edit_profile">A continuación, valide su Información</string>

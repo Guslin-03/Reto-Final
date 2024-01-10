@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/moduleList"
+    android:id="@+id/groupList"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/moduleName"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:padding="16dp"
-        android:textSize="16sp"/>
-
-    <TextView
-        android:id="@+id/moduleCode"
+        android:id="@+id/groupName"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"

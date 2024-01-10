@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import com.example.reto_final.R
 import com.example.reto_final.data.repository.RemoteUserDataSource
 import com.example.reto_final.databinding.LoginActivityBinding
+import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.ui.register.RegisterChangePasswordActivity
 import com.example.reto_final.ui.register.RegisterPersonalConfigurationActivity
 import com.example.reto_final.ui.user.UserViewModel
@@ -29,7 +30,6 @@ class LogInActivity : AppCompatActivity(){
     private val userRepository = RemoteUserDataSource()
     private val viewModel: UserViewModel by viewModels { UserViewModelFactory(userRepository) }
     private lateinit var rememberMeCheckBox: AppCompatCheckBox
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = LoginActivityBinding.inflate(layoutInflater)
@@ -53,8 +53,9 @@ class LogInActivity : AppCompatActivity(){
 //            val password = binding.password.text.toString()
 //            if(checkData()){
 //                viewModel.onLogIn(email, password)
-//            }+
-            logIn()
+//            }
+            chat()
+//            logIn()
         }
 
         binding.changePassword.setOnClickListener {

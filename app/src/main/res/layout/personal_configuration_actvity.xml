@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:autofillHints=""
         android:ems="10"
-        android:hint="@string/nombre"
+        android:hint="@string/name"
         android:inputType="textPersonName"
         android:minHeight="48dp"
         android:textColorHint="#85736E6C"
