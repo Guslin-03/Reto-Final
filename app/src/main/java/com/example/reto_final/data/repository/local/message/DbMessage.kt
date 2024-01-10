@@ -2,10 +2,8 @@ package com.example.reto_final.data.repository.local.message
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.example.reto_final.data.Message
-import com.example.reto_final.data.repository.local.group.DbGroup
+import com.example.reto_final.data.model.Message
 
 @Entity(tableName = "messages")
 data class DbMessage (

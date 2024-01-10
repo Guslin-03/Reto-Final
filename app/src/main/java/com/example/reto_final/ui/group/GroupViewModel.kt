@@ -1,13 +1,12 @@
 package com.example.reto_final.ui.group
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.example.reto_final.data.Group
+import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.repository.local.group.GroupType
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.utils.Resource
@@ -23,31 +22,41 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource) : Vi
     private val _create = MutableLiveData<Resource<Boolean>>()
     val create : LiveData<Resource<Boolean>> get() = _create
 
-    init {
+    private val _delete = MutableLiveData<Resource<Boolean>>()
+    val delete : LiveData<Resource<Boolean>> get() = _delete
+
+    init { updateGroupList() }
+    fun updateGroupList() {
         viewModelScope.launch {
-            getGRoups()
-        }
-
-
-    }
-    private suspend fun create(name:String, groupType: GroupType) : Resource<Group> {
-        return withContext(Dispatchers.IO) {
-            val group = Group(null, name, groupType)
-            Log.d("pr1", "0")
-            groupLocalRepository.createGroup(group)
+            _group.value = getGroups()
         }
     }
-    private suspend fun getGRoups() : Resource<List<Group>> {
+    private suspend fun getGroups() : Resource<List<Group>> {
         return withContext(Dispatchers.IO) {
             groupLocalRepository.getGroups()
         }
     }
+    private suspend fun create(name:String, groupType: GroupType) : Resource<Group> {
+        return withContext(Dispatchers.IO) {
+            val group = Group(null, name, groupType)
+            groupLocalRepository.createGroup(group)
+        }
+    }
     fun onCreate(name:String, groupType: GroupType) {
         viewModelScope.launch {
-            val prueba = create(name, groupType)
-            Log.d("pr1", "5")
-            Log.d("pr1", prueba.toString())
+            create(name, groupType)
             _create.value = Resource.success(true)
+        }
+    }
+    private suspend fun delete(group: Group) : Resource<Void> {
+        return withContext(Dispatchers.IO) {
+            groupLocalRepository.deleteGroup(group)
+        }
+    }
+    fun onDelete(group: Group) {
+        viewModelScope.launch {
+            delete(group)
+            _delete.value = Resource.success(true)
         }
     }
 

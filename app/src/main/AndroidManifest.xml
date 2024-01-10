@@ -26,7 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.LogInActivity" android:exported="true" android:label="LogIn">
+        <activity android:name=".ui.user.LogInActivity" android:exported="true" android:label="LogIn">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".MainActivity"/>
         </activity>
         <activity android:name=".ui.register.RegisterChangePasswordActivity" android:exported="true" android:label="RegisterChangePassword">
@@ -41,13 +41,13 @@
         <activity android:name=".ui.group.GroupActivity" android:exported="true" android:label="Chat">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".MainActivity"/>
         </activity>
-        <activity android:name=".ui.ChangePasswordActivity" android:exported="true" android:label="ChangePassword">
+        <activity android:name=".ui.user.ChangePasswordActivity" android:exported="true" android:label="ChangePassword">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".MainActivity"/>
         </activity>
-        <activity android:name=".ui.PersonalConfigurationActivity" android:exported="true" android:label="PersonalConfiguration">
+        <activity android:name=".ui.user.PersonalConfigurationActivity" android:exported="true" android:label="PersonalConfiguration">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".MainActivity"/>
         </activity>
-        <activity android:name=".ui.ConfigurationActivity" android:exported="true" android:label="Configuration">
+        <activity android:name=".ui.user.ConfigurationActivity" android:exported="true" android:label="Configuration">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".MainActivity"/>
         </activity>
     </application>

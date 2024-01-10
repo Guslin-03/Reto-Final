@@ -1,14 +1,15 @@
 package com.example.reto_final.ui.user
 
+import android.os.Build
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.example.reto_final.data.AuthRequest
-import com.example.reto_final.data.ChangePasswordRequest
-import com.example.reto_final.data.User
+import com.example.reto_final.data.model.AuthRequest
+import com.example.reto_final.data.model.ChangePasswordRequest
+import com.example.reto_final.data.model.User
 import com.example.reto_final.data.repository.CommonUserRepository
 import com.example.reto_final.data.repository.ProfileRequest
 import com.example.reto_final.data.repository.RegisterRequest
@@ -36,7 +37,7 @@ class UserViewModel(private val userRepository: CommonUserRepository) : ViewMode
 
     private suspend fun logIn(email:String, password:String) : Resource<User> {
         return withContext(Dispatchers.IO) {
-            val user = AuthRequest(email, password, android.os.Build.MODEL)
+            val user = AuthRequest(email, password, Build.MODEL)
             userRepository.login(user)
         }
     }

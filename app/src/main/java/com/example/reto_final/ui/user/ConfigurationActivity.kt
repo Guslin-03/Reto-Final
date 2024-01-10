@@ -1,4 +1,4 @@
-package com.example.reto_final.ui
+package com.example.reto_final.ui.user
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,14 +8,12 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.reto_final.R
-import com.example.reto_final.data.Module
-import com.example.reto_final.data.User
+import com.example.reto_final.data.model.Module
+import com.example.reto_final.data.model.User
 import com.example.reto_final.data.repository.RemoteUserDataSource
 import com.example.reto_final.databinding.ConfigurationActvityBinding
 import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.ui.module.ModuleAdapter
-import com.example.reto_final.ui.user.UserViewModel
-import com.example.reto_final.ui.user.UserViewModelFactory
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
 

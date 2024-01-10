@@ -1,4 +1,4 @@
-package com.example.reto_final.ui
+package com.example.reto_final.ui.user
 
 import android.Manifest
 import android.app.AlertDialog
@@ -17,7 +17,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.example.reto_final.R
-import com.example.reto_final.data.User
+import com.example.reto_final.data.model.User
 import com.example.reto_final.databinding.PersonalConfigurationActvityBinding
 import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.utils.MyApp

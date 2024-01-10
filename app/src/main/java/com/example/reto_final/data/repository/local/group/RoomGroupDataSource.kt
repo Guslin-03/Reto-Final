@@ -1,10 +1,11 @@
 package com.example.reto_final.data.repository.local.group
 
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.reto_final.data.Group
+import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.repository.CommonGroupRepository
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
@@ -24,8 +25,9 @@ class RoomGroupDataSource : CommonGroupRepository {
         return Resource.success(group)
     }
 
-    override suspend fun removeGroup(group: Group): Resource<Void> {
-        groupDao.deleteGroup(group.toDbGroup())
+    override suspend fun deleteGroup(group: Group): Resource<Void> {
+        val idEliminado = groupDao.deleteGroup(group.toDbGroup())
+        Log.d("pr1", "$idEliminado")
         return Resource.success()
     }
 
@@ -44,8 +46,7 @@ interface GroupDao {
     suspend fun getGroups(): List<DbGroup>
     @Insert
     suspend fun createGroup(group: DbGroup) : Long
-
     @Delete
-    suspend fun deleteGroup(group: DbGroup)
+    suspend fun deleteGroup(group: DbGroup) : Int
 
 }

@@ -1,7 +1,6 @@
 package com.example.reto_final.data.repository
 
-import com.example.reto_final.data.Group
-import com.example.reto_final.data.repository.local.group.DbGroup
+import com.example.reto_final.data.model.Group
 import com.example.reto_final.utils.Resource
 
 interface CommonGroupRepository {
@@ -10,6 +9,6 @@ interface CommonGroupRepository {
 
     suspend fun createGroup(group: Group) : Resource<Group>
 
-    suspend fun removeGroup(group: Group) : Resource<Void>
+    suspend fun deleteGroup(group: Group) : Resource<Void>
 
 }

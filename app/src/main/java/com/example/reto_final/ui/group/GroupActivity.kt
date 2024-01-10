@@ -10,14 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
+import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.repository.RemoteUserDataSource
 import com.example.reto_final.data.repository.local.group.GroupType
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.databinding.GroupActivityBinding
-import com.example.reto_final.ui.ChangePasswordActivity
-import com.example.reto_final.ui.LogInActivity
-import com.example.reto_final.ui.PersonalConfigurationActivity
-import com.example.reto_final.ui.module.ModuleAdapter
+import com.example.reto_final.ui.user.ChangePasswordActivity
+import com.example.reto_final.ui.user.LogInActivity
+import com.example.reto_final.ui.user.PersonalConfigurationActivity
 import com.example.reto_final.ui.user.UserViewModel
 import com.example.reto_final.ui.user.UserViewModelFactory
 import com.example.reto_final.utils.MyApp
@@ -26,10 +26,11 @@ import com.example.reto_final.utils.Resource
 class GroupActivity: AppCompatActivity() {
 
     private lateinit var binding: GroupActivityBinding
-    private val moduleAdapter = ModuleAdapter()
+    private lateinit var groupAdapter: GroupAdapter
     private val userRepository = RemoteUserDataSource()
     private val viewModel: UserViewModel by viewModels { UserViewModelFactory(userRepository) }
     private val groupRepository = RoomGroupDataSource()
+    private lateinit var group: Group
     private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,28 +42,72 @@ class GroupActivity: AppCompatActivity() {
 
         val user = MyApp.userPreferences.getUser()
 
+        fun onGroupListClickItem(group: Group) {
+            Log.d("group", "$group")
+            this.group = group
+
+        }
+
+        groupAdapter = GroupAdapter(
+            ::onGroupListClickItem
+        )
+
+        binding.groupList.adapter = groupAdapter
+
         binding.crearGrupo.setOnClickListener {
             groupViewModel.onCreate("prueba", GroupType.PRIVATE)
         }
 
-        groupViewModel.create.observe(this) {
+        binding.eliminarGrupo.setOnClickListener {
+            if (group.id != null) {
+                groupViewModel.onDelete(group)
+            } else {
+                Toast.makeText(
+                    this, "Debe seleccionar un grupo a eliminar", Toast.LENGTH_LONG
+                ).show()
+            }
+        }
 
+        groupViewModel.group.observe(this) {
             when(it.status) {
-
                 Resource.Status.SUCCESS -> {
-                    Log.i("Creación", "it.message")
-                    Toast.makeText(this, "it.message", Toast.LENGTH_LONG).show()
+                    groupAdapter.submitList(it.data)
                 }
-
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
-
                 Resource.Status.LOADING -> {
                 }
 
             }
+        }
 
+        groupViewModel.create.observe(this) {
+            when(it.status) {
+                Resource.Status.SUCCESS -> {
+                    groupViewModel.updateGroupList()
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+                }
+
+            }
+        }
+
+        groupViewModel.delete.observe(this) {
+            when(it.status) {
+                Resource.Status.SUCCESS -> {
+                    groupViewModel.updateGroupList()
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+                }
+
+            }
         }
 
         binding.toolbarPersonalConfiguration.setOnMenuItemClickListener { item ->

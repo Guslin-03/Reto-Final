@@ -2,7 +2,7 @@ package com.example.reto_final.utils
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.reto_final.data.User
+import com.example.reto_final.data.model.User
 import com.google.gson.Gson
 
 class UserPreferences {

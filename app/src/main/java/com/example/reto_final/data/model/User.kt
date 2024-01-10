@@ -1,7 +1,6 @@
-package com.example.reto_final.data
+package com.example.reto_final.data.model
 
 import android.os.Parcelable
-import com.example.reto_final.data.repository.Rol
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

@@ -1,4 +1,4 @@
-package com.example.reto_final.ui
+package com.example.reto_final.ui.user
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -13,8 +13,6 @@ import com.example.reto_final.R
 import com.example.reto_final.data.repository.RemoteUserDataSource
 import com.example.reto_final.databinding.ChangePasswordActivityBinding
 import com.example.reto_final.ui.group.GroupActivity
-import com.example.reto_final.ui.user.UserViewModel
-import com.example.reto_final.ui.user.UserViewModelFactory
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
 

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.reto_final.data.Module
+import com.example.reto_final.data.model.Module
 import com.example.reto_final.databinding.ItemModuleBinding
 
 class ModuleAdapter : ListAdapter<Module, ModuleAdapter.ModuleViewHolder>(ModuleDiffCallback()) {

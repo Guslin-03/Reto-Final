@@ -1,4 +1,4 @@
-package com.example.reto_final.ui
+package com.example.reto_final.ui.user
 
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -17,8 +17,6 @@ import com.example.reto_final.databinding.LoginActivityBinding
 import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.ui.register.RegisterChangePasswordActivity
 import com.example.reto_final.ui.register.RegisterPersonalConfigurationActivity
-import com.example.reto_final.ui.user.UserViewModel
-import com.example.reto_final.ui.user.UserViewModelFactory
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
 import java.util.Locale

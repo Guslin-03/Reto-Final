@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.reto_final.R
 import com.example.reto_final.data.repository.RemoteUserDataSource
 import com.example.reto_final.databinding.ChangePasswordActivityBinding
-import com.example.reto_final.ui.LogInActivity
+import com.example.reto_final.ui.user.LogInActivity
 import com.example.reto_final.ui.user.UserViewModel
 import com.example.reto_final.ui.user.UserViewModelFactory
 import com.example.reto_final.utils.MyApp

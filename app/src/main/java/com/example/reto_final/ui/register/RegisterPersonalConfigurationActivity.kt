@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -18,9 +17,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.example.reto_final.R
-import com.example.reto_final.data.User
+import com.example.reto_final.data.model.User
 import com.example.reto_final.databinding.PersonalConfigurationActvityBinding
-import com.example.reto_final.ui.LogInActivity
+import com.example.reto_final.ui.user.LogInActivity
 import com.example.reto_final.utils.MyApp
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
