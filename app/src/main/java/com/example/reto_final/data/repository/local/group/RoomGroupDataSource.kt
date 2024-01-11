@@ -36,10 +36,6 @@ class RoomGroupDataSource : CommonGroupRepository {
 fun DbGroup.toGroup() = Group(id, name, groupType)
 fun Group.toDbGroup() = DbGroup(id, name, groupType)
 
-//    @Transaction
-//    @Query("SELECT * FROM groups ORDER BY id")
-//    fun getGroupsWithMessages(): List<GroupWithMessages>
-
 @Dao
 interface GroupDao {
     @Query("SELECT * FROM groups order by id")

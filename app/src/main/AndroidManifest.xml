@@ -38,7 +38,7 @@
         <activity android:name=".ui.register.RegisterConfigurationActivity" android:exported="true" android:label="RegisterConfiguration">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".MainActivity"/>
         </activity>
-        <activity android:name=".ui.group.GroupActivity" android:exported="true" android:label="Chat">
+        <activity android:name=".ui.group.GroupActivity" android:exported="true" android:label="Groups">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".MainActivity"/>
         </activity>
         <activity android:name=".ui.user.ChangePasswordActivity" android:exported="true" android:label="ChangePassword">
@@ -48,6 +48,9 @@
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".MainActivity"/>
         </activity>
         <activity android:name=".ui.user.ConfigurationActivity" android:exported="true" android:label="Configuration">
+            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".MainActivity"/>
+        </activity>
+        <activity android:name=".ui.message.MessageActivity" android:exported="true" android:label="Chat">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".MainActivity"/>
         </activity>
     </application>

@@ -68,5 +68,8 @@
     <string name="toast_success_changes">Cambios realizados con éxito</string>
     <string name="toast_success_password">Contraseña modificada con éxito</string>
     <string name="lista_de_ciclos">Lista de módulos</string>
+    <string name="grupo_privado">Grupo Privado</string>
+    <string name="crear_grupo">Crear Grupo</string>
+    <string name="mensaje">Mensaje</string>
 
 </resources>

@@ -1,0 +1,9 @@
+package com.example.reto_final.data.repository
+
+import com.example.reto_final.data.model.Message
+import com.example.reto_final.utils.Resource
+
+interface CommonMessageRepository {
+    suspend fun getMessagesFromGroup(idGroup: Int) : Resource<List<Message>>
+    suspend fun createMessage(message: Message) : Resource<Message>
+}

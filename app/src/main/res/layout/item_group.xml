@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/groupList"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,10 +8,19 @@
 
     <TextView
         android:id="@+id/groupName"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:padding="16dp"
         android:textSize="16sp"/>
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25"
+        android:padding="16dp"
+        app:srcCompat="@drawable/privategroup"
+        android:contentDescription="@string/grupo_privado" />
 
 </LinearLayout>

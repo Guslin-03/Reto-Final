@@ -2,7 +2,6 @@ package com.example.reto_final.ui.group
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -15,6 +14,7 @@ import com.example.reto_final.data.repository.RemoteUserDataSource
 import com.example.reto_final.data.repository.local.group.GroupType
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.databinding.GroupActivityBinding
+import com.example.reto_final.ui.message.MessageActivity
 import com.example.reto_final.ui.user.ChangePasswordActivity
 import com.example.reto_final.ui.user.LogInActivity
 import com.example.reto_final.ui.user.PersonalConfigurationActivity
@@ -43,8 +43,11 @@ class GroupActivity: AppCompatActivity() {
         val user = MyApp.userPreferences.getUser()
 
         fun onGroupListClickItem(group: Group) {
-            Log.d("group", "$group")
             this.group = group
+
+            val intent = Intent(this, MessageActivity::class.java)
+            intent.putExtra("grupo_seleccionado", this.group)
+            startActivity(intent)
 
         }
 
@@ -54,18 +57,15 @@ class GroupActivity: AppCompatActivity() {
 
         binding.groupList.adapter = groupAdapter
 
-        binding.crearGrupo.setOnClickListener {
-            groupViewModel.onCreate("prueba", GroupType.PRIVATE)
-        }
-
         binding.eliminarGrupo.setOnClickListener {
-            if (group.id != null) {
-                groupViewModel.onDelete(group)
-            } else {
-                Toast.makeText(
-                    this, "Debe seleccionar un grupo a eliminar", Toast.LENGTH_LONG
-                ).show()
-            }
+            goToChat()
+//            if (group.id != null) {
+//                groupViewModel.onDelete(group)
+//            } else {
+//                Toast.makeText(
+//                    this, "Debe seleccionar un grupo a eliminar", Toast.LENGTH_LONG
+//                ).show()
+//            }
         }
 
         groupViewModel.group.observe(this) {
@@ -112,6 +112,10 @@ class GroupActivity: AppCompatActivity() {
 
         binding.toolbarPersonalConfiguration.setOnMenuItemClickListener { item ->
             when (item.itemId) {
+                R.id.createGroup -> {
+                    groupViewModel.onCreate("prueba", GroupType.PRIVATE)
+                    true
+                }
                 R.id.perfil -> {
                     showProfile()
                     true
@@ -131,6 +135,14 @@ class GroupActivity: AppCompatActivity() {
             }
         }
 
+
+
+    }
+
+    private fun goToChat() {
+        val intent = Intent(this, MessageActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun backToLogIn() {

@@ -1,13 +1,11 @@
 package com.example.reto_final.data.model
 
 import android.os.Parcelable
-import com.example.reto_final.data.repository.local.message.DbMessage
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Message (
-
-    val id: Int?,
-    val text: String
-
+    var id: Int?,
+    val text: String,
+    val groupId: Int
 ) : Parcelable
