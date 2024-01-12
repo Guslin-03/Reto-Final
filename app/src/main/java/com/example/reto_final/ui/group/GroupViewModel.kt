@@ -25,10 +25,14 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource) : Vi
     private val _delete = MutableLiveData<Resource<Boolean>>()
     val delete : LiveData<Resource<Boolean>> get() = _delete
 
+    private val _groupPermission = MutableLiveData<Resource<Boolean>>()
+    val groupPermission : LiveData<Resource<Boolean>> get() = _groupPermission
+
     init { updateGroupList() }
     fun updateGroupList() {
         viewModelScope.launch {
             _group.value = getGroups()
+
         }
     }
     private suspend fun getGroups() : Resource<List<Group>> {
@@ -36,15 +40,15 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource) : Vi
             groupLocalRepository.getGroups()
         }
     }
-    private suspend fun create(name:String, groupType: GroupType) : Resource<Group> {
+    private suspend fun create(name:String, groupType: GroupType, idAdmin: Int) : Resource<Group> {
         return withContext(Dispatchers.IO) {
-            val group = Group(null, name, groupType)
+            val group = Group(null, name, groupType, idAdmin)
             groupLocalRepository.createGroup(group)
         }
     }
-    fun onCreate(name:String, groupType: GroupType) {
+    fun onCreate(name:String, groupType: GroupType, idAdmin: Int) {
         viewModelScope.launch {
-            create(name, groupType)
+            create(name, groupType, idAdmin)
             _create.value = Resource.success(true)
         }
     }
@@ -57,6 +61,22 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource) : Vi
         viewModelScope.launch {
             delete(group)
             _delete.value = Resource.success(true)
+        }
+    }
+
+    private suspend fun userHasPermission(idGroup: Int?, idUser: Int) : Resource<Int> {
+        return withContext(Dispatchers.IO) {
+            groupLocalRepository.userHasPermission(idGroup, idUser)
+        }
+    }
+    fun onUserHasPermission(idGroup: Int?, idUser: Int) {
+        viewModelScope.launch {
+            val result = userHasPermission(idGroup, idUser)
+            if (result.data == 1) {
+                _groupPermission.value = Resource.success(true)
+            }else {
+                _groupPermission.value = Resource.error("No permission")
+            }
         }
     }
 

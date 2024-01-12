@@ -28,7 +28,5 @@ class MyApp : Application() {
             .addCallback(MyAppRoomDatabaseCallback(appScope))
             .build()
 
-
-
     }
 }

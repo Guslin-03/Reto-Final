@@ -8,5 +8,26 @@ import kotlinx.parcelize.Parcelize
 data class Group (
     var id: Int?,
     val name: String,
-    val groupType: GroupType
-) : Parcelable
+    val groupType: GroupType,
+    val adminId: Int,
+    var joinedUsers : List<User>
+) : Parcelable {
+
+    constructor(
+
+        id: Int?,
+        name: String,
+        groupType: GroupType,
+        adminId: Int,
+
+    ): this (
+
+        id = id,
+        name = name,
+        groupType = groupType,
+        adminId = adminId,
+        joinedUsers = emptyList()
+
+    )
+
+}

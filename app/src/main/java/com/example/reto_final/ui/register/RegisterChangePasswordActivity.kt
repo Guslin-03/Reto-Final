@@ -8,19 +8,19 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.reto_final.R
-import com.example.reto_final.data.repository.RemoteUserDataSource
+import com.example.reto_final.data.repository.RemoteLoginUserDataSource
 import com.example.reto_final.databinding.ChangePasswordActivityBinding
-import com.example.reto_final.ui.user.LogInActivity
-import com.example.reto_final.ui.user.UserViewModel
-import com.example.reto_final.ui.user.UserViewModelFactory
+import com.example.reto_final.ui.user.loginUser.LogInActivity
+import com.example.reto_final.ui.user.loginUser.LoginUserViewModel
+import com.example.reto_final.ui.user.loginUser.LoginUserViewModelFactory
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
 
 class RegisterChangePasswordActivity : AppCompatActivity() {
 
     private lateinit var binding: ChangePasswordActivityBinding
-    private val userRepository = RemoteUserDataSource()
-    private val viewModel: UserViewModel by viewModels { UserViewModelFactory(userRepository) }
+    private val userRepository = RemoteLoginUserDataSource()
+    private val viewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(userRepository) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

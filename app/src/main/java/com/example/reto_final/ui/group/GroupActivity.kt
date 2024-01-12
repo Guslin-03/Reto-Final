@@ -10,16 +10,19 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
 import com.example.reto_final.data.model.Group
-import com.example.reto_final.data.repository.RemoteUserDataSource
+import com.example.reto_final.data.repository.RemoteLoginUserDataSource
 import com.example.reto_final.data.repository.local.group.GroupType
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
+import com.example.reto_final.data.repository.local.user.RoomUserDataSource
 import com.example.reto_final.databinding.GroupActivityBinding
 import com.example.reto_final.ui.message.MessageActivity
-import com.example.reto_final.ui.user.ChangePasswordActivity
-import com.example.reto_final.ui.user.LogInActivity
-import com.example.reto_final.ui.user.PersonalConfigurationActivity
+import com.example.reto_final.ui.configuration.ChangePasswordActivity
+import com.example.reto_final.ui.user.loginUser.LogInActivity
+import com.example.reto_final.ui.configuration.PersonalConfigurationActivity
+import com.example.reto_final.ui.user.loginUser.LoginUserViewModel
+import com.example.reto_final.ui.user.loginUser.LoginUserViewModelFactory
+import com.example.reto_final.ui.user.RoomUserViewModelFactory
 import com.example.reto_final.ui.user.UserViewModel
-import com.example.reto_final.ui.user.UserViewModelFactory
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
 
@@ -27,11 +30,14 @@ class GroupActivity: AppCompatActivity() {
 
     private lateinit var binding: GroupActivityBinding
     private lateinit var groupAdapter: GroupAdapter
-    private val userRepository = RemoteUserDataSource()
-    private val viewModel: UserViewModel by viewModels { UserViewModelFactory(userRepository) }
+    private val loginUserRepository = RemoteLoginUserDataSource()
+    private val loginUserviewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(loginUserRepository) }
+    private val userRepository = RoomUserDataSource()
+    private val userViewModel: UserViewModel by viewModels { RoomUserViewModelFactory(userRepository) }
     private val groupRepository = RoomGroupDataSource()
     private lateinit var group: Group
     private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository) }
+    private val user = MyApp.userPreferences.getUser()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,17 +45,6 @@ class GroupActivity: AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbarPersonalConfiguration)
-
-        val user = MyApp.userPreferences.getUser()
-
-        fun onGroupListClickItem(group: Group) {
-            this.group = group
-
-            val intent = Intent(this, MessageActivity::class.java)
-            intent.putExtra("grupo_seleccionado", this.group)
-            startActivity(intent)
-
-        }
 
         groupAdapter = GroupAdapter(
             ::onGroupListClickItem
@@ -110,10 +105,37 @@ class GroupActivity: AppCompatActivity() {
             }
         }
 
+        groupViewModel.groupPermission.observe(this) {
+            when(it.status) {
+                Resource.Status.SUCCESS -> {
+                    userViewModel.onUsersGroup(group.id)
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+                }
+            }
+        }
+
+        userViewModel.usersGroup.observe(this) {
+            when(it.status) {
+                Resource.Status.SUCCESS -> {
+                    this.group.joinedUsers = it.data!!
+                    goToChat()
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+                }
+            }
+        }
+
         binding.toolbarPersonalConfiguration.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.createGroup -> {
-                    groupViewModel.onCreate("prueba", GroupType.PRIVATE)
+                    groupViewModel.onCreate("prueba", GroupType.PRIVATE, 1)
                     true
                 }
                 R.id.perfil -> {
@@ -126,7 +148,7 @@ class GroupActivity: AppCompatActivity() {
                 }
                 R.id.closeSesion -> {
                     if (user != null) {
-                        viewModel.onLogOut()
+                        loginUserviewModel.onLogOut()
                     }
                     backToLogIn()
                     true
@@ -134,15 +156,24 @@ class GroupActivity: AppCompatActivity() {
                 else -> false // Manejo predeterminado para otros elementos
             }
         }
+    }
 
+    private fun onGroupListClickItem(group: Group) {
+        this.group = group
 
+        if (group.groupType == GroupType.PRIVATE) {
+
+            if (user != null) {
+                groupViewModel.onUserHasPermission(group.id,user.id)
+            }
+        }
 
     }
 
     private fun goToChat() {
         val intent = Intent(this, MessageActivity::class.java)
+        intent.putExtra("grupo_seleccionado", this.group)
         startActivity(intent)
-        finish()
     }
 
     private fun backToLogIn() {
@@ -164,7 +195,7 @@ class GroupActivity: AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.top_menu,menu)
+        menuInflater.inflate(R.menu.personal_configuration_top_menu,menu)
 
         binding.toolbarPersonalConfiguration.overflowIcon?.let {
             val color = ContextCompat.getColor(this, R.color.white)

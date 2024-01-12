@@ -5,7 +5,7 @@ import com.example.reto_final.data.model.ChangePasswordRequest
 import com.example.reto_final.data.repository.remote.BaseDataSource
 import com.example.reto_final.data.repository.remote.RetrofitClient
 
-class RemoteUserDataSource: BaseDataSource(), CommonUserRepository {
+class RemoteLoginUserDataSource: BaseDataSource(), CommonLoginUserRepository {
 
     override suspend fun login(authRequest: AuthRequest) = getResult{
         RetrofitClient.apiInterface.login(authRequest)

@@ -43,7 +43,10 @@ class GroupAdapter(
         }
 
         override fun areContentsTheSame(oldItem: Group, newItem: Group): Boolean {
-            return (oldItem.id == newItem.id && oldItem.name == newItem.name && oldItem.groupType == newItem.groupType)
+            return (oldItem.id == newItem.id
+                    && oldItem.name == newItem.name
+                    && oldItem.groupType == newItem.groupType
+                    && oldItem.adminId == newItem.adminId)
         }
 
     }

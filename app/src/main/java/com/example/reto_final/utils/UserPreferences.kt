@@ -2,7 +2,7 @@ package com.example.reto_final.utils
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.reto_final.data.model.User
+import com.example.reto_final.data.model.LoginUser
 import com.google.gson.Gson
 
 class UserPreferences {
@@ -24,19 +24,19 @@ class UserPreferences {
         return sharedPreferences.getString(USER_TOKEN,null)
     }
 
-    fun saveUser(user: User) {
+    fun saveUser(loginUser: LoginUser) {
         val editor = sharedPreferences.edit()
         val gson = Gson()
-        val userJson = gson.toJson(user)
+        val userJson = gson.toJson(loginUser)
         editor.putString(USER_INFO, userJson)
         editor.apply()
     }
 
-    fun getUser(): User? {
+    fun getUser(): LoginUser? {
         val userJson = sharedPreferences.getString(USER_INFO, null)
         if (userJson != null) {
             val gson = Gson()
-            return gson.fromJson(userJson, User::class.java)
+            return gson.fromJson(userJson, LoginUser::class.java)
         }
         return null
     }

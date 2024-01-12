@@ -1,20 +1,10 @@
 package com.example.reto_final.data.repository
 
-import com.example.reto_final.data.model.AuthRequest
-import com.example.reto_final.data.model.ChangePasswordRequest
 import com.example.reto_final.data.model.User
 import com.example.reto_final.utils.Resource
 
 interface CommonUserRepository {
-
-    suspend fun login(authRequest: AuthRequest): Resource<User>
-
-    suspend fun logout(): Resource<Void>
-
-    suspend fun changePassword(changePasswordRequest: ChangePasswordRequest): Resource<Void>
-
-    suspend fun register(registerRequest: RegisterRequest): Resource<Void>
-
-    suspend fun updateProfile(profileRequest: ProfileRequest): Resource<Void>
-
+    suspend fun getUsersFromGroup(idGroup: Int?) : Resource<List<User>>
+    suspend fun createUser(user: User) : Resource<User>
+    suspend fun deleteUser(user: User) : Resource<Void>
 }

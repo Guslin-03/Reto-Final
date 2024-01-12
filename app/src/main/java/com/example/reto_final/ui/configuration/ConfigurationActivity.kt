@@ -1,4 +1,4 @@
-package com.example.reto_final.ui.user
+package com.example.reto_final.ui.configuration
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,11 +9,13 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.reto_final.R
 import com.example.reto_final.data.model.Module
-import com.example.reto_final.data.model.User
-import com.example.reto_final.data.repository.RemoteUserDataSource
+import com.example.reto_final.data.model.LoginUser
+import com.example.reto_final.data.repository.RemoteLoginUserDataSource
 import com.example.reto_final.databinding.ConfigurationActvityBinding
 import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.ui.module.ModuleAdapter
+import com.example.reto_final.ui.user.loginUser.LoginUserViewModel
+import com.example.reto_final.ui.user.loginUser.LoginUserViewModelFactory
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
 
@@ -22,8 +24,8 @@ class ConfigurationActivity : AppCompatActivity() {
     private lateinit var binding: ConfigurationActvityBinding
     private lateinit var moduleAdapter: ModuleAdapter
     private lateinit var nombresDeGrados: Array<String>
-    private val userRepository = RemoteUserDataSource()
-    private val viewModel: UserViewModel by viewModels { UserViewModelFactory(userRepository) }
+    private val userRepository = RemoteLoginUserDataSource()
+    private val viewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(userRepository) }
     private val user = MyApp.userPreferences.getUser()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,17 +102,17 @@ class ConfigurationActivity : AppCompatActivity() {
 
     }
 
-    private fun obtenerModulesPorNombre(user: User, nombreDegree: String): MutableList<Module> {
-        val degreeEncontrado = user.degrees.find { it.name == nombreDegree }
+    private fun obtenerModulesPorNombre(loginUser: LoginUser, nombreDegree: String): MutableList<Module> {
+        val degreeEncontrado = loginUser.degrees.find { it.name == nombreDegree }
         if (degreeEncontrado != null) {
             return degreeEncontrado.modules.toMutableList()
         }
         return emptyList<Module>().toMutableList()
     }
 
-    private fun setData(user: User) {
-        binding.email.setText(user.email)
-        if (user.FCTDUAL == 1) binding.DUAL.isChecked = true
+    private fun setData(loginUser: LoginUser) {
+        binding.email.setText(loginUser.email)
+        if (loginUser.FCTDUAL == 1) binding.DUAL.isChecked = true
         binding.DUAL.isEnabled = false
     }
 

@@ -2,7 +2,7 @@ package com.example.reto_final.data.repository.remote
 
 import com.example.reto_final.data.model.AuthRequest
 import com.example.reto_final.data.model.ChangePasswordRequest
-import com.example.reto_final.data.model.User
+import com.example.reto_final.data.model.LoginUser
 import com.example.reto_final.data.repository.ProfileRequest
 import com.example.reto_final.data.repository.RegisterRequest
 import retrofit2.Response
@@ -12,7 +12,7 @@ import retrofit2.http.POST
 interface APIInterface {
 
     @POST("login")
-    suspend fun login(@Body authRequest: AuthRequest): Response<User>
+    suspend fun login(@Body authRequest: AuthRequest): Response<LoginUser>
 
     @POST("logout")
     suspend fun logout(): Response<Void>

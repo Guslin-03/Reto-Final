@@ -32,15 +32,15 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
             messageLocalRepository.getMessagesFromGroup(groupId)
         }
     }
-    private suspend fun create(text: String, groupId: Int) : Resource<Message> {
+    private suspend fun create(text: String, groupId: Int, userId: Int) : Resource<Message> {
         return withContext(Dispatchers.IO) {
-            val message = Message(null, text, groupId)
+            val message = Message(null, text, groupId, userId)
             messageLocalRepository.createMessage(message)
         }
     }
-    fun onCreate(text:String, groupId: Int) {
+    fun onCreate(text:String, groupId: Int, userId: Int) {
         viewModelScope.launch {
-            create(text, groupId)
+            create(text, groupId, userId)
             _create.value = Resource.success(true)
         }
     }

@@ -71,5 +71,9 @@
     <string name="grupo_privado">Grupo Privado</string>
     <string name="crear_grupo">Crear Grupo</string>
     <string name="mensaje">Mensaje</string>
+    <string name="informaci_n_del_grupo">Información del Grupo</string>
+    <string name="a_adir_usuario">Añadir Usuario</string>
+    <string name="abandonar_grupo">Abandonar Grupo</string>
+    <string name="eliminar_grupo">Eliminar Grupo</string>
 
 </resources>

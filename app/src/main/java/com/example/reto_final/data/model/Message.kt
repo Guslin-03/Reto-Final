@@ -7,5 +7,6 @@ import kotlinx.parcelize.Parcelize
 data class Message (
     var id: Int?,
     val text: String,
-    val groupId: Int
+    val groupId: Int,
+    val userId: Int
 ) : Parcelable

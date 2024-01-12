@@ -1,4 +1,4 @@
-package com.example.reto_final.ui.user
+package com.example.reto_final.ui.user.loginUser
 
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -12,7 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.content.ContextCompat
 import com.example.reto_final.R
-import com.example.reto_final.data.repository.RemoteUserDataSource
+import com.example.reto_final.data.model.LoginUser
+import com.example.reto_final.data.repository.RemoteLoginUserDataSource
 import com.example.reto_final.databinding.LoginActivityBinding
 import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.ui.register.RegisterChangePasswordActivity
@@ -25,8 +26,8 @@ import java.util.regex.Pattern
 class LogInActivity : AppCompatActivity(){
 
     private lateinit var binding: LoginActivityBinding
-    private val userRepository = RemoteUserDataSource()
-    private val viewModel: UserViewModel by viewModels { UserViewModelFactory(userRepository) }
+    private val userRepository = RemoteLoginUserDataSource()
+    private val viewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(userRepository) }
     private lateinit var rememberMeCheckBox: AppCompatCheckBox
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +53,7 @@ class LogInActivity : AppCompatActivity(){
 //            if(checkData()){
 //                viewModel.onLogIn(email, password)
 //            }
-            chat()
+            mockData()
 //            logIn()
         }
 
@@ -60,10 +61,10 @@ class LogInActivity : AppCompatActivity(){
             changePassword()
         }
 
-        viewModel.user.observe(this) {
+        viewModel.loginUser.observe(this) {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
-                    val userResource = viewModel.user.value
+                    val userResource = viewModel.loginUser.value
                     if (userResource != null && userResource.status == Resource.Status.SUCCESS) {
                         val user = userResource.data
                         if (user != null && binding.rememberMe.isChecked) {
@@ -94,6 +95,23 @@ class LogInActivity : AppCompatActivity(){
                 }
             }
         }
+
+    }
+
+    private fun mockData() {
+
+        val loginUser = LoginUser("78771912V",
+            "David",
+            "Comeron",
+            601269008,
+            601269008,
+            "address",
+            "photo",
+            1,
+            "davidcomeron@elorrieta.com",
+            1)
+        MyApp.userPreferences.saveUser(loginUser)
+        chat()
 
     }
 

@@ -11,4 +11,6 @@ interface CommonGroupRepository {
 
     suspend fun deleteGroup(group: Group) : Resource<Void>
 
+    suspend fun userHasPermission(idGroup: Int?, idUser: Int): Resource<Int>
+
 }

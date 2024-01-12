@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/infoGroup"
+        android:title="@string/informaci_n_del_grupo" />
+
+    <item
+        android:id="@+id/addPeople"
+        android:title="@string/a_adir_usuario" />
+
+    <item
+        android:id="@+id/leaveGroup"
+        android:title="@string/abandonar_grupo" />
+
+    <item
+        android:id="@+id/deleteGroup"
+        android:title="@string/eliminar_grupo" />
+
+</menu>

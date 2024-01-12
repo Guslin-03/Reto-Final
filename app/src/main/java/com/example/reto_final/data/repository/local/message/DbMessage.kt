@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.example.reto_final.data.repository.local.group.DbGroup
-
+import com.example.reto_final.data.repository.local.user.DbUser
 
 @Entity(tableName = "messages", foreignKeys = [
     ForeignKey(
@@ -13,10 +13,17 @@ import com.example.reto_final.data.repository.local.group.DbGroup
         parentColumns = ["id"],
         childColumns = ["groupId"],
         onDelete = ForeignKey.CASCADE
+    ),
+    ForeignKey(
+        entity = DbUser::class,
+        parentColumns = ["id"],
+        childColumns = ["userId"],
+        onDelete = ForeignKey.NO_ACTION
     )
 ])
 data class DbMessage(
     @PrimaryKey(autoGenerate = true) val id: Int?,
     @ColumnInfo(name = "text") val text: String,
-    @ColumnInfo(name = "groupId") val groupId: Int
+    @ColumnInfo(name = "groupId") val groupId: Int,
+    @ColumnInfo(name = "userId") val userId: Int
 )

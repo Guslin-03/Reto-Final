@@ -1,4 +1,4 @@
-package com.example.reto_final.ui.user
+package com.example.reto_final.ui.configuration
 
 import android.Manifest
 import android.app.AlertDialog
@@ -17,7 +17,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.example.reto_final.R
-import com.example.reto_final.data.model.User
+import com.example.reto_final.data.model.LoginUser
 import com.example.reto_final.databinding.PersonalConfigurationActvityBinding
 import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.utils.MyApp
@@ -111,16 +111,16 @@ class PersonalConfigurationActivity: AppCompatActivity() {
             }).check()
     }
 
-    private fun setData(user: User) {
-        binding.name.setText(user.name)
-        binding.surname.setText(user.surname)
-        binding.address.setText(user.address)
-        binding.mobilePhoneNumber.setText(user.phoneNumber1.toString())
-        binding.phoneNumber.setText(user.phoneNumber2.toString())
-        binding.dni.setText(user.DNI)
+    private fun setData(loginUser: LoginUser) {
+        binding.name.setText(loginUser.name)
+        binding.surname.setText(loginUser.surname)
+        binding.address.setText(loginUser.address)
+        binding.mobilePhoneNumber.setText(loginUser.phoneNumber1.toString())
+        binding.phoneNumber.setText(loginUser.phoneNumber2.toString())
+        binding.dni.setText(loginUser.DNI)
     }
 
-    private fun checkData(user: User): Boolean {
+    private fun checkData(loginUser: LoginUser): Boolean {
         val hintColor = ContextCompat.getColor(this, R.color.hint)
         val name = binding.name.text.toString()
         val surname = binding.surname.text.toString()
@@ -181,13 +181,13 @@ class PersonalConfigurationActivity: AppCompatActivity() {
             return false
         }
 
-        user.DNI = binding.dni.text.toString()
-        user.name = binding.name.text.toString()
-        user.surname = binding.surname.text.toString()
-        user.phoneNumber1 = binding.mobilePhoneNumber.text.toString().toInt()
-        user.phoneNumber2 = binding.phoneNumber.text.toString().toInt()
-        user.address = binding.address.text.toString()
-        MyApp.userPreferences.saveUser(user)
+        loginUser.DNI = binding.dni.text.toString()
+        loginUser.name = binding.name.text.toString()
+        loginUser.surname = binding.surname.text.toString()
+        loginUser.phoneNumber1 = binding.mobilePhoneNumber.text.toString().toInt()
+        loginUser.phoneNumber2 = binding.phoneNumber.text.toString().toInt()
+        loginUser.address = binding.address.text.toString()
+        MyApp.userPreferences.saveUser(loginUser)
 
         return true
     }

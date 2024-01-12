@@ -1,6 +1,5 @@
 package com.example.reto_final.data.repository.local.group
 
-import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -27,14 +26,19 @@ class RoomGroupDataSource : CommonGroupRepository {
 
     override suspend fun deleteGroup(group: Group): Resource<Void> {
         val idEliminado = groupDao.deleteGroup(group.toDbGroup())
-        Log.d("pr1", "$idEliminado")
         return Resource.success()
+    }
+
+    override suspend fun userHasPermission(idGroup: Int?, idUser: Int): Resource<Int> {
+        val result = groupDao.userHasPermission(idGroup, idUser)
+        return Resource.success(result)
+
     }
 
 }
 
-fun DbGroup.toGroup() = Group(id, name, groupType)
-fun Group.toDbGroup() = DbGroup(id, name, groupType)
+fun DbGroup.toGroup() = Group(id, name, groupType, adminId)
+fun Group.toDbGroup() = DbGroup(id, name, groupType, adminId)
 
 @Dao
 interface GroupDao {
@@ -44,5 +48,7 @@ interface GroupDao {
     suspend fun createGroup(group: DbGroup) : Long
     @Delete
     suspend fun deleteGroup(group: DbGroup) : Int
+    @Query("SELECT COUNT(groupId) FROM group_user WHERE groupId = :idGroup AND userId = :idUser")
+    suspend fun userHasPermission(idGroup: Int?, idUser: Int): Int
 
 }

@@ -7,7 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.reto_final.ui.user.LogInActivity
+import com.example.reto_final.ui.user.loginUser.LogInActivity
 
 class MainActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
