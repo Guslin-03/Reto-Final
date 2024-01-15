@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Menu
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -94,7 +95,6 @@ class GroupActivity: AppCompatActivity() {
                 }
                 Resource.Status.LOADING -> {
                 }
-
             }
         }
 
@@ -116,6 +116,19 @@ class GroupActivity: AppCompatActivity() {
                 Resource.Status.SUCCESS -> {
                     this.group.joinedUsers = it.data!!
                     goToChat()
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+                }
+            }
+        }
+
+        groupViewModel.userHasAlreadyInGroup.observe(this) {
+            when (it.status) {
+                Resource.Status.SUCCESS -> {
+                    joinGroup()
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
@@ -155,25 +168,13 @@ class GroupActivity: AppCompatActivity() {
     private fun onGroupListClickItem(group: Group) {
         this.group = group
 
-        if (group.type == ChatEnumType.PRIVATE.name) {
-
-            if (user != null) {
+        if (user != null) {
+            if (group.type == ChatEnumType.PRIVATE.name) {
                 groupViewModel.onUserHasPermission(group.id, user.id)
+            } else {
+                groupViewModel.onUserHasAlreadyInGroup(group.id, user.id)
             }
         }
-//        } else {
-//            //TODO VALIDAR SI EL USUARIO ESTA YA EN EL GRUPO
-//            val options = arrayOf<CharSequence>("Aceptar", "Cancelar")
-//            val builder = AlertDialog.Builder(this)
-//            builder.setTitle("¿Quieres entrar al grupo?")
-//            builder.setItems(options) { dialog, which ->
-//                when (which) {
-//                    0 -> takePhotoFromCamera()
-//                    1 -> dialog.dismiss()
-//                }
-//            }
-//            builder.show()
-//        }
 
     }
 
@@ -200,6 +201,19 @@ class GroupActivity: AppCompatActivity() {
         val intent = Intent(this, ChangePasswordActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    private fun joinGroup() {
+        val options = arrayOf<CharSequence>("Aceptar", "Cancelar")
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("¿Quieres entrar al grupo?")
+        builder.setItems(options) { dialog, which ->
+            when (which) {
+                0 -> groupViewModel.
+                1 -> dialog.dismiss()
+            }
+        }
+        builder.show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

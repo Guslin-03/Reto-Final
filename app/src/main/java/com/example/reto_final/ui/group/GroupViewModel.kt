@@ -33,6 +33,12 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, priv
     private val _groupPermissionToDelete = MutableLiveData<Resource<Boolean>>()
     val groupPermissionToDelete : LiveData<Resource<Boolean>> get() = _groupPermissionToDelete
 
+    private val _userHasAlreadyInGroup = MutableLiveData<Resource<Boolean>>()
+    val userHasAlreadyInGroup : LiveData<Resource<Boolean>> get() = _userHasAlreadyInGroup
+
+    private val _AddUserToGroup = MutableLiveData<Resource<Boolean>>()
+    val addUserToGroup : LiveData<Resource<Boolean>> get() = _AddUserToGroup
+
     init { updateGroupList() }
     fun updateGroupList() {
         viewModelScope.launch {
@@ -41,8 +47,8 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, priv
     }
     private suspend fun getGroups() : Resource<List<Group>> {
         return withContext(Dispatchers.IO) {
-            //groupLocalRepository.getGroups()
-            remoteGroupRepository.getGroups()
+            groupLocalRepository.getGroups()
+//            remoteGroupRepository.getGroups()
         }
     }
     private suspend fun create(name:String, chatEnumType:String, idAdmin: Int) : Resource<Group> {
@@ -99,6 +105,38 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, priv
                 _groupPermissionToDelete.value = Resource.success(true)
             }else {
                 _groupPermissionToDelete.value = Resource.error("No permission")
+            }
+        }
+    }
+
+    private suspend fun userHasAlreadyInGroup(idGroup: Int?, idUser: Int) : Resource<Int> {
+        return withContext(Dispatchers.IO) {
+            groupLocalRepository.userHasAlreadyInGroup(idGroup, idUser)
+        }
+    }
+    fun onUserHasAlreadyInGroup(idGroup: Int?, idUser: Int) {
+        viewModelScope.launch {
+            val result = userHasAlreadyInGroup(idGroup, idUser)
+            if (result.data == 1) {
+                _userHasAlreadyInGroup.value = Resource.success(true)
+            }else {
+                _userHasAlreadyInGroup.value = Resource.error("Is not on Group")
+            }
+        }
+    }
+
+    private suspend fun addUserToGroup(idGroup: Int?, idUser: Int) : Resource<Int> {
+        return withContext(Dispatchers.IO) {
+            groupLocalRepository.userHasAlreadyInGroup(idGroup, idUser)
+        }
+    }
+    fun onAddUserToGroup(idGroup: Int?, idUser: Int) {
+        viewModelScope.launch {
+            val result = userHasAlreadyInGroup(idGroup, idUser)
+            if (result.data == 1) {
+                _userHasAlreadyInGroup.value = Resource.success(true)
+            }else {
+                _userHasAlreadyInGroup.value = Resource.error("Is not on Group")
             }
         }
     }
