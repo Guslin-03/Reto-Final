@@ -32,7 +32,6 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource) : Vi
     fun updateGroupList() {
         viewModelScope.launch {
             _group.value = getGroups()
-
         }
     }
     private suspend fun getGroups() : Resource<List<Group>> {

@@ -31,7 +31,7 @@ class GroupActivity: AppCompatActivity() {
     private lateinit var binding: GroupActivityBinding
     private lateinit var groupAdapter: GroupAdapter
     private val loginUserRepository = RemoteLoginUserDataSource()
-    private val loginUserviewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(loginUserRepository) }
+    private val loginUserViewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(loginUserRepository) }
     private val userRepository = RoomUserDataSource()
     private val userViewModel: UserViewModel by viewModels { RoomUserViewModelFactory(userRepository) }
     private val groupRepository = RoomGroupDataSource()
@@ -148,7 +148,7 @@ class GroupActivity: AppCompatActivity() {
                 }
                 R.id.closeSesion -> {
                     if (user != null) {
-                        loginUserviewModel.onLogOut()
+                        loginUserViewModel.onLogOut()
                     }
                     backToLogIn()
                     true

@@ -18,8 +18,8 @@ class MyAppRoomDatabaseCallback(private val scope: CoroutineScope) : RoomDatabas
             populateDatabase()
         }
 
-        MyApp.db.close()
-        MyApp.context.deleteDatabase("chat-db")
+//        MyApp.db.close()
+//        MyApp.context.deleteDatabase("chat-db")
 
     }
 

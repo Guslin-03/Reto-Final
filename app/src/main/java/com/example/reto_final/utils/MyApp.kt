@@ -28,5 +28,8 @@ class MyApp : Application() {
             .addCallback(MyAppRoomDatabaseCallback(appScope))
             .build()
 
+//        db.close()
+//        context.deleteDatabase("chat-db")
+
     }
 }

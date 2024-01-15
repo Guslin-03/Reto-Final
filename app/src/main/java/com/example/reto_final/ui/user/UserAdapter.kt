@@ -1,4 +1,4 @@
-package com.example.reto_final.ui.user;
+package com.example.reto_final.ui.user
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -20,7 +20,6 @@ class UserAdapter
     override fun onBindViewHolder(holder: UserAdapter.UserViewHolder, position: Int) {
         val user = getItem(position)
         holder.bind(user)
-
     }
 
     inner class UserViewHolder(private val binding:ItemUserBinding) :
@@ -32,13 +31,15 @@ class UserAdapter
     }
 
     class UserDiffCallback : DiffUtil.ItemCallback<User>() {
-
         override fun areItemsTheSame(oldItem: User, newItem: User): Boolean {
             return oldItem.id == newItem.id
         }
-//TODO poner todos los elementos de User a comparar :)
         override fun areContentsTheSame(oldItem: User, newItem: User): Boolean {
-            return (oldItem.id == newItem.id && oldItem.name == newItem.name)
+            return (oldItem.id == newItem.id &&
+                    oldItem.name == newItem.name &&
+                    oldItem.surname == newItem.surname &&
+                    oldItem.email == newItem.email &&
+                    oldItem.phoneNumber == newItem.phoneNumber)
         }
 
     }

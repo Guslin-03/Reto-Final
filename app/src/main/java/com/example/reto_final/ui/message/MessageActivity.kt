@@ -87,10 +87,10 @@ class MessageActivity : AppCompatActivity(){
     }
 
     private fun showGroupInfo() {
-//        val intent = Intent(this, GroupInfo::class.java)
-//        intent.putExtra("grupo_seleccionado", this.group.joinedUsers)
-//        startActivity(intent)
-//        finish()
+        val intent = Intent(this, GroupInfo::class.java)
+        intent.putExtra("grupo_seleccionado", this.group.id)
+        startActivity(intent)
+        finish()
     }
 
     private fun addPeople() {}
