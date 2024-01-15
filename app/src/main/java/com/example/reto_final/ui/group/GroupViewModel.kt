@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
+import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
 import com.example.reto_final.data.repository.remote.RemoteGroupRepository
 import com.example.reto_final.utils.Resource
 import kotlinx.coroutines.Dispatchers
@@ -106,7 +107,7 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, priv
 
 class RoomGroupViewModelFactory(
     private val roomGroupRepository: RoomGroupDataSource,
-    private val remoteGroupRepository: RemoteGroupRepository
+    private val remoteGroupRepository: RemoteGroupDataSource
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
         return GroupViewModel(roomGroupRepository, remoteGroupRepository) as T

@@ -1,6 +1,5 @@
 package com.example.reto_final.ui.group
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
