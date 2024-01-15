@@ -37,7 +37,7 @@ class MyAppRoomDatabaseCallback(private val scope: CoroutineScope) : RoomDatabas
         groupDao.createGroup(DbGroup(3,"General", GroupType.PUBLIC, 3))
 
         groupDao.addUserToGroup(DbUserGroup(1,1))
-        groupDao.addUserToGroup(DbUserGroup(2,3))
+        groupDao.addUserToGroup(DbUserGroup(2,2))
         groupDao.addUserToGroup(DbUserGroup(3,3))
 
         val messageDao = MyApp.db.messageDao()
