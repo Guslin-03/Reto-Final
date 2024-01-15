@@ -1,5 +1,6 @@
 package com.example.reto_final.ui.group
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,14 +8,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto_final.data.model.Group
-import com.example.reto_final.data.repository.local.group.GroupType
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
+import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
+import com.example.reto_final.data.repository.remote.RemoteGroupRepository
 import com.example.reto_final.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource) : ViewModel() {
+class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, private val remoteGroupRepository: RemoteGroupRepository) : ViewModel() {
 
     private val _group = MutableLiveData<Resource<List<Group>>>()
     val group : LiveData<Resource<List<Group>>> get() = _group
@@ -39,18 +41,21 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource) : Vi
     }
     private suspend fun getGroups() : Resource<List<Group>> {
         return withContext(Dispatchers.IO) {
-            groupLocalRepository.getGroups()
+            //groupLocalRepository.getGroups()
+            remoteGroupRepository.getGroups()
         }
     }
-    private suspend fun create(name:String, groupType: GroupType, idAdmin: Int) : Resource<Group> {
+    private suspend fun create(name:String, chatEnumType:String, idAdmin: Int) : Resource<Group> {
         return withContext(Dispatchers.IO) {
-            val group = Group(null, name, groupType, idAdmin)
-            groupLocalRepository.createGroup(group)
+            val group = Group(0,name, chatEnumType, idAdmin)
+            //groupLocalRepository.createGroup(group)
+            Log.d("prueba",""+group)
+            remoteGroupRepository.createGroup(group)
         }
     }
-    fun onCreate(name:String, groupType: GroupType, idAdmin: Int) {
+    fun onCreate(name:String, chatEnumType: String, idAdmin: Int) {
         viewModelScope.launch {
-            create(name, groupType, idAdmin)
+            create(name, chatEnumType, idAdmin)
             _create.value = Resource.success(true)
         }
     }
@@ -101,10 +106,11 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource) : Vi
 }
 
 class RoomGroupViewModelFactory(
-    private val roomGroupRepository: RoomGroupDataSource
+    private val roomGroupRepository: RoomGroupDataSource,
+    private val remoteGroupRepository: RemoteGroupDataSource
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-        return GroupViewModel(roomGroupRepository) as T
+        return GroupViewModel(roomGroupRepository, remoteGroupRepository) as T
     }
 
 }

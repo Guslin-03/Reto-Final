@@ -9,7 +9,7 @@ interface CommonGroupRepository {
 
     suspend fun createGroup(group: Group) : Resource<Group>
 
-    suspend fun deleteGroup(group: Group) : Resource<Void>
+    suspend fun deleteGroup(group:Group) : Resource<Void>
 
     suspend fun userHasPermission(idGroup: Int?, idUser: Int): Resource<Int>
 

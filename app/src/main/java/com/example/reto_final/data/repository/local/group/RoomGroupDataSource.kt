@@ -24,6 +24,7 @@ class RoomGroupDataSource : CommonGroupRepository {
         return Resource.success(group)
     }
 
+
     override suspend fun deleteGroup(group: Group): Resource<Void> {
         groupDao.deleteGroup(group.toDbGroup())
         return Resource.success()
@@ -46,8 +47,8 @@ class RoomGroupDataSource : CommonGroupRepository {
 
 }
 
-fun DbGroup.toGroup() = Group(id, name, groupType, adminId)
-fun Group.toDbGroup() = DbGroup(id, name, groupType, adminId)
+fun DbGroup.toGroup() = Group(id, name, chatEnumType, adminId)
+fun Group.toDbGroup() = DbGroup(id, name, type, adminId)
 
 @Dao
 interface GroupDao {

@@ -11,17 +11,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
 import com.example.reto_final.data.model.Group
-import com.example.reto_final.data.repository.CommonLoginUserRepository
-import com.example.reto_final.data.repository.RemoteLoginUserDataSource
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
+import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
+import com.example.reto_final.data.repository.remote.RemoteMessageDataSource
 import com.example.reto_final.databinding.MessageActivityBinding
 import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.ui.group.GroupInfo
 import com.example.reto_final.ui.group.GroupViewModel
 import com.example.reto_final.ui.group.RoomGroupViewModelFactory
-import com.example.reto_final.ui.user.loginUser.LoginUserViewModel
-import com.example.reto_final.ui.user.loginUser.LoginUserViewModelFactory
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
 
@@ -30,9 +28,11 @@ class MessageActivity : AppCompatActivity(){
     private lateinit var binding: MessageActivityBinding
     private lateinit var messageAdapter: MessageAdapter
     private val messageRepository = RoomMessageDataSource()
-    private val messageViewModel: MessageViewModel by viewModels { RoomMessageViewModelFactory(messageRepository) }
+    private val messageViewModel: MessageViewModel by viewModels { RoomMessageViewModelFactory(messageRepository, remoteMessageRepository) }
     private val groupRepository = RoomGroupDataSource()
-    private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository) }
+    private val remoteGroupRepository = RemoteGroupDataSource()
+    private val remoteMessageRepository = RemoteMessageDataSource()
+    private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository ) }
     private lateinit var group: Group
     private val user = MyApp.userPreferences.getUser()
     override fun onCreate(savedInstanceState: Bundle?) {

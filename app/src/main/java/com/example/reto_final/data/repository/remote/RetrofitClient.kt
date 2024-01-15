@@ -8,8 +8,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
 
-    const val API_URI = "http://10.5.7.210/api/"
-
+    const val API_URI = "http://10.0.2.2:8080/api/"
+   // const val API_URI = "http://10.5.7.210/api"
     private val client = OkHttpClient.Builder().addInterceptor { chain ->
         val authToken= MyApp.userPreferences.fetchAuthToken()
         val newRequest: Request = chain.request().newBuilder()
@@ -25,11 +25,11 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
     }
 
+
+
     val apiInterface: APIInterface by lazy {
         retrofitClient
             .build()
             .create(APIInterface::class.java)
     }
-
-
 }

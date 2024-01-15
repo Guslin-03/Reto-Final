@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.reto_final.R
 import com.example.reto_final.data.model.Group
-import com.example.reto_final.data.repository.local.group.GroupType
+import com.example.reto_final.data.repository.local.group.ChatEnumType
 import com.example.reto_final.databinding.ItemGroupBinding
 
 class GroupAdapter(
@@ -37,7 +37,7 @@ class GroupAdapter(
         fun bind(group: Group) {
             binding.groupName.text = group.name
 
-            if (group.groupType == GroupType.PRIVATE) {
+            if (group.type == ChatEnumType.PRIVATE.name) {
                 binding.groupType.setImageResource(R.drawable.privategroup)
             } else {
                 binding.groupType.visibility = View.INVISIBLE
@@ -54,7 +54,7 @@ class GroupAdapter(
         override fun areContentsTheSame(oldItem: Group, newItem: Group): Boolean {
             return (oldItem.id == newItem.id
                     && oldItem.name == newItem.name
-                    && oldItem.groupType == newItem.groupType
+                    && oldItem.type == newItem.type
                     && oldItem.adminId == newItem.adminId)
         }
 

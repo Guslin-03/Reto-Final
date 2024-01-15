@@ -8,12 +8,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto_final.data.model.Message
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
+import com.example.reto_final.data.repository.remote.RemoteMessageRepository
 import com.example.reto_final.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource) : ViewModel() {
+class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource, private val remoteMessageRepository: RemoteMessageRepository) : ViewModel() {
 
     private val _messaage = MutableLiveData<Resource<List<Message>>>()
     val messaage : LiveData<Resource<List<Message>>> get() = _messaage
@@ -48,10 +49,11 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
 }
 
 class RoomMessageViewModelFactory(
-    private val roomMessageRepository: RoomMessageDataSource
+    private val roomMessageRepository: RoomMessageDataSource,
+    private val remoteMessageRepository: RemoteMessageRepository
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-        return MessageViewModel(roomMessageRepository) as T
+        return MessageViewModel(roomMessageRepository, remoteMessageRepository) as T
     }
 
 }

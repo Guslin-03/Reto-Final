@@ -1,8 +1,8 @@
 package com.example.reto_final.ui.group
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -12,9 +12,10 @@ import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
 import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
-import com.example.reto_final.data.repository.local.group.GroupType
+import com.example.reto_final.data.repository.local.group.ChatEnumType
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.user.RoomUserDataSource
+import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
 import com.example.reto_final.databinding.GroupActivityBinding
 import com.example.reto_final.ui.message.MessageActivity
 import com.example.reto_final.ui.configuration.ChangePasswordActivity
@@ -36,8 +37,9 @@ class GroupActivity: AppCompatActivity() {
     private val userRepository = RoomUserDataSource()
     private val userViewModel: UserViewModel by viewModels { RoomUserViewModelFactory(userRepository) }
     private val groupRepository = RoomGroupDataSource()
+    private val remoteGroupRepository = RemoteGroupDataSource()
     private lateinit var group: Group
-    private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository) }
+    private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository) }
     private val user = MyApp.userPreferences.getUser()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +62,7 @@ class GroupActivity: AppCompatActivity() {
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Log.d("Error", ""+it.message)
                 }
                 Resource.Status.LOADING -> {
                 }
@@ -125,7 +128,8 @@ class GroupActivity: AppCompatActivity() {
         binding.toolbarPersonalConfiguration.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.createGroup -> {
-                    groupViewModel.onCreate("prueba", GroupType.PRIVATE, 1)
+                    Log.d("prueba","hola")
+                    groupViewModel.onCreate("PRUEBA JOANA", "PRIVATE", 1)
                     true
                 }
                 R.id.perfil -> {
@@ -151,7 +155,8 @@ class GroupActivity: AppCompatActivity() {
     private fun onGroupListClickItem(group: Group) {
         this.group = group
 
-        if (group.groupType == GroupType.PRIVATE) {
+        if (group.type == ChatEnumType.PRIVATE.name) {
+
             if (user != null) {
                 groupViewModel.onUserHasPermission(group.id, user.id)
             }
