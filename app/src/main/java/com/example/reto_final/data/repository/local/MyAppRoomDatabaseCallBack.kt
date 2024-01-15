@@ -3,8 +3,8 @@ package com.example.reto_final.data.repository.local
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.reto_final.data.repository.local.group.DbGroup
+import com.example.reto_final.data.repository.local.group.ChatEnumType
 import com.example.reto_final.data.repository.local.group.DbUserGroup
-import com.example.reto_final.data.repository.local.group.GroupType
 import com.example.reto_final.data.repository.local.message.DbMessage
 import com.example.reto_final.data.repository.local.user.DbUser
 import com.example.reto_final.utils.MyApp
@@ -32,9 +32,9 @@ class MyAppRoomDatabaseCallback(private val scope: CoroutineScope) : RoomDatabas
         userDao.createUser(DbUser(null,"Robson", "Garcia", "robsongarcia@elorrieta.com", 601269010))
 
         val groupDao = MyApp.db.groupDao()
-        groupDao.createGroup(DbGroup(1,"Profesores", GroupType.PRIVATE, 1))
-        groupDao.createGroup(DbGroup(2,"Alumnos", GroupType.PRIVATE, 2))
-        groupDao.createGroup(DbGroup(3,"General", GroupType.PUBLIC, 3))
+        groupDao.createGroup(DbGroup(1,"Profesores", ChatEnumType.PRIVATE.name, 1))
+        groupDao.createGroup(DbGroup(2,"Alumnos", ChatEnumType.PRIVATE.name, 2))
+        groupDao.createGroup(DbGroup(3,"General", ChatEnumType.PUBLIC.name, 3))
 
         groupDao.addUserToGroup(DbUserGroup(1,1))
         groupDao.addUserToGroup(DbUserGroup(2,3))

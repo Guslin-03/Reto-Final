@@ -11,6 +11,9 @@ import com.example.reto_final.utils.Resource
 class RoomMessageDataSource : CommonMessageRepository {
 
     private val messageDao: MessageDao = MyApp.db.messageDao()
+    override suspend fun getMessages(): Resource<List<Message>> {
+        TODO("Not yet implemented")
+    }
 
     override suspend fun getMessagesFromGroup(idGroup: Int): Resource<List<Message>> {
         val response = messageDao.getMessagesFromGroup(idGroup).map { it.toMessage() }

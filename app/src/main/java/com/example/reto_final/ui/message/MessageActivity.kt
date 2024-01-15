@@ -15,6 +15,8 @@ import com.example.reto_final.data.repository.CommonLoginUserRepository
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
+import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
+import com.example.reto_final.data.repository.remote.RemoteGroupRepository
 import com.example.reto_final.databinding.MessageActivityBinding
 import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.ui.group.GroupInfo
@@ -32,7 +34,8 @@ class MessageActivity : AppCompatActivity(){
     private val messageRepository = RoomMessageDataSource()
     private val messageViewModel: MessageViewModel by viewModels { RoomMessageViewModelFactory(messageRepository) }
     private val groupRepository = RoomGroupDataSource()
-    private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository) }
+    private val remoteGroupRepository = RemoteGroupDataSource()
+    private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository) }
     private lateinit var group: Group
     private val user = MyApp.userPreferences.getUser()
     override fun onCreate(savedInstanceState: Bundle?) {

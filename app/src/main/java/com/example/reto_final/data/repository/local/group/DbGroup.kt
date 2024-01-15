@@ -17,6 +17,6 @@ import com.example.reto_final.data.repository.local.user.DbUser
 data class DbGroup (
     @PrimaryKey(autoGenerate = true) val id: Int?,
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "type") val groupType: GroupType,
+    @ColumnInfo(name = "type") val chatEnumType: String,
     @ColumnInfo(name = "adminId") val adminId: Int
 )
