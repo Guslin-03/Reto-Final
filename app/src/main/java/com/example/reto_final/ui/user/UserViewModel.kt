@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto_final.data.model.User
-import com.example.reto_final.data.repository.CommonUserRepository
+import com.example.reto_final.data.repository.local.CommonUserRepository
 import com.example.reto_final.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,6 +26,7 @@ class UserViewModel(private val userRepository: CommonUserRepository) : ViewMode
 
     fun onUsersGroup(idGroup: Int?) {
         viewModelScope.launch {
+            val response = usersGroup(idGroup)
             _usersGroup.value = usersGroup(idGroup)
         }
     }

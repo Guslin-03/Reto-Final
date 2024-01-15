@@ -1,5 +1,6 @@
 package com.example.reto_final.ui.group
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -51,17 +52,6 @@ class GroupActivity: AppCompatActivity() {
         )
 
         binding.groupList.adapter = groupAdapter
-
-        binding.eliminarGrupo.setOnClickListener {
-            goToChat()
-//            if (group.id != null) {
-//                groupViewModel.onDelete(group)
-//            } else {
-//                Toast.makeText(
-//                    this, "Debe seleccionar un grupo a eliminar", Toast.LENGTH_LONG
-//                ).show()
-//            }
-        }
 
         groupViewModel.group.observe(this) {
             when(it.status) {
@@ -162,11 +152,23 @@ class GroupActivity: AppCompatActivity() {
         this.group = group
 
         if (group.groupType == GroupType.PRIVATE) {
-
             if (user != null) {
-                groupViewModel.onUserHasPermission(group.id,user.id)
+                groupViewModel.onUserHasPermission(group.id, user.id)
             }
         }
+//        } else {
+//            //TODO VALIDAR SI EL USUARIO ESTA YA EN EL GRUPO
+//            val options = arrayOf<CharSequence>("Aceptar", "Cancelar")
+//            val builder = AlertDialog.Builder(this)
+//            builder.setTitle("¿Quieres entrar al grupo?")
+//            builder.setItems(options) { dialog, which ->
+//                when (which) {
+//                    0 -> takePhotoFromCamera()
+//                    1 -> dialog.dismiss()
+//                }
+//            }
+//            builder.show()
+//        }
 
     }
 
@@ -174,6 +176,7 @@ class GroupActivity: AppCompatActivity() {
         val intent = Intent(this, MessageActivity::class.java)
         intent.putExtra("grupo_seleccionado", this.group)
         startActivity(intent)
+        finish()
     }
 
     private fun backToLogIn() {

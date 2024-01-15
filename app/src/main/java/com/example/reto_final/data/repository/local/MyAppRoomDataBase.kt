@@ -7,7 +7,7 @@ import com.example.reto_final.data.repository.local.group.GroupDao
 import com.example.reto_final.data.repository.local.message.DbMessage
 import com.example.reto_final.data.repository.local.message.MessageDao
 import com.example.reto_final.data.repository.local.user.DbUser
-import com.example.reto_final.data.repository.local.user.DbUserGroup
+import com.example.reto_final.data.repository.local.group.DbUserGroup
 import com.example.reto_final.data.repository.local.user.UserDao
 
 @Database(

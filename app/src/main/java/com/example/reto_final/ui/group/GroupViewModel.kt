@@ -28,6 +28,9 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource) : Vi
     private val _groupPermission = MutableLiveData<Resource<Boolean>>()
     val groupPermission : LiveData<Resource<Boolean>> get() = _groupPermission
 
+    private val _groupPermissionToDelete = MutableLiveData<Resource<Boolean>>()
+    val groupPermissionToDelete : LiveData<Resource<Boolean>> get() = _groupPermissionToDelete
+
     init { updateGroupList() }
     fun updateGroupList() {
         viewModelScope.launch {
@@ -75,6 +78,22 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource) : Vi
                 _groupPermission.value = Resource.success(true)
             }else {
                 _groupPermission.value = Resource.error("No permission")
+            }
+        }
+    }
+
+    private suspend fun userHasPermissionToDelete(idGroup: Int, idUser: Int) : Resource<Int> {
+        return withContext(Dispatchers.IO) {
+            groupLocalRepository.userHasPermissionToDelete(idGroup, idUser)
+        }
+    }
+    fun onUserHasPermissionToDelete(idGroup: Int, idUser: Int) {
+        viewModelScope.launch {
+            val result = userHasPermissionToDelete(idGroup, idUser)
+            if (result.data == 1) {
+                _groupPermissionToDelete.value = Resource.success(true)
+            }else {
+                _groupPermissionToDelete.value = Resource.error("No permission")
             }
         }
     }

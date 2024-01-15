@@ -1,4 +1,4 @@
-package com.example.reto_final.data.repository
+package com.example.reto_final.data.repository.local
 
 import com.example.reto_final.data.model.User
 import com.example.reto_final.utils.Resource

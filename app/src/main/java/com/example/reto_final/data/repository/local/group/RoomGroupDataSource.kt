@@ -5,7 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.reto_final.data.model.Group
-import com.example.reto_final.data.repository.CommonGroupRepository
+import com.example.reto_final.data.repository.local.CommonGroupRepository
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
 
@@ -25,14 +25,23 @@ class RoomGroupDataSource : CommonGroupRepository {
     }
 
     override suspend fun deleteGroup(group: Group): Resource<Void> {
-        val idEliminado = groupDao.deleteGroup(group.toDbGroup())
+        groupDao.deleteGroup(group.toDbGroup())
         return Resource.success()
     }
 
     override suspend fun userHasPermission(idGroup: Int?, idUser: Int): Resource<Int> {
         val result = groupDao.userHasPermission(idGroup, idUser)
         return Resource.success(result)
+    }
 
+    override suspend fun userHasPermissionToDelete(idGroup: Int?, idUser: Int): Resource<Int> {
+        val result = groupDao.userHasPermissionToDelete(idGroup, idUser)
+        return Resource.success(result)
+    }
+
+    override suspend fun addUserToGroup(idGroup: Int, idUser: Int): Resource<Void> {
+        groupDao.addUserToGroup(DbUserGroup(idGroup, idUser))
+        return Resource.success()
     }
 
 }
@@ -50,5 +59,9 @@ interface GroupDao {
     suspend fun deleteGroup(group: DbGroup) : Int
     @Query("SELECT COUNT(groupId) FROM group_user WHERE groupId = :idGroup AND userId = :idUser")
     suspend fun userHasPermission(idGroup: Int?, idUser: Int): Int
+    @Query("SELECT COUNT(id) FROM groups WHERE id = :idGroup AND adminId = :idUser")
+    suspend fun userHasPermissionToDelete(idGroup: Int?, idUser: Int): Int
+    @Insert
+    suspend fun addUserToGroup(userGroup: DbUserGroup) : Long
 
 }

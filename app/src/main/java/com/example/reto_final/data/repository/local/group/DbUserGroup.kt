@@ -1,8 +1,8 @@
-package com.example.reto_final.data.repository.local.user
+package com.example.reto_final.data.repository.local.group
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import com.example.reto_final.data.repository.local.group.DbGroup
+import com.example.reto_final.data.repository.local.user.DbUser
 
 @Entity(tableName = "group_user",
     primaryKeys = ["groupId", "userId",],
@@ -10,7 +10,8 @@ import com.example.reto_final.data.repository.local.group.DbGroup
         ForeignKey(
             entity = DbGroup::class,
             parentColumns = ["id"],
-            childColumns = ["groupId"]
+            childColumns = ["groupId"],
+            onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = DbUser::class,

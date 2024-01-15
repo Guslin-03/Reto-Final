@@ -100,7 +100,9 @@ class LogInActivity : AppCompatActivity(){
 
     private fun mockData() {
 
-        val loginUser = LoginUser("78771912V",
+        val loginUser = LoginUser(
+            1,
+            "78771912V",
             "David",
             "Comeron",
             601269008,
@@ -109,7 +111,10 @@ class LogInActivity : AppCompatActivity(){
             "photo",
             1,
             "davidcomeron@elorrieta.com",
-            1)
+            emptyArray(),
+            emptyArray(),
+            1,
+            "")
         MyApp.userPreferences.saveUser(loginUser)
         chat()
 

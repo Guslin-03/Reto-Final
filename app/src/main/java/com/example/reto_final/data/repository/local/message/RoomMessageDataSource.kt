@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.reto_final.data.model.Message
-import com.example.reto_final.data.repository.CommonMessageRepository
+import com.example.reto_final.data.repository.local.CommonMessageRepository
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
 

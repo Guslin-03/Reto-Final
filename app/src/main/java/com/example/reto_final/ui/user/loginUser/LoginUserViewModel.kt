@@ -20,8 +20,8 @@ import kotlinx.coroutines.withContext
 
 class LoginUserViewModel(private val userRepository: CommonLoginUserRepository) : ViewModel() {
 
-    private val _Login_user = MutableLiveData<Resource<LoginUser>>()
-    val loginUser : LiveData<Resource<LoginUser>> get() = _Login_user
+    private val _login_user = MutableLiveData<Resource<LoginUser>>()
+    val loginUser : LiveData<Resource<LoginUser>> get() = _login_user
     private val _updatePassword = MutableLiveData<Resource<Void>>()
     val updatePassword : LiveData<Resource<Void>> get() = _updatePassword
 
@@ -43,7 +43,7 @@ class LoginUserViewModel(private val userRepository: CommonLoginUserRepository) 
     }
     fun onLogIn(email:String, password:String) {
         viewModelScope.launch {
-            _Login_user.value = logIn(email,password)
+            _login_user.value = logIn(email,password)
         }
     }
 

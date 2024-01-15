@@ -1,12 +1,11 @@
 package com.example.reto_final.data.repository.local.user
 
-import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.reto_final.data.model.User
-import com.example.reto_final.data.repository.CommonUserRepository
+import com.example.reto_final.data.repository.local.CommonUserRepository
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
 

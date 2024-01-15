@@ -23,17 +23,18 @@ class GroupInfo: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = GroupInfoActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setDefaultData()
         userAdapter = UserAdapter()
         binding.userList.adapter = userAdapter
-
-        setDefaultData()
 
         userViewModel.usersGroup.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
+                    Log.d("Prueba", "Success")
                     userAdapter.submitList(it.data)
                 }
                 Resource.Status.ERROR -> {
+                    Log.d("Prueba", "Error")
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
@@ -47,7 +48,7 @@ class GroupInfo: AppCompatActivity() {
         val receivedGroup: Group? = intent.getParcelableExtra("grupo_seleccionado")
         // Verificar si se recibió el objeto Group
         if (receivedGroup != null) {
-            receivedGroup.id?.let { userViewModel.onUsersGroup(it) }
+            receivedGroup.id?.let { userViewModel.onUsersGroup(receivedGroup.id) }
         } else {
             Log.d("Grupo recibido", "Objeto Group es nulo")
         }

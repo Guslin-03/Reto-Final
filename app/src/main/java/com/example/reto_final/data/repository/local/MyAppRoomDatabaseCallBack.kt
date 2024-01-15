@@ -3,6 +3,7 @@ package com.example.reto_final.data.repository.local
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.reto_final.data.repository.local.group.DbGroup
+import com.example.reto_final.data.repository.local.group.DbUserGroup
 import com.example.reto_final.data.repository.local.group.GroupType
 import com.example.reto_final.data.repository.local.message.DbMessage
 import com.example.reto_final.data.repository.local.user.DbUser
@@ -33,8 +34,11 @@ class MyAppRoomDatabaseCallback(private val scope: CoroutineScope) : RoomDatabas
         val groupDao = MyApp.db.groupDao()
         groupDao.createGroup(DbGroup(1,"Profesores", GroupType.PRIVATE, 1))
         groupDao.createGroup(DbGroup(2,"Alumnos", GroupType.PRIVATE, 2))
+        groupDao.createGroup(DbGroup(3,"General", GroupType.PUBLIC, 3))
 
-
+        groupDao.addUserToGroup(DbUserGroup(1,1))
+        groupDao.addUserToGroup(DbUserGroup(2,3))
+        groupDao.addUserToGroup(DbUserGroup(3,3))
 
         val messageDao = MyApp.db.messageDao()
         messageDao.createMessage(DbMessage(null,"Mensaje 1", 1, 1))
