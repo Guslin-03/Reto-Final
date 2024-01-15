@@ -1,9 +1,12 @@
 package com.example.reto_final.ui.group
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -128,8 +131,7 @@ class GroupActivity: AppCompatActivity() {
         binding.toolbarPersonalConfiguration.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.createGroup -> {
-                    Log.d("prueba","hola")
-                    groupViewModel.onCreate("PRUEBA JOANA", "PRIVATE", 1)
+                    popUpCreate()
                     true
                 }
                 R.id.perfil -> {
@@ -200,6 +202,35 @@ class GroupActivity: AppCompatActivity() {
         val intent = Intent(this, ChangePasswordActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    private fun popUpCreate(){
+        val builder = AlertDialog.Builder(this)
+        val inflater = layoutInflater
+        val dialogView = inflater.inflate(R.layout.custom_dialog_group, null)
+
+        val editText = dialogView.findViewById<EditText>(R.id.editText)
+        val checkBox = dialogView.findViewById<CheckBox>(R.id.checkBoxPrivate)
+
+        builder.setView(dialogView)
+        builder.setTitle("Elige una opción")
+
+        builder.setPositiveButton("Aceptar") { dialog, which ->
+            val text = editText.text.toString()
+            val isChecked = checkBox.isChecked
+
+            if(isChecked) {
+                MyApp.userPreferences.getUser()?.let { groupViewModel.onCreate(text, "PRIVATE", it.id) }
+            }else{
+                MyApp.userPreferences.getUser()?.let { groupViewModel.onCreate(text, "PUBLIC", it.id) }
+            }
+
+        }
+        builder.setNegativeButton("Cancelar") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        builder.show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
