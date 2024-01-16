@@ -23,7 +23,6 @@ class UserViewModel(private val userRepository: CommonUserRepository) : ViewMode
             userRepository.getUsersFromGroup(idGroup)
         }
     }
-
     fun onUsersGroup(idGroup: Int?) {
         viewModelScope.launch {
             val response = usersGroup(idGroup)
