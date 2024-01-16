@@ -4,6 +4,9 @@
     <item
         android:id="@+id/createGroup"
         android:title="@string/crear_grupo" />
+    <item
+        android:id="@+id/filter"
+        android:title="@string/filter" />
 
     <item
         android:id="@+id/perfil"

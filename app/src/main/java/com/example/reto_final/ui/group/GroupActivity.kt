@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
@@ -145,6 +146,10 @@ class GroupActivity: AppCompatActivity() {
                     popUpCreate()
                     true
                 }
+                R.id.filter -> {
+                    filter()
+                    true
+                }
                 R.id.perfil -> {
                     showProfile()
                     true
@@ -213,7 +218,10 @@ class GroupActivity: AppCompatActivity() {
 //                1 -> dialog.dismiss()
 //            }
         }
-
+    private fun filter(){
+        Log.d("FilterFunction", "Filter function called")
+        binding.filterLayout.visibility = View.VISIBLE
+    }
     private fun popUpCreate(){
         val builder = androidx.appcompat.app.AlertDialog.Builder(this)
         val inflater = layoutInflater
