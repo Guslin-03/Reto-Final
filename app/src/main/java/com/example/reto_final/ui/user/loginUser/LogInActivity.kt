@@ -13,6 +13,7 @@ import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.content.ContextCompat
 import com.example.reto_final.R
 import com.example.reto_final.data.model.LoginUser
+import com.example.reto_final.data.model.Rol
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
 import com.example.reto_final.databinding.LoginActivityBinding
 import com.example.reto_final.ui.group.GroupActivity
@@ -100,6 +101,7 @@ class LogInActivity : AppCompatActivity(){
 
     private fun mockData() {
 
+        val listRoles = arrayOf(Rol(1, "Profesor"), Rol(2, "Alumno"))
         val loginUser = LoginUser(
             1,
             "78771912V",
@@ -112,7 +114,7 @@ class LogInActivity : AppCompatActivity(){
             1,
             "davidcomeron@elorrieta.com",
             emptyArray(),
-            emptyArray(),
+            listRoles,
             1,
             "")
         MyApp.userPreferences.saveUser(loginUser)

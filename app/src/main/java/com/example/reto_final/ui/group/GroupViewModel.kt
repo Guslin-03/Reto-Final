@@ -36,8 +36,8 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, priv
     private val _userHasAlreadyInGroup = MutableLiveData<Resource<Boolean>>()
     val userHasAlreadyInGroup : LiveData<Resource<Boolean>> get() = _userHasAlreadyInGroup
 
-    private val _AddUserToGroup = MutableLiveData<Resource<Boolean>>()
-    val addUserToGroup : LiveData<Resource<Boolean>> get() = _AddUserToGroup
+    private val _addUserToGroup = MutableLiveData<Resource<Boolean>>()
+    val addUserToGroup : LiveData<Resource<Boolean>> get() = _addUserToGroup
 
     init { updateGroupList() }
     fun updateGroupList() {
@@ -53,10 +53,9 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, priv
     }
     private suspend fun create(name:String, chatEnumType:String, idAdmin: Int) : Resource<Group> {
         return withContext(Dispatchers.IO) {
-            val group = Group(0,name, chatEnumType, idAdmin)
-            //groupLocalRepository.createGroup(group)
-            Log.d("prueba",""+group)
-            remoteGroupRepository.createGroup(group)
+            val group = Group(null, name, chatEnumType, idAdmin)
+            groupLocalRepository.createGroup(group)
+            //remoteGroupRepository.createGroup(group)
         }
     }
     fun onCreate(name:String, chatEnumType: String, idAdmin: Int) {
@@ -119,24 +118,24 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, priv
             val result = userHasAlreadyInGroup(idGroup, idUser)
             if (result.data == 1) {
                 _userHasAlreadyInGroup.value = Resource.success(true)
-            }else {
+            } else {
                 _userHasAlreadyInGroup.value = Resource.error("Is not on Group")
             }
         }
     }
 
-    private suspend fun addUserToGroup(idGroup: Int?, idUser: Int) : Resource<Int> {
+    private suspend fun addUserToGroup(idGroup: Int, idUser: Int) : Resource<Int> {
         return withContext(Dispatchers.IO) {
-            groupLocalRepository.userHasAlreadyInGroup(idGroup, idUser)
+            groupLocalRepository.addUserToGroup(idGroup, idUser)
         }
     }
-    fun onAddUserToGroup(idGroup: Int?, idUser: Int) {
+    fun onAddUserToGroup(idGroup: Int, idUser: Int) {
         viewModelScope.launch {
-            val result = userHasAlreadyInGroup(idGroup, idUser)
-            if (result.data == 1) {
-                _userHasAlreadyInGroup.value = Resource.success(true)
+            val result = addUserToGroup(idGroup, idUser)
+            if (result.data != 0) {
+                _addUserToGroup.value = Resource.success(true)
             }else {
-                _userHasAlreadyInGroup.value = Resource.error("Is not on Group")
+                _addUserToGroup.value = Resource.error("Ha ocurrido un error, no has podido unirte al grupo")
             }
         }
     }

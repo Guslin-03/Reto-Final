@@ -45,9 +45,9 @@ class RoomGroupDataSource : CommonGroupRepository {
         return Resource.success(values)
     }
 
-    override suspend fun addUserToGroup(idGroup: Int, idUser: Int): Resource<Void> {
-        groupDao.addUserToGroup(DbUserGroup(idGroup, idUser))
-        return Resource.success()
+    override suspend fun addUserToGroup(idGroup: Int, idUser: Int): Resource<Int> {
+        val response = groupDao.addUserToGroup(DbUserGroup(idGroup, idUser))
+        return Resource.success(response.toInt())
     }
 
 }
@@ -69,7 +69,6 @@ interface GroupDao {
     suspend fun userHasPermissionToDelete(idGroup: Int?, idUser: Int): Int
     @Insert
     suspend fun addUserToGroup(userGroup: DbUserGroup) : Long
-
     @Query("SELECT COUNT(groupId) FROM group_user WHERE groupId = :idGroup AND userId = :idUser")
     suspend fun userHasAlreadyInGroup(idGroup: Int?, idUser: Int): Int
 
