@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
 import com.example.reto_final.data.model.Group
+import com.example.reto_final.data.repository.local.group.ChatEnumType
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
@@ -76,8 +77,22 @@ class MessageActivity : AppCompatActivity(){
         groupViewModel.delete.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
-                    Toast.makeText(this, "El grupo ha sido eliminado con éxito", Toast.LENGTH_LONG).show()
-                    deletedGroup()
+                    Toast.makeText(this, "El grupo ha sido eliminado con éxito.", Toast.LENGTH_LONG).show()
+                    goToGroups()
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+                }
+            }
+        }
+
+        groupViewModel.leaveGroup.observe(this) {
+            when(it.status) {
+                Resource.Status.SUCCESS -> {
+                    Toast.makeText(this, "Has abandonado el grupo con éxito.", Toast.LENGTH_LONG).show()
+                    goToGroups()
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
@@ -99,7 +114,7 @@ class MessageActivity : AppCompatActivity(){
                     true
                 }
                 R.id.leaveGroup -> {
-                    leveGroup()
+                    userCanLeaveGroup()
                     true
                 }
                 R.id.deleteGroup -> {
@@ -123,6 +138,20 @@ class MessageActivity : AppCompatActivity(){
         }
     }
 
+    private fun userCanLeaveGroup() {
+
+        if (group.type == ChatEnumType.PUBLIC.toString()) {
+            if (user != null) {
+                if (group.id != null) {
+                    groupViewModel.onLeaveGroup(group.id!!, user.id)
+                }
+            }
+        }else {
+            Toast.makeText(this, "No puedes abandonar un grupo privado.", Toast.LENGTH_LONG).show()
+        }
+
+    }
+
     private fun showGroupInfo() {
         val intent = Intent(this, GroupInfo::class.java)
         intent.putExtra("grupo_seleccionado", this.group)
@@ -132,14 +161,7 @@ class MessageActivity : AppCompatActivity(){
 
     private fun addPeople() {}
 
-    private fun leveGroup() {
-        //TODO llamar al viewModel para eliminar al usuario del grupo
-        val intent = Intent(this, GroupActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
-
-    private fun deletedGroup() {
+    private fun goToGroups() {
         val intent = Intent(this, GroupActivity::class.java)
         startActivity(intent)
         finish()

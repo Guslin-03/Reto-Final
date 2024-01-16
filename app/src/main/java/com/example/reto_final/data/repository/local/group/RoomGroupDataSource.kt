@@ -24,7 +24,6 @@ class RoomGroupDataSource : CommonGroupRepository {
         return Resource.success(group)
     }
 
-
     override suspend fun deleteGroup(group: Group): Resource<Void> {
         groupDao.deleteGroup(group.toDbGroup())
         return Resource.success()
@@ -50,6 +49,11 @@ class RoomGroupDataSource : CommonGroupRepository {
         return Resource.success(response.toInt())
     }
 
+    override suspend fun leaveGroup(idGroup: Int, idUser: Int): Resource<Int> {
+        groupDao.leaveGroup(idGroup, idUser)
+        return Resource.success()
+    }
+
 }
 
 fun DbGroup.toGroup() = Group(id, name, chatEnumType, adminId)
@@ -69,6 +73,8 @@ interface GroupDao {
     suspend fun userHasPermissionToDelete(idGroup: Int?, idUser: Int): Int
     @Insert
     suspend fun addUserToGroup(userGroup: DbUserGroup) : Long
+    @Query("DELETE FROM group_user WHERE groupId = :idGroup AND userId = :idUser")
+    suspend fun leaveGroup(idGroup: Int, idUser: Int) : Int
     @Query("SELECT COUNT(groupId) FROM group_user WHERE groupId = :idGroup AND userId = :idUser")
     suspend fun userHasAlreadyInGroup(idGroup: Int?, idUser: Int): Int
 

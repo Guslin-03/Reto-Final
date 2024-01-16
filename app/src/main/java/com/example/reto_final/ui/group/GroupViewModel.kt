@@ -39,6 +39,9 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, priv
     private val _addUserToGroup = MutableLiveData<Resource<Boolean>>()
     val addUserToGroup : LiveData<Resource<Boolean>> get() = _addUserToGroup
 
+    private val _leaveGroup = MutableLiveData<Resource<Boolean>>()
+    val leaveGroup : LiveData<Resource<Boolean>> get() = _leaveGroup
+
     init { updateGroupList() }
     fun updateGroupList() {
         viewModelScope.launch {
@@ -136,6 +139,22 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, priv
                 _addUserToGroup.value = Resource.success(true)
             }else {
                 _addUserToGroup.value = Resource.error("Ha ocurrido un error, no has podido unirte al grupo")
+            }
+        }
+    }
+
+    private suspend fun leaveGroup(idGroup: Int, idUser: Int) : Resource<Int> {
+        return withContext(Dispatchers.IO) {
+            groupLocalRepository.leaveGroup(idGroup, idUser)
+        }
+    }
+    fun onLeaveGroup(idGroup: Int, idUser: Int) {
+        viewModelScope.launch {
+            val result = leaveGroup(idGroup, idUser)
+            if (result.data != 0) {
+                _leaveGroup.value = Resource.success(true)
+            }else {
+                _leaveGroup.value = Resource.error("No has podido abandonar el grupo")
             }
         }
     }
