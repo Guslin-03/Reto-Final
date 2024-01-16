@@ -1,6 +1,5 @@
 package com.example.reto_final.ui.group
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +8,6 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -205,20 +203,19 @@ class GroupActivity: AppCompatActivity() {
         finish()
     }
 
-<<<<<<< HEAD
     private fun joinGroup() {
-        val options = arrayOf<CharSequence>("Aceptar", "Cancelar")
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("¿Quieres entrar al grupo?")
-        builder.setItems(options) { dialog, which ->
-            when (which) {
-                0 -> groupViewModel.
-                1 -> dialog.dismiss()
-            }
+//        val options = arrayOf<CharSequence>("Aceptar", "Cancelar")
+//        val builder = AlertDialog.Builder(this)
+//        builder.setTitle("¿Quieres entrar al grupo?")
+//        builder.setItems(options) { dialog, which ->
+//            when (which) {
+//                0 -> groupViewModel.
+//                1 -> dialog.dismiss()
+//            }
         }
-=======
+
     private fun popUpCreate(){
-        val builder = AlertDialog.Builder(this)
+        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
         val inflater = layoutInflater
         val dialogView = inflater.inflate(R.layout.custom_dialog_group, null)
 
@@ -243,7 +240,6 @@ class GroupActivity: AppCompatActivity() {
             dialog.dismiss()
         }
 
->>>>>>> 81f4210dc9452e353cb20531994e0bd8a23a3eec
         builder.show()
     }
 
