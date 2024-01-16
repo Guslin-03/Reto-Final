@@ -33,6 +33,8 @@ class LoginUserViewModel(private val userRepository: CommonLoginUserRepository) 
 
     private val _updateProfile = MutableLiveData<Resource<Void>>()
     val updateProfile : LiveData<Resource<Void>> get() = _updateProfile
+    private val _secondLogin = MutableLiveData<Resource<LoginUser>>()
+    val secondLogin : LiveData<Resource<LoginUser>> get() = _secondLogin
 
 
     private suspend fun logIn(email:String, password:String) : Resource<LoginUser> {
@@ -43,10 +45,17 @@ class LoginUserViewModel(private val userRepository: CommonLoginUserRepository) 
     }
     fun onLogIn(email:String, password:String) {
         viewModelScope.launch {
+            _secondLogin.value = secondLogIn(email,password)
             _login_user.value = logIn(email,password)
         }
     }
 
+    private suspend fun secondLogIn(email:String, password:String) : Resource<LoginUser> {
+        return withContext(Dispatchers.IO) {
+            val user = AuthRequest(email, password, Build.MODEL)
+            userRepository.loginHibernate(user)
+        }
+    }
     fun onLogOut() {
         viewModelScope.launch {
             _logOut.value = logOut()

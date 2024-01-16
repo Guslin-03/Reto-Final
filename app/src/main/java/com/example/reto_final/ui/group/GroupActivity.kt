@@ -269,48 +269,12 @@ class GroupActivity: AppCompatActivity() {
         finish()
     }
 
-    private fun joinGroup() {
-//        val options = arrayOf<CharSequence>("Aceptar", "Cancelar")
-//        val builder = AlertDialog.Builder(this)
-//        builder.setTitle("¿Quieres entrar al grupo?")
-//        builder.setItems(options) { dialog, which ->
-//            when (which) {
-//                0 -> groupViewModel.
-//                1 -> dialog.dismiss()
-//            }
-        }
+
     private fun filter(){
         Log.d("FilterFunction", "Filter function called")
         binding.filterLayout.visibility = View.VISIBLE
     }
-    private fun popUpCreate(){
-        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
-        val inflater = layoutInflater
-        val dialogView = inflater.inflate(R.layout.custom_dialog_group, null)
 
-        val editText = dialogView.findViewById<EditText>(R.id.editText)
-        val checkBox = dialogView.findViewById<CheckBox>(R.id.checkBoxPrivate)
-
-        builder.setView(dialogView)
-        builder.setTitle("Elige una opción")
-
-        builder.setPositiveButton("Aceptar") { dialog, which ->
-            val text = editText.text.toString()
-            val isChecked = checkBox.isChecked
-
-            if(isChecked) {
-                MyApp.userPreferences.getUser()?.let { groupViewModel.onCreate(text, "PRIVATE", it.id) }
-            }else{
-                MyApp.userPreferences.getUser()?.let { groupViewModel.onCreate(text, "PUBLIC", it.id) }
-            }
-
-        }
-        builder.setNegativeButton("Cancelar") { dialog, _ ->
-            dialog.dismiss()
-        }
-
-        builder.show()
-    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.personal_configuration_top_menu,menu)

@@ -48,13 +48,14 @@ class LogInActivity : AppCompatActivity(){
         }
 
         binding.login.setOnClickListener {
-//            var email = binding.email.text.toString()
-//            email = lowerCaseEmail(email)
-//            val password = binding.password.text.toString()
-//            if(checkData()){
-//                viewModel.onLogIn(email, password)
-//            }
-            mockData()
+            var email = binding.email.text.toString()
+            email = lowerCaseEmail(email)
+            val password = binding.password.text.toString()
+            if(checkData()){
+                viewModel.onLogIn(email, password)
+
+            }
+//            mockData()
 //            logIn()
         }
 
@@ -67,29 +68,52 @@ class LogInActivity : AppCompatActivity(){
                 Resource.Status.SUCCESS -> {
                     val userResource = viewModel.loginUser.value
                     if (userResource != null && userResource.status == Resource.Status.SUCCESS) {
-                        val user = userResource.data
+                        var user = userResource.data
+                        Log.d("Prueba", "Primer Login da error"+user)
                         if (user != null && binding.rememberMe.isChecked) {
                             MyApp.userPreferences.saveUser(user)
                             MyApp.userPreferences.saveRememberMeState(binding.rememberMe.isChecked)
                             MyApp.userPreferences.savePass(binding.password.text.toString())
-                        } else if (user != null && !binding.rememberMe.isChecked) {
+                        } else if (user != null && !binding.rememberMe.isChecked && MyApp.userPreferences.fetchHibernateToken()!=null) {
+                            user.accessToken= MyApp.userPreferences.fetchHibernateToken()!!
                             MyApp.userPreferences.saveUser(user)
                             MyApp.userPreferences.saveRememberMeState(false)
                         }
                         if (user != null) {
+                            Log.d("Prueba", "Primer Login da error USER "+user.token)
                             MyApp.userPreferences.saveAuthToken(user.token)
                         }
-                    }
-
-                    if (binding.password.text.toString() == "elorrieta00") {
-                        logIn()
-                        Toast.makeText(this, R.string.toast_edit_profile, Toast.LENGTH_LONG).show()
-                    }else {
-                        chat()
+                        if (binding.password.text.toString() == "elorrieta00") {
+                            logIn()
+                            Toast.makeText(this, R.string.toast_edit_profile, Toast.LENGTH_LONG).show()
+                        }else {
+                            chat()
+                        }
                     }
                 }
                 Resource.Status.ERROR -> {
-                    Log.i("Prueba", ""+it.message)
+                    Log.d("Prueba", "Primer login da error ERROR"+it.message)
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+                }
+            }
+        }
+        viewModel.secondLogin.observe(this) {
+            when (it.status) {
+                Resource.Status.SUCCESS -> {
+                    val userResource = viewModel.secondLogin.value
+                    if (userResource != null && userResource.status == Resource.Status.SUCCESS) {
+                        val user = userResource.data
+                        if (user != null) {
+                            Log.d("Prueba", "Segundo Login da error USER "+user)
+                            MyApp.userPreferences.saveHibernateToken(user.accessToken)
+                        }
+                    }
+
+                }
+                Resource.Status.ERROR -> {
+                    Log.d("Prueba", "Segundo Login da error ERROR"+it.message)
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
@@ -116,6 +140,7 @@ class LogInActivity : AppCompatActivity(){
             emptyArray(),
             listRoles,
             1,
+            "",
             "")
         MyApp.userPreferences.saveUser(loginUser)
         chat()

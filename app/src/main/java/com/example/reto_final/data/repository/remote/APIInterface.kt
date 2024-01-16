@@ -32,6 +32,8 @@ interface APIInterface {
     suspend fun updateProfile(@Body profileRequest: ProfileRequest): Response<Void>
 
     /*API HIBERNATE */
+    @POST("auth/login")
+    suspend fun loginHibernate(@Body authRequest: AuthRequest): Response<LoginUser>
     @GET("chats")
     suspend fun getGroups(): Response<List<Group>>
 
