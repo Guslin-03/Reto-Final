@@ -9,6 +9,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -83,7 +84,6 @@ class GroupActivity: AppCompatActivity() {
                 }
                 Resource.Status.LOADING -> {
                 }
-
             }
         }
 
@@ -130,7 +130,20 @@ class GroupActivity: AppCompatActivity() {
         groupViewModel.userHasAlreadyInGroup.observe(this) {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
+                    goToChat()
+                }
+                Resource.Status.ERROR -> {
                     joinGroup()
+                }
+                Resource.Status.LOADING -> {
+                }
+            }
+        }
+
+        groupViewModel.addUserToGroup.observe(this) {
+            when (it.status) {
+                Resource.Status.SUCCESS -> {
+                    goToChat()
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
@@ -183,11 +196,59 @@ class GroupActivity: AppCompatActivity() {
 
     }
 
+    private fun joinGroup() {
+        if (user != null) {
+            if (group.id != null) {
+                Log.d("Prueba", "prueba")
+                val options = arrayOf<CharSequence>("Aceptar", "Cancelar")
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("¿Quieres entrar al grupo?")
+                builder.setItems(options) { dialog, which ->
+                    when (which) {
+                        0 -> groupViewModel.onAddUserToGroup(group.id!!, user.id)
+                        1 -> dialog.dismiss()
+                    }
+                }
+                builder.show()
+            }
+
+        }
+    }
+
     private fun goToChat() {
         val intent = Intent(this, MessageActivity::class.java)
         intent.putExtra("grupo_seleccionado", this.group)
         startActivity(intent)
         finish()
+    }
+
+    private fun popUpCreate() {
+        val builder = AlertDialog.Builder(this)
+        val inflater = layoutInflater
+        val dialogView = inflater.inflate(R.layout.custom_dialog_group, null)
+
+        val editText = dialogView.findViewById<EditText>(R.id.editText)
+        val checkBox = dialogView.findViewById<CheckBox>(R.id.checkBoxPrivate)
+
+        builder.setView(dialogView)
+        builder.setTitle("Elige una opción")
+
+        builder.setPositiveButton("Aceptar") { _, _ ->
+            val text = editText.text.toString()
+            val isChecked = checkBox.isChecked
+
+            if (isChecked) {
+                MyApp.userPreferences.getUser()?.let { groupViewModel.onCreate(text, "PRIVATE", it.id) }
+            } else{
+                MyApp.userPreferences.getUser()?.let { groupViewModel.onCreate(text, "PUBLIC", it.id) }
+            }
+
+        }
+        builder.setNegativeButton("Cancelar") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        builder.show()
     }
 
     private fun backToLogIn() {
