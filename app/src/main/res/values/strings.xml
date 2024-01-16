@@ -41,6 +41,7 @@
 
     //CHECK-BOXS
     <string name="rememberMe">Recuérdame</string>
+    <string name="private_type">¿Es privado?</string>
 
     //TEXT-VIEWS
     <string name="paso_1_3">Paso 1 de 3</string>
@@ -75,5 +76,6 @@
     <string name="a_adir_usuario">Añadir Usuario</string>
     <string name="abandonar_grupo">Abandonar Grupo</string>
     <string name="eliminar_grupo">Eliminar Grupo</string>
+
 
 </resources>
