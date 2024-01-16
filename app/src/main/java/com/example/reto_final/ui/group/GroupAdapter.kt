@@ -31,13 +31,28 @@ class GroupAdapter(
 
     }
 
+    fun filtrateTypeGroup(listGroups: List<Group>?, typeGroup: ChatEnumType):List<Group> {
+
+        val filteredGroups: List<Group>?
+
+        if(listGroups != null) {
+            filteredGroups = listGroups.filter { it.type == typeGroup.toString() }
+            submitList(filteredGroups.toList())
+
+        }else {
+            filteredGroups = currentList.filter { it.type == typeGroup.toString() }
+            submitList(filteredGroups.toList())
+        }
+        return filteredGroups
+    }
+
     inner class GroupViewHolder(private val binding: ItemGroupBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(group: Group) {
             binding.groupName.text = group.name
 
-            if (group.type == ChatEnumType.PRIVATE.name) {
+            if (group.type == ChatEnumType.PRIVATE.toString()) {
                 binding.groupType.setImageResource(R.drawable.privategroup)
             } else {
                 binding.groupType.visibility = View.INVISIBLE

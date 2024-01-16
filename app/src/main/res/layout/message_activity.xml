@@ -18,6 +18,7 @@
 
         <!-- Contenedor para el icono y el título -->
         <LinearLayout
+            android:id="@+id/linear_layout_title"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal"

@@ -2,6 +2,8 @@ package com.example.reto_final.ui.group
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.Menu
 import android.view.View
@@ -181,6 +183,30 @@ class GroupActivity: AppCompatActivity() {
                 else -> false // Manejo predeterminado para otros elementos
             }
         }
+
+        binding.checkBoxFilter.setOnCheckedChangeListener { _, isChecked ->
+            groupAdapter.filtrateTypeGroup(groupViewModel.group.value?.data, ChatEnumType.PRIVATE)
+        }
+
+        binding.editTextFilter.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val searchText = s.toString().trim()
+                val originalList = groupViewModel.group.value?.data ?: emptyList()
+
+                val filteredList = originalList.filter { group ->
+                    group.name.contains(searchText, ignoreCase = true)
+                }
+
+                groupAdapter.submitList(filteredList)
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+        })
+
     }
 
     private fun onGroupListClickItem(group: Group) {
@@ -237,9 +263,11 @@ class GroupActivity: AppCompatActivity() {
             val text = editText.text.toString()
             val isChecked = checkBox.isChecked
 
-            if (isChecked) {
+            if (isChecked && userIsTeacher()) {
                 MyApp.userPreferences.getUser()?.let { groupViewModel.onCreate(text, "PRIVATE", it.id) }
-            } else{
+            } else if (isChecked) {
+                Toast.makeText(this, "No tienes permisos para crear grupos privados", Toast.LENGTH_LONG).show()
+            } else {
                 MyApp.userPreferences.getUser()?.let { groupViewModel.onCreate(text, "PUBLIC", it.id) }
             }
 
@@ -249,6 +277,13 @@ class GroupActivity: AppCompatActivity() {
         }
 
         builder.show()
+    }
+
+    private fun userIsTeacher() : Boolean {
+        if (user != null) {
+            return user.roles.any { it.name == "Profesor" }
+        }
+        return false
     }
 
     private fun backToLogIn() {
@@ -269,47 +304,17 @@ class GroupActivity: AppCompatActivity() {
         finish()
     }
 
-    private fun joinGroup() {
-//        val options = arrayOf<CharSequence>("Aceptar", "Cancelar")
-//        val builder = AlertDialog.Builder(this)
-//        builder.setTitle("¿Quieres entrar al grupo?")
-//        builder.setItems(options) { dialog, which ->
-//            when (which) {
-//                0 -> groupViewModel.
-//                1 -> dialog.dismiss()
-//            }
-        }
     private fun filter(){
-        Log.d("FilterFunction", "Filter function called")
-        binding.filterLayout.visibility = View.VISIBLE
-    }
-    private fun popUpCreate(){
-        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
-        val inflater = layoutInflater
-        val dialogView = inflater.inflate(R.layout.custom_dialog_group, null)
-
-        val editText = dialogView.findViewById<EditText>(R.id.editText)
-        val checkBox = dialogView.findViewById<CheckBox>(R.id.checkBoxPrivate)
-
-        builder.setView(dialogView)
-        builder.setTitle("Elige una opción")
-
-        builder.setPositiveButton("Aceptar") { dialog, which ->
-            val text = editText.text.toString()
-            val isChecked = checkBox.isChecked
-
-            if(isChecked) {
-                MyApp.userPreferences.getUser()?.let { groupViewModel.onCreate(text, "PRIVATE", it.id) }
-            }else{
-                MyApp.userPreferences.getUser()?.let { groupViewModel.onCreate(text, "PUBLIC", it.id) }
+        if (binding.filterLayout.visibility == View.GONE) {
+            // El elemento está oculto, mostrarlo con animación
+            binding.filterLayout.visibility = View.VISIBLE
+            binding.filterLayout.animate().translationY(0f)
+        } else {
+            // El elemento está visible, ocultarlo con animación
+            binding.filterLayout.animate().translationY(-binding.filterLayout.height.toFloat()).withEndAction {
+                binding.filterLayout.visibility = View.GONE
             }
-
         }
-        builder.setNegativeButton("Cancelar") { dialog, _ ->
-            dialog.dismiss()
-        }
-
-        builder.show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -133,6 +133,7 @@ class MessageActivity : AppCompatActivity(){
         if (receivedGroup != null) {
             this.group = receivedGroup
             receivedGroup.id?.let { messageViewModel.updateMessageList(it) }
+            binding.configurationTitle.text = this.group.name
         } else {
             Log.d("Grupo recibido", "Objeto Group es nulo")
         }

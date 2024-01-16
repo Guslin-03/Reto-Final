@@ -82,6 +82,7 @@ class LogInActivity : AppCompatActivity(){
                     }
 
                     if (binding.password.text.toString() == "elorrieta00") {
+                        Log.d("Prueba", "$"+MyApp.userPreferences.fetchAuthToken())
                         logIn()
                         Toast.makeText(this, R.string.toast_edit_profile, Toast.LENGTH_LONG).show()
                     }else {
@@ -101,7 +102,7 @@ class LogInActivity : AppCompatActivity(){
 
     private fun mockData() {
 
-        val listRoles = arrayOf(Rol(1, "Profesor"), Rol(2, "Alumno"))
+        val listRoles = arrayOf(Rol(1, "Alumno"))
         val loginUser = LoginUser(
             1,
             "78771912V",
