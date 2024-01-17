@@ -6,11 +6,12 @@ import okhttp3.Request
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object RetrofitClient {
+object RetrofitClientLaravel {
 
-    const val API_URI = "http://10.0.2.2:8080/api/"
+
+    const val API_URI = "http://10.5.7.210/api/"
     private val client = OkHttpClient.Builder().addInterceptor { chain ->
-        val authToken= MyApp.userPreferences.fetchHibernateToken()
+        val authToken= MyApp.userPreferences.fetchAuthToken()
         val newRequest: Request = chain.request().newBuilder()
             .addHeader("Authorization", "Bearer $authToken")
             .build()

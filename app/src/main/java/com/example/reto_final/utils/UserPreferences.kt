@@ -14,6 +14,7 @@ class UserPreferences {
         const val USER_INFO = "user_info"
         const val REMEMBER_ME = "remember_me"
         const val PASS = "pass"
+        const val HIBERNATE_TOKEN = "hibernate_token"
     }
     fun saveAuthToken(token:String){
         val editor = sharedPreferences.edit()
@@ -22,6 +23,14 @@ class UserPreferences {
     }
     fun fetchAuthToken():String?{
         return sharedPreferences.getString(USER_TOKEN,null)
+    }
+    fun saveHibernateToken(token:String){
+        val editor = sharedPreferences.edit()
+        editor.putString(HIBERNATE_TOKEN, token)
+        editor.apply()
+    }
+    fun fetchHibernateToken():String?{
+        return sharedPreferences.getString(HIBERNATE_TOKEN,null)
     }
 
     fun saveUser(loginUser: LoginUser) {
@@ -53,6 +62,7 @@ class UserPreferences {
         val editor = sharedPreferences.edit()
         editor.remove("user_token")
         editor.remove("user_info")
+        editor.remove("hibernate_token")
         editor.putBoolean(REMEMBER_ME, false)
         editor.apply()
     }

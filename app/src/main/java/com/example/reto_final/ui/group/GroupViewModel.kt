@@ -50,8 +50,8 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, priv
     }
     private suspend fun getGroups() : Resource<List<Group>> {
         return withContext(Dispatchers.IO) {
-            groupLocalRepository.getGroups()
-//            remoteGroupRepository.getGroups()
+//            groupLocalRepository.getGroups()
+            remoteGroupRepository.getGroups()
         }
     }
     private suspend fun create(name:String, chatEnumType:String, idAdmin: Int) : Resource<Group> {

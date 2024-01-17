@@ -10,8 +10,8 @@ data class LoginUser(
     var DNI: String,
     var name: String,
     var surname: String,
-    var phoneNumber1: Int,
-    var phoneNumber2: Int,
+    var phone_number1: Int,
+    var phone_number2: Int,
     var address: String,
     val photo: String,
     val FCTDUAL: Int,
@@ -19,6 +19,7 @@ data class LoginUser(
     val degrees: Array<Degree>,
     val roles: Array<Rol>,
     val department_id: Int,
+    var accessToken: String,
     val token: String
 
 ): Parcelable {
@@ -26,8 +27,8 @@ data class LoginUser(
         DNI: String,
         name: String,
         surname: String,
-        phoneNumber1: Int,
-        phoneNumber2: Int,
+        phone_number1: Int,
+        phone_number2: Int,
         address: String,
         photo: String,
         FCTDUAL: Int,
@@ -38,8 +39,8 @@ data class LoginUser(
         DNI = DNI,
         name = name,
         surname = surname,
-        phoneNumber1 = phoneNumber1,
-        phoneNumber2 = phoneNumber2,
+        phone_number1 = phone_number1,
+        phone_number2 = phone_number2,
         address = address,
         photo = photo,
         FCTDUAL = FCTDUAL,
@@ -47,7 +48,8 @@ data class LoginUser(
         degrees = emptyArray(),
         roles = emptyArray(),
         department_id = department_id,
-        token = ""
+        accessToken = "",
+        token=""
     )
 
 }

@@ -115,8 +115,8 @@ class PersonalConfigurationActivity: AppCompatActivity() {
         binding.name.setText(loginUser.name)
         binding.surname.setText(loginUser.surname)
         binding.address.setText(loginUser.address)
-        binding.mobilePhoneNumber.setText(loginUser.phoneNumber1.toString())
-        binding.phoneNumber.setText(loginUser.phoneNumber2.toString())
+        binding.mobilePhoneNumber.setText(loginUser.phone_number1.toString())
+        binding.phoneNumber.setText(loginUser.phone_number2.toString())
         binding.dni.setText(loginUser.DNI)
     }
 
@@ -184,8 +184,8 @@ class PersonalConfigurationActivity: AppCompatActivity() {
         loginUser.DNI = binding.dni.text.toString()
         loginUser.name = binding.name.text.toString()
         loginUser.surname = binding.surname.text.toString()
-        loginUser.phoneNumber1 = binding.mobilePhoneNumber.text.toString().toInt()
-        loginUser.phoneNumber2 = binding.phoneNumber.text.toString().toInt()
+        loginUser.phone_number1 = binding.mobilePhoneNumber.text.toString().toInt()
+        loginUser.phone_number2 = binding.phoneNumber.text.toString().toInt()
         loginUser.address = binding.address.text.toString()
         MyApp.userPreferences.saveUser(loginUser)
 

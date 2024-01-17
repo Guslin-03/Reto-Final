@@ -60,8 +60,8 @@ class ConfigurationActivity : AppCompatActivity() {
                     user.DNI,
                     user.name,
                     user.surname,
-                    user.phoneNumber1,
-                    user.phoneNumber2,
+                    user.phone_number1,
+                    user.phone_number2,
                     user.address,
                     "photo",
                     user.email

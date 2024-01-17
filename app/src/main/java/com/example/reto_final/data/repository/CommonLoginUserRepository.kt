@@ -10,6 +10,8 @@ interface CommonLoginUserRepository {
 
     suspend fun login(authRequest: AuthRequest): Resource<LoginUser>
 
+    suspend fun loginHibernate(authRequest: AuthRequest): Resource<LoginUser>
+
     suspend fun logout(): Resource<Void>
 
     suspend fun changePassword(changePasswordRequest: ChangePasswordRequest): Resource<Void>
