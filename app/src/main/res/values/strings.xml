@@ -78,7 +78,9 @@
     <string name="abandonar_grupo">Abandonar Grupo</string>
     <string name="eliminar_grupo">Eliminar Grupo</string>
     <string name="filter">Filtrar</string>
-
-
+    <string name="privado">Privado</string>
+    <string name="p_blico">Público</string>
+    <string name="todos">Todos</string>
+    <string name="ocultar">Ocultar</string>
 
 </resources>

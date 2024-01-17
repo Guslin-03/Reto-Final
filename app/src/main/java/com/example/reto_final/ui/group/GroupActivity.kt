@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.RadioButton
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -47,12 +48,15 @@ class GroupActivity: AppCompatActivity() {
     private lateinit var group: Group
     private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository) }
     private val user = MyApp.userPreferences.getUser()
+    private lateinit var radioButtonPrivate: RadioButton
+    private lateinit var radioButtonPublic: RadioButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = GroupActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        radioButtonPrivate = findViewById(R.id.radioButtonFilterPrivate)
+        radioButtonPublic = findViewById(R.id.radioButtonFilterPublic)
         setSupportActionBar(binding.toolbarPersonalConfiguration)
 
         groupAdapter = GroupAdapter(
@@ -184,27 +188,86 @@ class GroupActivity: AppCompatActivity() {
             }
         }
 
-        binding.checkBoxFilter.setOnCheckedChangeListener { _, isChecked ->
-            groupAdapter.filtrateTypeGroup(groupViewModel.group.value?.data, ChatEnumType.PRIVATE)
+        binding.radioGroupFilter.setOnCheckedChangeListener { _, checkedId ->
+            var originalList = groupViewModel.group.value?.data
+            if (originalList == null) originalList = emptyList()
+            when (checkedId) {
+                R.id.radioButtonFilterPrivate -> {
+                    if(binding.editTextFilter.text.toString() == "") {
+                        groupAdapter.filtrateTypeGroup(originalList, ChatEnumType.PRIVATE)
+                    }else if(binding.editTextFilter.text.toString() != ""){
+                        val filterList = filterByText(binding.editTextFilter.text.toString())
+                        groupAdapter.filtrateTypeGroup(filterList, ChatEnumType.PRIVATE)
+                    }
+
+                }
+
+                R.id.radioButtonFilterPublic -> {
+                    if(binding.editTextFilter.text.toString() == "") {
+                        groupAdapter.filtrateTypeGroup(originalList, ChatEnumType.PUBLIC)
+                    }else if(binding.editTextFilter.text.toString() != ""){
+                        val filterList = filterByText(binding.editTextFilter.text.toString())
+                        groupAdapter.filtrateTypeGroup(filterList, ChatEnumType.PUBLIC)
+                    }
+
+                }
+
+                R.id.radioButtonFilterAll -> {
+                    if(binding.editTextFilter.text.toString() == "") {
+                        groupAdapter.submitList(originalList)
+                    }else if(binding.editTextFilter.text.toString() != ""){
+                        filterByText(binding.editTextFilter.text.toString())
+                    }
+
+                }
+            }
         }
 
         binding.editTextFilter.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val searchText = s.toString().trim()
-                val originalList = groupViewModel.group.value?.data
-
-                val filteredList = originalList?.filter { group ->
-                    group.name.contains(searchText, ignoreCase = true)
-                }
-                Log.d("filteredList", ""+filteredList)
-                groupAdapter.submitList(filteredList)
+                filterByText(s)
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
 
+        binding.hideFilterMenu.setOnClickListener {
+            filter()
+        }
+
+    }
+
+    private fun filterByText(s: CharSequence?): List<Group>{
+        val searchText = s.toString().trim()
+        var originalList = groupViewModel.group.value?.data
+        if (originalList == null) originalList = emptyList()
+
+        val filteredList : List<Group> = if (binding.radioButtonFilterPrivate.isChecked) {
+
+            val filterByType = groupAdapter.filtrateTypeGroup(originalList, ChatEnumType.PRIVATE)
+            filterByType.filter { group ->
+                group.name.contains(searchText, ignoreCase = true)
+            }
+
+        }else if (binding.radioButtonFilterPublic.isChecked) {
+
+            val filterByType = groupAdapter.filtrateTypeGroup(originalList, ChatEnumType.PUBLIC)
+            filterByType.filter { group ->
+                group.name.contains(searchText, ignoreCase = true)
+            }
+
+        }else {
+
+            originalList.filter { group ->
+                group.name.contains(searchText, ignoreCase = true)
+            }
+
+        }
+
+        groupAdapter.submitList(filteredList)
+        return filteredList
     }
 
     private fun onGroupListClickItem(group: Group) {

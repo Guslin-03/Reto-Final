@@ -52,10 +52,10 @@
         android:id="@+id/filterLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:gravity="center"
-        android:layout_marginStart="14dp"
-        android:layout_marginEnd="14dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_personal_configuration"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,20 +63,53 @@
 
         <EditText
             android:id="@+id/editTextFilter"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.90"
-            android:layout_marginEnd="14dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.80"
             android:hint="@string/nombre_del_grupo"
             android:inputType="text"
             android:maxLines="1"/>
 
-        <CheckBox
-            android:id="@+id/checkBoxFilter"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.10"
-            android:text="@string/private_type"/>
+            android:orientation="horizontal">
+
+            <RadioGroup
+                android:id="@+id/radioGroupFilter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radioButtonFilterPrivate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/privado" />
+
+                <RadioButton
+                    android:id="@+id/radioButtonFilterPublic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/p_blico" />
+
+                <RadioButton
+                    android:id="@+id/radioButtonFilterAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/todos"
+                    android:checked="true"/>
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/hideFilterMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ocultar"
+                android:backgroundTint="@color/blue_dark"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

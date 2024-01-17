@@ -32,18 +32,12 @@ class GroupAdapter(
 
     }
 
-    fun filtrateTypeGroup(listGroups: List<Group>?, typeGroup: ChatEnumType):List<Group> {
+    fun filtrateTypeGroup(listGroups: List<Group>, typeGroup: ChatEnumType): List<Group> {
 
         val filteredGroups: List<Group>?
 
-        if(listGroups != null) {
-            filteredGroups = listGroups.filter { it.type == typeGroup.toString() }
-            submitList(filteredGroups.toList())
-
-        }else {
-            filteredGroups = currentList.filter { it.type == typeGroup.toString() }
-            submitList(filteredGroups.toList())
-        }
+        filteredGroups = listGroups.filter { it.type == typeGroup.toString() }
+        submitList(filteredGroups.toList())
         return filteredGroups
     }
 

@@ -23,9 +23,8 @@ class RoomGroupDataSource : CommonGroupRepository {
     override suspend fun createGroup(group: Group): Resource<Void> {
         return try {
             val dbGroup = groupDao.createGroup(group.toDbGroup())
-            group.id = dbGroup.toInt()
             val user = MyApp.userPreferences.getUser()
-            if (user != null) groupDao.addUserToGroup(DbUserGroup(group.id!!, user.id))
+            if (user != null) groupDao.addUserToGroup(DbUserGroup(dbGroup.toInt(), user.id))
             Resource.success()
         } catch (exception: SQLiteConstraintException) {
             Resource.error("El nombre del grupo ya esta en uso")
