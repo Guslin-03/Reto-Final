@@ -1,5 +1,6 @@
 package com.example.reto_final.ui.group
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,8 +54,8 @@ class GroupAdapter(
             binding.groupName.text = group.name
 
             if (group.type == ChatEnumType.PRIVATE.toString()) {
-                binding.groupType.setImageResource(R.drawable.privategroup)
-            } else {
+                binding.groupType.visibility = View.VISIBLE
+            } else if (group.type == ChatEnumType.PUBLIC.toString()) {
                 binding.groupType.visibility = View.INVISIBLE
             }
         }

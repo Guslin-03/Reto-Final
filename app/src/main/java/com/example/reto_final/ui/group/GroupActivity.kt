@@ -189,22 +189,20 @@ class GroupActivity: AppCompatActivity() {
         }
 
         binding.editTextFilter.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val searchText = s.toString().trim()
-                val originalList = groupViewModel.group.value?.data ?: emptyList()
+                val originalList = groupViewModel.group.value?.data
 
-                val filteredList = originalList.filter { group ->
+                val filteredList = originalList?.filter { group ->
                     group.name.contains(searchText, ignoreCase = true)
                 }
-
+                Log.d("filteredList", ""+filteredList)
                 groupAdapter.submitList(filteredList)
             }
 
-            override fun afterTextChanged(s: Editable?) {
-            }
+            override fun afterTextChanged(s: Editable?) {}
         })
 
     }

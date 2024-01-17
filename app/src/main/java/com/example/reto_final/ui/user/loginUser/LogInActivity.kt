@@ -48,14 +48,14 @@ class LogInActivity : AppCompatActivity(){
         }
 
         binding.login.setOnClickListener {
-            var email = binding.email.text.toString()
-            email = lowerCaseEmail(email)
-            val password = binding.password.text.toString()
-            if(checkData()){
-                viewModel.onLogIn(email, password)
-
-            }
-//            mockData()
+//            var email = binding.email.text.toString()
+//            email = lowerCaseEmail(email)
+//            val password = binding.password.text.toString()
+//            if(checkData()){
+//                viewModel.onLogIn(email, password)
+//
+//            }
+            mockData()
 //            logIn()
         }
 
@@ -125,7 +125,7 @@ class LogInActivity : AppCompatActivity(){
 
     private fun mockData() {
 
-        val listRoles = arrayOf(Rol(1, "Alumno"))
+        val listRoles = arrayOf(Rol(1, "Profesor"))
         val loginUser = LoginUser(
             1,
             "78771912V",

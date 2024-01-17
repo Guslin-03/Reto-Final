@@ -21,8 +21,8 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, priv
     private val _group = MutableLiveData<Resource<List<Group>>>()
     val group : LiveData<Resource<List<Group>>> get() = _group
 
-    private val _create = MutableLiveData<Resource<Boolean>>()
-    val create : LiveData<Resource<Boolean>> get() = _create
+    private val _create = MutableLiveData<Resource<Void>>()
+    val create : LiveData<Resource<Void>> get() = _create
 
     private val _delete = MutableLiveData<Resource<Boolean>>()
     val delete : LiveData<Resource<Boolean>> get() = _delete
@@ -50,11 +50,11 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, priv
     }
     private suspend fun getGroups() : Resource<List<Group>> {
         return withContext(Dispatchers.IO) {
-//            groupLocalRepository.getGroups()
-            remoteGroupRepository.getGroups()
+            groupLocalRepository.getGroups()
+//            remoteGroupRepository.getGroups()
         }
     }
-    private suspend fun create(name:String, chatEnumType:String, idAdmin: Int) : Resource<Group> {
+    private suspend fun create(name:String, chatEnumType:String, idAdmin: Int) : Resource<Void> {
         return withContext(Dispatchers.IO) {
             val group = Group(null, name, chatEnumType, idAdmin)
             groupLocalRepository.createGroup(group)
@@ -63,8 +63,7 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, priv
     }
     fun onCreate(name:String, chatEnumType: String, idAdmin: Int) {
         viewModelScope.launch {
-            create(name, chatEnumType, idAdmin)
-            _create.value = Resource.success(true)
+            _create.value = create(name, chatEnumType, idAdmin)
         }
     }
     private suspend fun delete(group: Group) : Resource<Void> {
