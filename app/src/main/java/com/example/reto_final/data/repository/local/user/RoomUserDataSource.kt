@@ -24,9 +24,14 @@ class RoomUserDataSource: CommonUserRepository {
         return Resource.success(user)
     }
 
-    override suspend fun deleteUser(user: User): Resource<Void> {
-        val idEliminado = userDao.deleteUser(user.toDbUser())
+    override suspend fun deleteUserFromGroup(idUser: Int, idGroup: Int): Resource<Void> {
+        val idEliminado = userDao.deleteUserForGroup(idUser, idGroup)
         return Resource.success()
+    }
+
+    override suspend fun userIsAdmin(idUser: Int, idGroup: Int): Resource<Int> {
+        val isAdmin = userDao.userIsAdmin(idUser, idGroup)
+        return Resource.success(isAdmin)
     }
 
 }
@@ -42,7 +47,9 @@ interface UserDao {
     suspend fun getUsersFromGroup(idGroup: Int?): List<DbUser>
     @Insert
     suspend fun createUser(dbUser: DbUser) : Long
-    @Delete
-    suspend fun deleteUser(dbUser: DbUser) : Int
+    @Query("DELETE FROM group_user WHERE groupId = :groupId AND  userId = :userId")
+    suspend fun deleteUserForGroup(userId: Int, groupId: Int) : Int
+    @Query("SELECT COUNT(id) FROM groups WHERE id = :idGroup AND adminId = :idAdmin")
+    suspend fun userIsAdmin(idAdmin: Int, idGroup: Int) : Int
 
 }

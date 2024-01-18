@@ -122,7 +122,7 @@ class GroupActivity: AppCompatActivity() {
         userViewModel.usersGroup.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
-                    this.group.joinedUsers = it.data!!
+//                    this.group.joinedUsers = it.data!!
                     goToChat()
                 }
                 Resource.Status.ERROR -> {
@@ -286,7 +286,6 @@ class GroupActivity: AppCompatActivity() {
     private fun joinGroup() {
         if (user != null) {
             if (group.id != null) {
-                Log.d("Prueba", "prueba")
                 val options = arrayOf<CharSequence>("Aceptar", "Cancelar")
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("¿Quieres entrar al grupo?")
@@ -306,7 +305,7 @@ class GroupActivity: AppCompatActivity() {
         val intent = Intent(this, MessageActivity::class.java)
         intent.putExtra("grupo_seleccionado", this.group)
         startActivity(intent)
-        finish()
+//        finish()
     }
 
     private fun popUpCreate() {

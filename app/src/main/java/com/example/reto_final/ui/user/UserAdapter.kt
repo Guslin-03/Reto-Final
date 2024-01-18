@@ -8,8 +8,9 @@ import com.example.reto_final.data.model.User
 import com.example.reto_final.databinding.ItemUserBinding
 import androidx.recyclerview.widget.ListAdapter
 
-class UserAdapter
-    :ListAdapter<User, UserAdapter.UserViewHolder>(UserDiffCallback()) {
+class UserAdapter(
+    private val onIsAdmin: (User) -> Unit
+) : ListAdapter<User, UserAdapter.UserViewHolder>(UserDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val binding =
@@ -20,13 +21,20 @@ class UserAdapter
     override fun onBindViewHolder(holder: UserAdapter.UserViewHolder, position: Int) {
         val user = getItem(position)
         holder.bind(user)
+
+        holder.itemView.setOnClickListener {
+            onIsAdmin(user)
+        }
+
     }
 
     inner class UserViewHolder(private val binding:ItemUserBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(user: User) {
-            binding.userName.text = user.name
+            val userNameAndSurname = user.name + " " +user.surname
+            binding.userName.text = userNameAndSurname
+            binding.userPhoneNumber.text = user.phoneNumber.toString()
         }
     }
 

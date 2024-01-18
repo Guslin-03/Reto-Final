@@ -18,6 +18,12 @@ class UserViewModel(private val userRepository: CommonUserRepository) : ViewMode
     private val _usersGroup = MutableLiveData<Resource<List<User>>>()
     val usersGroup : LiveData<Resource<List<User>>> get() = _usersGroup
 
+    private val _delete = MutableLiveData<Resource<Void>>()
+    val delete :LiveData<Resource<Void>> get() = _delete
+
+    private val _isAdmin = MutableLiveData<Resource<Void>>()
+    val isAdmin : LiveData<Resource<Void>> get() = _isAdmin
+
     private suspend fun usersGroup(idGroup: Int?) : Resource<List<User>> {
         return withContext(Dispatchers.IO) {
             userRepository.getUsersFromGroup(idGroup)
@@ -26,7 +32,33 @@ class UserViewModel(private val userRepository: CommonUserRepository) : ViewMode
     fun onUsersGroup(idGroup: Int?) {
         viewModelScope.launch {
             val response = usersGroup(idGroup)
-            _usersGroup.value = usersGroup(idGroup)
+            _usersGroup.value = response
+        }
+    }
+
+    private suspend fun delete(userId: Int, groupId: Int) : Resource<Void> {
+        return withContext(Dispatchers.IO) {
+            userRepository.deleteUserFromGroup(userId, groupId)
+        }
+    }
+    fun onDelete(userId: Int, groupId: Int) {
+        viewModelScope.launch {
+            val response = delete(userId, groupId)
+            _delete.value = response
+        }
+    }
+
+    private suspend fun userIsAdmin(idUser: Int, idGroup: Int) : Resource<Int> {
+        return withContext(Dispatchers.IO) {
+            userRepository.userIsAdmin(idUser, idGroup)
+        }
+    }
+    fun onUserIsAdmin(idUser: Int, idGroup: Int) {
+        viewModelScope.launch {
+            val response = userIsAdmin(idUser, idGroup)
+            if (response.data == 1) {
+                _isAdmin.value = Resource.success()
+            }
         }
     }
 
