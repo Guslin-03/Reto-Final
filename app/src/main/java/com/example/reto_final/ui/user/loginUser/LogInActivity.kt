@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.content.ContextCompat
 import com.example.reto_final.R
+import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.LoginUser
 import com.example.reto_final.data.model.Rol
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
@@ -28,7 +29,7 @@ class LogInActivity : AppCompatActivity(){
 
     private lateinit var binding: LoginActivityBinding
     private val userRepository = RemoteLoginUserDataSource()
-    private val viewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(userRepository) }
+    private val viewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(userRepository,applicationContext) }
     private lateinit var rememberMeCheckBox: AppCompatCheckBox
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,15 +49,19 @@ class LogInActivity : AppCompatActivity(){
         }
 
         binding.login.setOnClickListener {
-//            var email = binding.email.text.toString()
-//            email = lowerCaseEmail(email)
-//            val password = binding.password.text.toString()
-//            if(checkData()){
-//                viewModel.onLogIn(email, password)
-//
-//            }
-            mockData()
+            var email = binding.email.text.toString()
+            email = lowerCaseEmail(email)
+            val password = binding.password.text.toString()
+            if(checkData()) {
+                if (InternetChecker.isNetworkAvailable(applicationContext)) {
+                    viewModel.onLogIn(email, password)
+                }else {
+                    Toast.makeText(this, "No se puede hacer login sin internet", Toast.LENGTH_LONG)
+                        .show()
+                }
+//            mockData()
 //            logIn()
+            }
         }
 
         binding.changePassword.setOnClickListener {
@@ -80,7 +85,6 @@ class LogInActivity : AppCompatActivity(){
                             MyApp.userPreferences.saveRememberMeState(false)
                         }
                         if (user != null) {
-                            Log.d("Prueba", "Primer Login da error USER "+user.token)
                             MyApp.userPreferences.saveAuthToken(user.token)
                         }
                         if (binding.password.text.toString() == "elorrieta00") {
@@ -92,8 +96,7 @@ class LogInActivity : AppCompatActivity(){
                     }
                 }
                 Resource.Status.ERROR -> {
-                    Log.d("Prueba", "Primer login da error ERROR"+it.message)
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "El servidor de Laravel no está encendido", Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }
@@ -106,17 +109,16 @@ class LogInActivity : AppCompatActivity(){
                     if (userResource != null && userResource.status == Resource.Status.SUCCESS) {
                         val user = userResource.data
                         if (user != null) {
-                            Log.d("Prueba", "Segundo Login da error USER "+user)
                             MyApp.userPreferences.saveHibernateToken(user.accessToken)
                         }
                     }
 
                 }
                 Resource.Status.ERROR -> {
-                    Log.d("Prueba", "Segundo Login da error ERROR"+it.message)
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "El servidor no está encendido", Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
+
                 }
             }
         }

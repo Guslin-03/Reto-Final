@@ -36,16 +36,24 @@ interface APIInterface {
     suspend fun loginHibernate(@Body authRequest: AuthRequest): Response<LoginUser>
     @GET("chats")
     suspend fun getGroups(): Response<List<Group>>
-
     @POST("chats")
-    suspend fun createGroup(@Body group: Group): Response<Group>
-
+    suspend fun createGroup(@Body group: Group): Response<Void>
     @DELETE("chats/{id}")
     suspend fun deleteGroup(@Path("id") id: Int): Response<Void>
-
+    @GET("chats/entryPermission/{idChat}")
+    suspend fun canEnterUserChat(@Path("idChat") idGroup: Int) : Response<Int>
+    @GET("chats/deletePermission/{idChat}")
+    suspend fun countByIdAndAdminId(@Path("idChat") idGroup: Int): Response<Int>
+    @GET("chats/existsOnChat/{idChat}")
+    suspend fun existsByIdAndUsers_Id(@Path("idChat") idGroup: Int): Response<Int>
+    @POST("chats/addToGroup/{idChat}")
+    suspend fun addUserToChat(@Path("idChat") idGroup: Int): Response<Int>
+    @DELETE("chats/leaveChat/{idChat}")
+    suspend fun leaveChat(@Path("idChat") idGroup: Int): Response<Int>
     @GET("messages")
     suspend fun getMessages(): Response<List<Message>>
-
+    @GET("messages/{chatId}")
+    suspend fun getMessageByChatId(@Path("chatId") idChat:Int) : Response<List<Message>>
     @POST("messages")
     suspend fun createMessage(@Body message: Message): Response<Message>
 }

@@ -40,13 +40,13 @@ class GroupActivity: AppCompatActivity() {
     private lateinit var binding: GroupActivityBinding
     private lateinit var groupAdapter: GroupAdapter
     private val loginUserRepository = RemoteLoginUserDataSource()
-    private val loginUserViewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(loginUserRepository) }
+    private val loginUserViewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(loginUserRepository, applicationContext) }
     private val userRepository = RoomUserDataSource()
     private val userViewModel: UserViewModel by viewModels { RoomUserViewModelFactory(userRepository) }
     private val groupRepository = RoomGroupDataSource()
     private val remoteGroupRepository = RemoteGroupDataSource()
     private lateinit var group: Group
-    private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository) }
+    private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository, applicationContext) }
     private val user = MyApp.userPreferences.getUser()
     private lateinit var radioButtonPrivate: RadioButton
     private lateinit var radioButtonPublic: RadioButton
@@ -122,7 +122,8 @@ class GroupActivity: AppCompatActivity() {
         userViewModel.usersGroup.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
-//                    this.group.joinedUsers = it.data!!
+                    Log.d("Grupo", "Already success")
+                    //this.group.joinedUsers = it.data!!
                     goToChat()
                 }
                 Resource.Status.ERROR -> {
@@ -275,9 +276,12 @@ class GroupActivity: AppCompatActivity() {
 
         if (user != null) {
             if (group.type == ChatEnumType.PRIVATE.name) {
-                groupViewModel.onUserHasPermission(group.id, user.id)
+                group.id?.let {
+                    groupViewModel.onUserHasPermission(
+                        it, user.id)
+                }
             } else {
-                groupViewModel.onUserHasAlreadyInGroup(group.id, user.id)
+                group.id?.let { groupViewModel.onUserHasAlreadyInGroup(it, user.id) }
             }
         }
 
@@ -340,6 +344,7 @@ class GroupActivity: AppCompatActivity() {
     }
 
     private fun userIsTeacher() : Boolean {
+        Log.d("ROl", ""+ user?.roles.toString())
         if (user != null) {
             return user.roles.any { it.name == "Profesor" }
         }

@@ -47,7 +47,6 @@ class PersonalConfigurationActivity: AppCompatActivity() {
         binding.next.setOnClickListener {
             if (user != null) {
                 if (checkData(user)) nextConfiguration()
-//                nextConfiguration()
             }
         }
 

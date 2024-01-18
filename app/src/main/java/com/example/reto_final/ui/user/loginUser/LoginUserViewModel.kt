@@ -1,5 +1,6 @@
 package com.example.reto_final.ui.user.loginUser
 
+import android.content.Context
 import android.os.Build
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto_final.data.model.AuthRequest
 import com.example.reto_final.data.model.ChangePasswordRequest
+import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.LoginUser
 import com.example.reto_final.data.repository.CommonLoginUserRepository
 import com.example.reto_final.data.repository.ProfileRequest
@@ -18,7 +20,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class LoginUserViewModel(private val userRepository: CommonLoginUserRepository) : ViewModel() {
+class LoginUserViewModel(
+    private val userRepository: CommonLoginUserRepository,
+    private val context: Context
+) : ViewModel() {
 
     private val _login_user = MutableLiveData<Resource<LoginUser>>()
     val loginUser : LiveData<Resource<LoginUser>> get() = _login_user
@@ -46,9 +51,12 @@ class LoginUserViewModel(private val userRepository: CommonLoginUserRepository) 
     fun onLogIn(email:String, password:String) {
         viewModelScope.launch {
             _secondLogin.value = secondLogIn(email,password)
-            _login_user.value = logIn(email,password)
+            if(_secondLogin.value!!.status==Resource.Status.SUCCESS){
+                _login_user.value = logIn(email,password)
+            }
         }
     }
+
 
     private suspend fun secondLogIn(email:String, password:String) : Resource<LoginUser> {
         return withContext(Dispatchers.IO) {
@@ -113,10 +121,11 @@ class LoginUserViewModel(private val userRepository: CommonLoginUserRepository) 
 
 }
 class LoginUserViewModelFactory(
-    private val userRepository: CommonLoginUserRepository
+    private val userRepository: CommonLoginUserRepository,
+    private val context: Context
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-        return LoginUserViewModel(userRepository) as T
+        return LoginUserViewModel(userRepository, context) as T
     }
 
 }

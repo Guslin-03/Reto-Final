@@ -29,11 +29,11 @@ class MessageActivity : AppCompatActivity(){
     private lateinit var binding: MessageActivityBinding
     private lateinit var messageAdapter: MessageAdapter
     private val messageRepository = RoomMessageDataSource()
-    private val messageViewModel: MessageViewModel by viewModels { RoomMessageViewModelFactory(messageRepository, remoteMessageRepository) }
+    private val messageViewModel: MessageViewModel by viewModels { RoomMessageViewModelFactory(messageRepository, remoteMessageRepository, applicationContext) }
     private val groupRepository = RoomGroupDataSource()
     private val remoteGroupRepository = RemoteGroupDataSource()
     private val remoteMessageRepository = RemoteMessageDataSource()
-    private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository ) }
+    private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository, applicationContext) }
     private lateinit var group: Group
     private val user = MyApp.userPreferences.getUser()
     override fun onCreate(savedInstanceState: Bundle?) {

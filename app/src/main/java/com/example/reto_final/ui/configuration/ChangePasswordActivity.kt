@@ -23,7 +23,7 @@ class ChangePasswordActivity: AppCompatActivity() {
 
     private lateinit var binding: ChangePasswordActivityBinding
     private val userRepository = RemoteLoginUserDataSource()
-    private val viewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(userRepository) }
+    private val viewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(userRepository,applicationContext) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
