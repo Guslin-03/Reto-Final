@@ -33,7 +33,7 @@ class MessageActivity : AppCompatActivity(){
     private val groupRepository = RoomGroupDataSource()
     private val remoteGroupRepository = RemoteGroupDataSource()
     private val remoteMessageRepository = RemoteMessageDataSource()
-    private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository ) }
+    private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository, applicationContext) }
     private lateinit var group: Group
     private val user = MyApp.userPreferences.getUser()
     override fun onCreate(savedInstanceState: Bundle?) {

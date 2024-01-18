@@ -1,13 +1,11 @@
 package com.example.reto_final.ui.group
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.reto_final.R
 import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.repository.local.group.ChatEnumType
 import com.example.reto_final.databinding.ItemGroupBinding

@@ -7,10 +7,18 @@ interface RemoteGroupRepository {
 
     suspend fun getGroups() : Resource<List<Group>>
 
-    suspend fun createGroup(group: Group) : Resource<Group>
+    suspend fun createGroup(group: Group) : Resource<Void>
 
     suspend fun deleteGroup(idGroup:Int) : Resource<Void>
 
-    suspend fun userHasPermission(idGroup: Int?, idUser: Int): Resource<Int>
+    suspend fun canEnterUserChat(idGroup:Int): Resource<Int>
+
+    suspend fun countByAndAdminId(idGroup:Int) : Resource<Int>
+
+    suspend fun existsByIdAndUsers_Id(idGroup:Int): Resource<Int>
+
+    suspend fun addUserToChat(idGroup: Int): Resource<Int>
+
+    suspend fun leaveChat(idGroup: Int): Resource<Int>
 
 }

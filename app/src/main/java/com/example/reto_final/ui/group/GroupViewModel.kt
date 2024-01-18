@@ -1,5 +1,6 @@
 package com.example.reto_final.ui.group
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto_final.data.model.Group
+import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
 import com.example.reto_final.data.repository.remote.RemoteGroupRepository
@@ -16,9 +18,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, private val remoteGroupRepository: RemoteGroupRepository) : ViewModel() {
+class GroupViewModel(
+    private val groupLocalRepository: RoomGroupDataSource,
+    private val remoteGroupRepository: RemoteGroupRepository,
+    private var context: Context) : ViewModel() {
 
-    private val _group = MutableLiveData<Resource<List<Group>>>()
+     private val _group = MutableLiveData<Resource<List<Group>>>()
     val group : LiveData<Resource<List<Group>>> get() = _group
 
     private val _create = MutableLiveData<Resource<Void>>()
@@ -42,23 +47,34 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, priv
     private val _leaveGroup = MutableLiveData<Resource<Boolean>>()
     val leaveGroup : LiveData<Resource<Boolean>> get() = _leaveGroup
 
-    init { updateGroupList() }
     fun updateGroupList() {
         viewModelScope.launch {
-            _group.value = getGroups()
+            _group.value = if (InternetChecker.isNetworkAvailable(context)) {
+                getGroupsRemote()
+            } else {
+                getGroups()
+            }
         }
     }
+
+    init { updateGroupList() }
+
     private suspend fun getGroups() : Resource<List<Group>> {
         return withContext(Dispatchers.IO) {
-            groupLocalRepository.getGroups()
-//            remoteGroupRepository.getGroups()
+                groupLocalRepository.getGroups()
+        }
+    }
+    private suspend fun getGroupsRemote() : Resource<List<Group>> {
+        return withContext(Dispatchers.IO) {
+            remoteGroupRepository.getGroups()
+
         }
     }
     private suspend fun create(name:String, chatEnumType:String, idAdmin: Int) : Resource<Void> {
         return withContext(Dispatchers.IO) {
             val group = Group(null, name, chatEnumType, idAdmin)
-            groupLocalRepository.createGroup(group)
-            //remoteGroupRepository.createGroup(group)
+            //groupLocalRepository.createGroup(group)
+            remoteGroupRepository.createGroup(group)
         }
     }
     fun onCreate(name:String, chatEnumType: String, idAdmin: Int) {
@@ -78,14 +94,17 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, priv
         }
     }
 
-    private suspend fun userHasPermission(idGroup: Int?, idUser: Int) : Resource<Int> {
+    private suspend fun userHasPermission(idGroup: Int, idUser: Int) : Resource<Int> {
         return withContext(Dispatchers.IO) {
-            groupLocalRepository.userHasPermission(idGroup, idUser)
+            //groupLocalRepository.userHasPermission(idGroup, idUser)
+            Log.d("Grupo", "Ha entrado a userHaspermission")
+            remoteGroupRepository.canEnterUserChat(idGroup)
         }
     }
-    fun onUserHasPermission(idGroup: Int?, idUser: Int) {
+    fun onUserHasPermission(idGroup: Int, idUser: Int) {
         viewModelScope.launch {
             val result = userHasPermission(idGroup, idUser)
+            Log.d("Grupo", "Resultado"+result)
             if (result.data == 1) {
                 _groupPermission.value = Resource.success(true)
             }else {
@@ -110,12 +129,13 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, priv
         }
     }
 
-    private suspend fun userHasAlreadyInGroup(idGroup: Int?, idUser: Int) : Resource<Int> {
+    private suspend fun userHasAlreadyInGroup(idGroup: Int, idUser: Int) : Resource<Int> {
         return withContext(Dispatchers.IO) {
-            groupLocalRepository.userHasAlreadyInGroup(idGroup, idUser)
+            //groupLocalRepository.userHasAlreadyInGroup(idGroup, idUser)
+            remoteGroupRepository.existsByIdAndUsers_Id(idGroup)
         }
     }
-    fun onUserHasAlreadyInGroup(idGroup: Int?, idUser: Int) {
+    fun onUserHasAlreadyInGroup(idGroup: Int, idUser: Int) {
         viewModelScope.launch {
             val result = userHasAlreadyInGroup(idGroup, idUser)
             if (result.data == 1) {
@@ -128,7 +148,8 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, priv
 
     private suspend fun addUserToGroup(idGroup: Int, idUser: Int) : Resource<Int> {
         return withContext(Dispatchers.IO) {
-            groupLocalRepository.addUserToGroup(idGroup, idUser)
+            //groupLocalRepository.addUserToGroup(idGroup, idUser)
+            remoteGroupRepository.addUserToChat(idGroup)
         }
     }
     fun onAddUserToGroup(idGroup: Int, idUser: Int) {
@@ -162,10 +183,11 @@ class GroupViewModel(private val groupLocalRepository: RoomGroupDataSource, priv
 
 class RoomGroupViewModelFactory(
     private val roomGroupRepository: RoomGroupDataSource,
-    private val remoteGroupRepository: RemoteGroupDataSource
+    private val remoteGroupRepository: RemoteGroupDataSource,
+    private val context: Context
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-        return GroupViewModel(roomGroupRepository, remoteGroupRepository) as T
+        return GroupViewModel(roomGroupRepository, remoteGroupRepository, context) as T
     }
 
 }
