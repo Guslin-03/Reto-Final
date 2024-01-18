@@ -5,6 +5,7 @@ import com.example.reto_final.data.model.ChangePasswordRequest
 import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.model.LoginUser
 import com.example.reto_final.data.model.Message
+import com.example.reto_final.data.model.User
 import com.example.reto_final.data.repository.ProfileRequest
 import com.example.reto_final.data.repository.RegisterRequest
 import retrofit2.Response
@@ -52,8 +53,10 @@ interface APIInterface {
     suspend fun leaveChat(@Path("idChat") idGroup: Int): Response<Int>
     @GET("messages")
     suspend fun getMessages(): Response<List<Message>>
-    @GET("messages/{chatId}")
+    @GET("messages/chat/{chatId}")
     suspend fun getMessageByChatId(@Path("chatId") idChat:Int) : Response<List<Message>>
     @POST("messages")
     suspend fun createMessage(@Body message: Message): Response<Message>
+    @GET("users/chat/{chatId}")
+    suspend fun getUserByChatId(@Path("chatId") idChat:Int): Response<List<User>>
 }

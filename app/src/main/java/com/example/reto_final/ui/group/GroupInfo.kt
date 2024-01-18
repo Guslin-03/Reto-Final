@@ -9,6 +9,7 @@ import com.example.reto_final.R
 import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.model.User
 import com.example.reto_final.data.repository.local.user.RoomUserDataSource
+import com.example.reto_final.data.repository.remote.RemoteUserDataSource
 import com.example.reto_final.databinding.GroupInfoActivityBinding
 import com.example.reto_final.ui.user.RoomUserViewModelFactory
 import com.example.reto_final.ui.user.UserAdapter
@@ -22,7 +23,8 @@ class GroupInfo: AppCompatActivity() {
     private lateinit var binding: GroupInfoActivityBinding
     private lateinit var userAdapter: UserAdapter
     private val userRepository = RoomUserDataSource()
-    private val userViewModel: UserViewModel by viewModels { RoomUserViewModelFactory(userRepository) }
+    private val remoteUserRepository=RemoteUserDataSource()
+    private val userViewModel: UserViewModel by viewModels { RoomUserViewModelFactory(userRepository,remoteUserRepository) }
     private val loginUser = MyApp.userPreferences.getUser()
     private lateinit var selectedGroup : Group
     private lateinit var selectedUser : User
@@ -87,7 +89,7 @@ class GroupInfo: AppCompatActivity() {
         userViewModel.delete.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
-                    userViewModel.onUsersGroup(selectedGroup.id)
+                    selectedGroup.id?.let { it1 -> userViewModel.onUsersGroup(it1) }
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
@@ -133,7 +135,7 @@ class GroupInfo: AppCompatActivity() {
 
         if (receivedGroup != null) {
             selectedGroup = receivedGroup
-            receivedGroup.id?.let { userViewModel.onUsersGroup(receivedGroup.id) }
+            receivedGroup.id?.let { userViewModel.onUsersGroup(receivedGroup.id!!) }
         } else {
             Toast.makeText(this, "Ha sucedido un error!", Toast.LENGTH_LONG).show()
             finish()

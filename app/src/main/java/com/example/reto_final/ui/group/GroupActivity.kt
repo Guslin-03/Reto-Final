@@ -23,6 +23,7 @@ import com.example.reto_final.data.repository.local.group.ChatEnumType
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.user.RoomUserDataSource
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
+import com.example.reto_final.data.repository.remote.RemoteUserDataSource
 import com.example.reto_final.databinding.GroupActivityBinding
 import com.example.reto_final.ui.message.MessageActivity
 import com.example.reto_final.ui.configuration.ChangePasswordActivity
@@ -42,7 +43,8 @@ class GroupActivity: AppCompatActivity() {
     private val loginUserRepository = RemoteLoginUserDataSource()
     private val loginUserViewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(loginUserRepository, applicationContext) }
     private val userRepository = RoomUserDataSource()
-    private val userViewModel: UserViewModel by viewModels { RoomUserViewModelFactory(userRepository) }
+    private val remoteUserRepository = RemoteUserDataSource()
+    private val userViewModel: UserViewModel by viewModels { RoomUserViewModelFactory(userRepository,remoteUserRepository) }
     private val groupRepository = RoomGroupDataSource()
     private val remoteGroupRepository = RemoteGroupDataSource()
     private lateinit var group: Group
@@ -109,7 +111,7 @@ class GroupActivity: AppCompatActivity() {
         groupViewModel.groupPermission.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
-                    userViewModel.onUsersGroup(group.id)
+                    group.id?.let { it1 -> userViewModel.onUsersGroup(it1) }
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()

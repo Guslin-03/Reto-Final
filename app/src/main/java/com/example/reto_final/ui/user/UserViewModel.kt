@@ -8,12 +8,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto_final.data.model.User
 import com.example.reto_final.data.repository.local.CommonUserRepository
+import com.example.reto_final.data.repository.remote.RemoteUserRepository
 import com.example.reto_final.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class UserViewModel(private val userRepository: CommonUserRepository) : ViewModel() {
+class UserViewModel(private val userRepository: CommonUserRepository, private val remoteUserRepository: RemoteUserRepository) : ViewModel() {
 
     private val _usersGroup = MutableLiveData<Resource<List<User>>>()
     val usersGroup : LiveData<Resource<List<User>>> get() = _usersGroup
@@ -24,12 +25,13 @@ class UserViewModel(private val userRepository: CommonUserRepository) : ViewMode
     private val _isAdmin = MutableLiveData<Resource<Void>>()
     val isAdmin : LiveData<Resource<Void>> get() = _isAdmin
 
-    private suspend fun usersGroup(idGroup: Int?) : Resource<List<User>> {
+    private suspend fun usersGroup(idGroup: Int) : Resource<List<User>> {
         return withContext(Dispatchers.IO) {
-            userRepository.getUsersFromGroup(idGroup)
+            //userRepository.getUsersFromGroup(idGroup)
+            remoteUserRepository.getUserByChatId(idGroup)
         }
     }
-    fun onUsersGroup(idGroup: Int?) {
+    fun onUsersGroup(idGroup: Int) {
         viewModelScope.launch {
             val response = usersGroup(idGroup)
             _usersGroup.value = response
@@ -64,10 +66,11 @@ class UserViewModel(private val userRepository: CommonUserRepository) : ViewMode
 
 }
 class RoomUserViewModelFactory(
-    private val userRepository: CommonUserRepository
+    private val userRepository: CommonUserRepository,
+    private val remoteUserRepository:RemoteUserRepository
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-        return UserViewModel(userRepository) as T
+        return UserViewModel(userRepository, remoteUserRepository) as T
     }
 
 }
