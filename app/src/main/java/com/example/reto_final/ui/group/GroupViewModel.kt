@@ -132,6 +132,7 @@ class GroupViewModel(
     private suspend fun userHasAlreadyInGroup(idGroup: Int, idUser: Int) : Resource<Int> {
         return withContext(Dispatchers.IO) {
             //groupLocalRepository.userHasAlreadyInGroup(idGroup, idUser)
+            Log.d("Grupo", "Already in grupo")
             remoteGroupRepository.existsByIdAndUsers_Id(idGroup)
         }
     }

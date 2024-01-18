@@ -52,7 +52,8 @@ interface APIInterface {
     suspend fun leaveChat(@Path("idChat") idGroup: Int): Response<Int>
     @GET("messages")
     suspend fun getMessages(): Response<List<Message>>
-
+    @GET("messages/{chatId}")
+    suspend fun getMessageByChatId(@Path("chatId") idChat:Int) : Response<List<Message>>
     @POST("messages")
     suspend fun createMessage(@Body message: Message): Response<Message>
 }

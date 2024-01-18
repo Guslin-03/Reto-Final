@@ -8,8 +8,8 @@ class RemoteMessageDataSource :BaseDataSource(), RemoteMessageRepository {
         RetrofitClient.apiInterface.getMessages()
     }
 
-    override suspend fun getMessagesFromGroup(idGroup: Int): Resource<List<Message>> {
-        TODO("Not yet implemented")
+    override suspend fun getMessagesFromGroup(idGroup: Int) = getResult {
+        RetrofitClient.apiInterface.getMessageByChatId(idGroup)
     }
 
     override suspend fun createMessage(message: Message)= getResult {

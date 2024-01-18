@@ -122,7 +122,8 @@ class GroupActivity: AppCompatActivity() {
         userViewModel.usersGroup.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
-                    this.group.joinedUsers = it.data!!
+                    Log.d("Grupo", "Already success")
+                    //this.group.joinedUsers = it.data!!
                     goToChat()
                 }
                 Resource.Status.ERROR -> {

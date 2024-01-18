@@ -10,8 +10,8 @@ data class Group (
     val name: String,
     val type: String,
     val adminId: Int,
-    var joinedUsers : List<User>
-) : Parcelable {
+    //var joinedUsers : List<User>
+) : Parcelable /*{
 
     constructor(
 
@@ -30,4 +30,4 @@ data class Group (
 
     )
 
-}
+}*/

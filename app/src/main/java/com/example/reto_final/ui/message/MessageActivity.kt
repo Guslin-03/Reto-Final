@@ -29,7 +29,7 @@ class MessageActivity : AppCompatActivity(){
     private lateinit var binding: MessageActivityBinding
     private lateinit var messageAdapter: MessageAdapter
     private val messageRepository = RoomMessageDataSource()
-    private val messageViewModel: MessageViewModel by viewModels { RoomMessageViewModelFactory(messageRepository, remoteMessageRepository) }
+    private val messageViewModel: MessageViewModel by viewModels { RoomMessageViewModelFactory(messageRepository, remoteMessageRepository, applicationContext) }
     private val groupRepository = RoomGroupDataSource()
     private val remoteGroupRepository = RemoteGroupDataSource()
     private val remoteMessageRepository = RemoteMessageDataSource()
