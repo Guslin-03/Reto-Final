@@ -21,6 +21,7 @@
     <string name="fct_dual">DUAL-WBT</string>
     <string name="ciclo">Degree</string>
     <string name="email">Email</string>
+    <string name="nombre_del_grupo">Group\'s name</string>
     <string name="siguiente">Next</string>
     <string name="volver">Back</string>
     <string name="cerrar_sesi_n">Log Out</string>
@@ -51,4 +52,16 @@
     <string name="lista_de_ciclos">Modules list</string>
     <string name="code">Code</string>
     <string name="name_Module">Name</string>
+    <string name="grupo_privado">Private Group</string>
+    <string name="crear_grupo">Create Group</string>
+    <string name="mensaje">Message</string>
+    <string name="informaci_n_del_grupo">Group\'s information</string>
+    <string name="a_adir_usuario">Add User</string>
+    <string name="abandonar_grupo">Leave Group</string>
+    <string name="eliminar_grupo">Delete Group</string>
+    <string name="filter">Filter</string>
+    <string name="privado">Private</string>
+    <string name="p_blico">Public</string>
+    <string name="todos">All</string>
+    <string name="ocultar">Hide</string>
 </resources>

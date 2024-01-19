@@ -42,7 +42,6 @@
 
     //CHECK-BOXS
     <string name="rememberMe">Recuérdame</string>
-    <string name="private_type">Privado</string>
 
     //TEXT-VIEWS
     <string name="paso_1_3">Paso 1 de 3</string>

@@ -45,7 +45,7 @@ class GroupActivity: AppCompatActivity() {
     private val loginUserViewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(loginUserRepository, applicationContext) }
     private val userRepository = RoomUserDataSource()
     private val remoteUserRepository = RemoteUserDataSource()
-    private val userViewModel: UserViewModel by viewModels { RoomUserViewModelFactory(userRepository,remoteUserRepository) }
+    private val userViewModel: UserViewModel by viewModels { RoomUserViewModelFactory(userRepository,remoteUserRepository,applicationContext) }
     private val groupRepository = RoomGroupDataSource()
     private val remoteGroupRepository = RemoteGroupDataSource()
     private lateinit var group: Group

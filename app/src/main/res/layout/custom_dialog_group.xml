@@ -16,7 +16,7 @@
         android:id="@+id/checkBoxPrivate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/private_type"
+        android:text="@string/privado"
         android:textSize="16sp"
         android:layout_marginTop="8dp"/>
 

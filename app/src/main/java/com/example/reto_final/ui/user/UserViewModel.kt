@@ -1,11 +1,13 @@
 package com.example.reto_final.ui.user
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.User
 import com.example.reto_final.data.repository.local.CommonUserRepository
 import com.example.reto_final.data.repository.remote.RemoteUserRepository
@@ -14,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class UserViewModel(private val userRepository: CommonUserRepository, private val remoteUserRepository: RemoteUserRepository) : ViewModel() {
+class UserViewModel(private val userRepository: CommonUserRepository, private val remoteUserRepository: RemoteUserRepository, private val context:Context) : ViewModel() {
 
     private val _users = MutableLiveData<Resource<List<User>>>()
     val users : LiveData<Resource<List<User>>> get() = _users
@@ -39,16 +41,23 @@ class UserViewModel(private val userRepository: CommonUserRepository, private va
             _users.value = response
         }
     }
-
+    private suspend fun usersGroupRemote(idGroup: Int) : Resource<List<User>> {
+        return withContext(Dispatchers.IO) {
+            remoteUserRepository.getUserByChatId(idGroup)
+        }
+    }
     private suspend fun usersGroup(idGroup: Int) : Resource<List<User>> {
         return withContext(Dispatchers.IO) {
             userRepository.getUsersFromGroup(idGroup)
-//            remoteUserRepository.getUserByChatId(idGroup)
         }
     }
     fun onUsersGroup(idGroup: Int) {
         viewModelScope.launch {
-            val response = usersGroup(idGroup)
+            val response = if (InternetChecker.isNetworkAvailable(context)) {
+                usersGroupRemote(idGroup)
+            }else{
+                usersGroup(idGroup)
+            }
             _usersGroup.value = response
         }
     }
@@ -64,7 +73,7 @@ class UserViewModel(private val userRepository: CommonUserRepository, private va
             _delete.value = response
         }
     }
-
+    
     private suspend fun userIsAdmin(idUser: Int, idGroup: Int) : Resource<Int> {
         return withContext(Dispatchers.IO) {
             userRepository.userIsAdmin(idUser, idGroup)
@@ -72,7 +81,11 @@ class UserViewModel(private val userRepository: CommonUserRepository, private va
     }
     fun onUserIsAdmin(idUser: Int, idGroup: Int) {
         viewModelScope.launch {
-            val response = userIsAdmin(idUser, idGroup)
+            val response = if (InternetChecker.isNetworkAvailable(context)) {
+                userIsAdmin(idUser, idGroup)
+            }else{
+                userIsAdmin(idUser, idGroup)
+            }
             if (response.data == 1) {
                 _isAdmin.value = Resource.success()
             }
@@ -82,10 +95,11 @@ class UserViewModel(private val userRepository: CommonUserRepository, private va
 }
 class RoomUserViewModelFactory(
     private val userRepository: CommonUserRepository,
-    private val remoteUserRepository:RemoteUserRepository
+    private val remoteUserRepository:RemoteUserRepository,
+    private val context: Context
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-        return UserViewModel(userRepository, remoteUserRepository) as T
+        return UserViewModel(userRepository, remoteUserRepository, context) as T
     }
 
 }
