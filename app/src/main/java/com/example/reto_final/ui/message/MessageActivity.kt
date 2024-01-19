@@ -127,6 +127,10 @@ class MessageActivity : AppCompatActivity(){
                 else -> false // Manejo predeterminado para otros elementos
             }
         }
+        binding.include.send.setOnClickListener {
+            Log.d("Mensaje", "Has pulsado")
+            //TODO ver como gestionar esto con sockets
+        }
 
     }
 

@@ -29,7 +29,7 @@ class UserFragment(private val selectedGroup: Group) : DialogFragment() {
     private lateinit var userFragmentAdapter: UserFragmentAdapter
     private val userRepository = RoomUserDataSource()
     private val remoteUserRepository = RemoteUserDataSource()
-    private val userViewModel: UserViewModel by viewModels { RoomUserViewModelFactory(userRepository,remoteUserRepository) }
+    private val userViewModel: UserViewModel by viewModels { RoomUserViewModelFactory(userRepository,remoteUserRepository,requireContext().applicationContext) }
 
     private val groupRepository = RoomGroupDataSource()
     private val remoteGroupRepository = RemoteGroupDataSource()

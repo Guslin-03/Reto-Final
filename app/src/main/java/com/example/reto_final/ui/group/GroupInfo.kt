@@ -24,7 +24,7 @@ class GroupInfo: AppCompatActivity() {
     private lateinit var userAdapter: UserAdapter
     private val userRepository = RoomUserDataSource()
     private val remoteUserRepository = RemoteUserDataSource()
-    private val userViewModel: UserViewModel by viewModels { RoomUserViewModelFactory(userRepository,remoteUserRepository) }
+    private val userViewModel: UserViewModel by viewModels { RoomUserViewModelFactory(userRepository,remoteUserRepository,applicationContext) }
     private val loginUser = MyApp.userPreferences.getUser()
     private lateinit var userFragment : UserFragment
     private var selectedGroup = Group()

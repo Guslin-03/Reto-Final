@@ -30,7 +30,8 @@
         <string name="email">Correo</string>
 
         //BUTTONS
-        <string name="siguiente">Siguiente</string>
+    <string name="nombre_del_grupo">Nombre del grupo</string>
+    <string name="siguiente">Siguiente</string>
         <string name="volver">Volver</string>
         <string name="cerrar_sesi_n">Cerrar Sesión</string>
         <string name="login">Iniciar Sesión</string>
@@ -62,4 +63,16 @@
     <string name="lista_de_ciclos">Lista de módulos</string>
     <string name="code">Código</string>
     <string name="name_Module">Nombre</string>
+    <string name="grupo_privado">Grupo Privado</string>
+    <string name="crear_grupo">Crear Grupo</string>
+    <string name="mensaje">Mensaje</string>
+    <string name="informaci_n_del_grupo">Información del Grupo</string>
+    <string name="a_adir_usuario">Añadir Usuario</string>
+    <string name="abandonar_grupo">Abandonar Grupo</string>
+    <string name="eliminar_grupo">Eliminar Grupo</string>
+    <string name="filter">Filtrar</string>
+    <string name="privado">Privado</string>
+    <string name="p_blico">Público</string>
+    <string name="todos">Todos</string>
+    <string name="ocultar">Ocultar</string>
 </resources>

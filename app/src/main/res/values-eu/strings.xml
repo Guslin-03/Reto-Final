@@ -21,6 +21,7 @@
     <string name="fct_dual">LHZF-DUALA</string>
     <string name="ciclo">Zikloa</string>
     <string name="email">Posta</string>
+    <string name="nombre_del_grupo">Taldearen izena</string>
     <string name="siguiente">Hurrengoa</string>
     <string name="volver">Itzuli</string>
     <string name="cerrar_sesi_n">Saioa Itxi</string>
@@ -51,4 +52,16 @@
     <string name="lista_de_ciclos">Modulu-zerrenda</string>
     <string name="code">Kodea</string>
     <string name="name_Module">Izena</string>
+    <string name="grupo_privado">Talde Pribatua</string>
+    <string name="crear_grupo">Taldea sortu</string>
+    <string name="mensaje">Mezua</string>
+    <string name="informaci_n_del_grupo">Taldearen Informazioa</string>
+    <string name="a_adir_usuario">Erabiltzailea gehitu</string>
+    <string name="abandonar_grupo">Taldetik irten</string>
+    <string name="eliminar_grupo">Taldea ezabatu</string>
+    <string name="filter">Iragazi</string>
+    <string name="privado">Pribatu</string>
+    <string name="p_blico">Publikoa</string>
+    <string name="todos">Denak</string>
+    <string name="ocultar">Ezkutatu</string>
 </resources>
