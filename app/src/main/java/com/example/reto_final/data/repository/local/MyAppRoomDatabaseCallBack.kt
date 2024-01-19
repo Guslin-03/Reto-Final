@@ -10,6 +10,9 @@ import com.example.reto_final.data.repository.local.user.DbUser
 import com.example.reto_final.utils.MyApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.sql.Timestamp
+import java.util.Date
+import java.util.Locale
 
 class MyAppRoomDatabaseCallback(private val scope: CoroutineScope) : RoomDatabase.Callback() {
     override fun onCreate(db: SupportSQLiteDatabase) {
@@ -41,36 +44,36 @@ class MyAppRoomDatabaseCallback(private val scope: CoroutineScope) : RoomDatabas
         groupDao.addUserToGroup(DbUserGroup(3,3))
 
         val messageDao = MyApp.db.messageDao()
-        messageDao.createMessage(DbMessage(null,"Mensaje 1", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 2", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 3", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 4", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 5", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 1", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 2", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 3", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 4", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 5", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 1", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 2", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 3", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 4", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 5", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 1", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 2", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 3", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 4", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 5", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 1", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 2", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 3", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 4", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 5", 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 1", 2, 2))
-        messageDao.createMessage(DbMessage(null,"Mensaje 2", 2, 2))
-        messageDao.createMessage(DbMessage(null,"Mensaje 3", 2, 2))
-        messageDao.createMessage(DbMessage(null,"Mensaje 4", 2, 2))
-        messageDao.createMessage(DbMessage(null,"Mensaje 5", 2, 2))
+        messageDao.createMessage(DbMessage(null,"Mensaje 1", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 2", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 3", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 4", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 5", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 1", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 2", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 3", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 4", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 5", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 1", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 2", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 3", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 4", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 5", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 1", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 2", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 3", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 4", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 5", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 1", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 2", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 3", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 4", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 5", 1, 1, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 1", 2, 2, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 2", 2, 2, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 3", 2, 2, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 4", 2, 2, Date()))
+        messageDao.createMessage(DbMessage(null,"Mensaje 5", 2, 2, Date()))
 
     }
 }

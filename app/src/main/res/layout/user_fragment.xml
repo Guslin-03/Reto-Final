@@ -34,12 +34,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginStart="10sp"
+        android:layout_marginEnd="10sp">
 
         <EditText
+            android:id="@+id/filterUser"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Busca un Nombre">
+            android:hint="Busca un Nombre"
+            android:backgroundTint="@color/black"
+            android:textColorHint="#857B7B"
+            android:textColor="@color/black">
 
         </EditText>
 

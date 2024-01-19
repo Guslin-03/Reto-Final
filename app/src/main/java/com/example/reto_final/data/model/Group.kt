@@ -9,25 +9,14 @@ data class Group (
     var id: Int?,
     val name: String,
     val type: String,
-    val adminId: Int,
-    //var joinedUsers : List<User>
-) : Parcelable /*{
+    val adminId: Int
+) : Parcelable {
 
-    constructor(
-
-        id: Int?,
-        name: String,
-        type: String,
-        adminId: Int,
-
-        ): this (
-
-        id = id,
-        name = name,
-        type = type,
-        adminId = adminId,
-        joinedUsers = emptyList()
-
+    constructor() : this(
+        id = 0,
+        name = "",
+        type = "",
+        adminId = 0
     )
 
-}*/
+}

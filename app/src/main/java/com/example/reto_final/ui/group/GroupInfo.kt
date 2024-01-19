@@ -1,11 +1,11 @@
 package com.example.reto_final.ui.group
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.example.reto_final.R
 import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.model.User
 import com.example.reto_final.data.repository.local.user.RoomUserDataSource
@@ -23,39 +23,32 @@ class GroupInfo: AppCompatActivity() {
     private lateinit var binding: GroupInfoActivityBinding
     private lateinit var userAdapter: UserAdapter
     private val userRepository = RoomUserDataSource()
-    private val remoteUserRepository=RemoteUserDataSource()
+    private val remoteUserRepository = RemoteUserDataSource()
     private val userViewModel: UserViewModel by viewModels { RoomUserViewModelFactory(userRepository,remoteUserRepository) }
     private val loginUser = MyApp.userPreferences.getUser()
-    private lateinit var selectedGroup : Group
+    private lateinit var userFragment : UserFragment
+    private var selectedGroup = Group()
     private lateinit var selectedUser : User
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = GroupInfoActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setDefaultData()
+        userFragment = UserFragment(selectedGroup)
         userAdapter = UserAdapter(
             ::onIsAdmin
         )
         binding.userList.adapter = userAdapter
 
+
         binding.addUser.setOnClickListener {
-                // Obtener el FragmentManager
-                val fragmentManager = supportFragmentManager
+            val fragmentManager = supportFragmentManager
+            userFragment.show(fragmentManager, "user_fragment_dialog")
+        }
 
-                // Iniciar la transacción
-                val fragmentTransaction = fragmentManager.beginTransaction()
-
-                // Crear una instancia de tu fragmento con la lista
-                val myListFragment = UserFragment()
-
-                // Reemplazar el contenedor con el fragmento
-                fragmentTransaction.replace(R.id.fragmentContainer, myListFragment)
-
-                // Agregar a la pila de retroceso (opcional)
-                fragmentTransaction.addToBackStack(null)
-
-                // Commit de la transacción
-                fragmentTransaction.commit()
+        userFragment.setOnDismissListener {
+            userFragment = UserFragment(selectedGroup)
+            if (selectedGroup.id != null) userViewModel.onUsersGroup(selectedGroup.id!!)
         }
 
         userViewModel.usersGroup.observe(this) {

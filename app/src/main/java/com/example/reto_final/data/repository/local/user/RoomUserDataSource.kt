@@ -13,6 +13,11 @@ class RoomUserDataSource: CommonUserRepository {
 
     private val userDao: UserDao = MyApp.db.userDao()
 
+    override suspend fun getUsers(): Resource<List<User>> {
+        val response = userDao.getUsers().map { it.toUser() }
+        return Resource.success(response)
+    }
+
     override suspend fun getUsersFromGroup(idGroup: Int?): Resource<List<User>> {
         val response = userDao.getUsersFromGroup(idGroup).map { it.toUser() }
         return Resource.success(response)
@@ -41,6 +46,8 @@ fun User.toDbUser() = DbUser(id, name, surname, email, phoneNumber)
 
 @Dao
 interface UserDao {
+    @Query("SELECT * FROM users ORDER BY name")
+    suspend fun getUsers() : List<DbUser>
     @Query("SELECT users.id, users.name, users.surname, users.email, users.phoneNumber FROM users \n" +
             "JOIN group_user ON users.id == group_user.userId\n" +
             "WHERE group_user.groupId == :idGroup")

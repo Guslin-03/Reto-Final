@@ -16,6 +16,9 @@ import kotlinx.coroutines.withContext
 
 class UserViewModel(private val userRepository: CommonUserRepository, private val remoteUserRepository: RemoteUserRepository) : ViewModel() {
 
+    private val _users = MutableLiveData<Resource<List<User>>>()
+    val users : LiveData<Resource<List<User>>> get() = _users
+
     private val _usersGroup = MutableLiveData<Resource<List<User>>>()
     val usersGroup : LiveData<Resource<List<User>>> get() = _usersGroup
 
@@ -25,10 +28,22 @@ class UserViewModel(private val userRepository: CommonUserRepository, private va
     private val _isAdmin = MutableLiveData<Resource<Void>>()
     val isAdmin : LiveData<Resource<Void>> get() = _isAdmin
 
+    private suspend fun users() : Resource<List<User>> {
+        return withContext(Dispatchers.IO) {
+            userRepository.getUsers()
+        }
+    }
+    fun onUsers() {
+        viewModelScope.launch {
+            val response = users()
+            _users.value = response
+        }
+    }
+
     private suspend fun usersGroup(idGroup: Int) : Resource<List<User>> {
         return withContext(Dispatchers.IO) {
-            //userRepository.getUsersFromGroup(idGroup)
-            remoteUserRepository.getUserByChatId(idGroup)
+            userRepository.getUsersFromGroup(idGroup)
+//            remoteUserRepository.getUserByChatId(idGroup)
         }
     }
     fun onUsersGroup(idGroup: Int) {

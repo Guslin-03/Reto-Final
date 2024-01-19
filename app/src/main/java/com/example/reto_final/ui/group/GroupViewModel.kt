@@ -67,7 +67,6 @@ class GroupViewModel(
     private suspend fun getGroupsRemote() : Resource<List<Group>> {
         return withContext(Dispatchers.IO) {
             remoteGroupRepository.getGroups()
-
         }
     }
     private suspend fun create(name:String, chatEnumType:String, idAdmin: Int) : Resource<Void> {
@@ -96,15 +95,13 @@ class GroupViewModel(
 
     private suspend fun userHasPermission(idGroup: Int, idUser: Int) : Resource<Int> {
         return withContext(Dispatchers.IO) {
-            //groupLocalRepository.userHasPermission(idGroup, idUser)
-            Log.d("Grupo", "Ha entrado a userHaspermission")
-            remoteGroupRepository.canEnterUserChat(idGroup)
+            groupLocalRepository.userHasPermission(idGroup, idUser)
+//            remoteGroupRepository.canEnterUserChat(idGroup)
         }
     }
     fun onUserHasPermission(idGroup: Int, idUser: Int) {
         viewModelScope.launch {
             val result = userHasPermission(idGroup, idUser)
-            Log.d("Grupo", "Resultado"+result)
             if (result.data == 1) {
                 _groupPermission.value = Resource.success(true)
             }else {
@@ -131,9 +128,8 @@ class GroupViewModel(
 
     private suspend fun userHasAlreadyInGroup(idGroup: Int, idUser: Int) : Resource<Int> {
         return withContext(Dispatchers.IO) {
-            //groupLocalRepository.userHasAlreadyInGroup(idGroup, idUser)
-            Log.d("Grupo", "Already in grupo")
-            remoteGroupRepository.existsByIdAndUsers_Id(idGroup)
+            groupLocalRepository.userHasAlreadyInGroup(idGroup, idUser)
+//            remoteGroupRepository.existsByIdAndUsers_Id(idGroup)
         }
     }
     fun onUserHasAlreadyInGroup(idGroup: Int, idUser: Int) {
@@ -149,8 +145,8 @@ class GroupViewModel(
 
     private suspend fun addUserToGroup(idGroup: Int, idUser: Int) : Resource<Int> {
         return withContext(Dispatchers.IO) {
-            //groupLocalRepository.addUserToGroup(idGroup, idUser)
-            remoteGroupRepository.addUserToChat(idGroup)
+            groupLocalRepository.addUserToGroup(idGroup, idUser)
+//            remoteGroupRepository.addUserToChat(idGroup)
         }
     }
     fun onAddUserToGroup(idGroup: Int, idUser: Int) {
