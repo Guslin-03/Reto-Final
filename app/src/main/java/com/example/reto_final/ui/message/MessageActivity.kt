@@ -91,6 +91,7 @@ class MessageActivity : AppCompatActivity(){
         groupViewModel.leaveGroup.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
+                    Log.d("MensajeGrupo", "Entra en success")
                     Toast.makeText(this, "Has abandonado el grupo con éxito.", Toast.LENGTH_LONG).show()
                     goToGroups()
                 }

@@ -74,7 +74,6 @@ class GroupActivity: AppCompatActivity() {
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
-                    Log.d("Error", ""+it.message)
                 }
                 Resource.Status.LOADING -> {
                 }
@@ -114,7 +113,7 @@ class GroupActivity: AppCompatActivity() {
                     group.id?.let { it1 -> userViewModel.onUsersGroup(it1) }
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "No tienes permiso para acceder al grupo", Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }
@@ -159,6 +158,7 @@ class GroupActivity: AppCompatActivity() {
                 }
             }
         }
+
 
         binding.toolbarPersonalConfiguration.setOnMenuItemClickListener { item ->
             when (item.itemId) {
