@@ -25,9 +25,6 @@ class UserViewModel(private val userRepository: CommonUserRepository, private va
     private val _delete = MutableLiveData<Resource<Void>>()
     val delete :LiveData<Resource<Void>> get() = _delete
 
-    private val _isAdmin = MutableLiveData<Resource<Boolean>>()
-    val isAdmin : LiveData<Resource<Boolean>> get() = _isAdmin
-
     private suspend fun users() : Resource<List<User>> {
         return withContext(Dispatchers.IO) {
             userRepository.getUsers()
@@ -62,20 +59,6 @@ class UserViewModel(private val userRepository: CommonUserRepository, private va
         viewModelScope.launch {
             val response = delete(userId, groupId)
             _delete.value = response
-        }
-    }
-
-    private suspend fun userIsAdmin(idUser: Int, idGroup: Int) : Resource<Int> {
-        return withContext(Dispatchers.IO) {
-            userRepository.userIsAdmin(idUser, idGroup)
-        }
-    }
-    fun onUserIsAdmin(idUser: Int, idGroup: Int) {
-        viewModelScope.launch {
-            val response = userIsAdmin(idUser, idGroup)
-            if (response.data == 1) {
-                _isAdmin.value = Resource.success()
-            }
         }
     }
 

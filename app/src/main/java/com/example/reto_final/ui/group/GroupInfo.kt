@@ -66,20 +66,6 @@ class GroupInfo: AppCompatActivity() {
             }
         }
 
-        userViewModel.isAdmin.observe(this) {
-            when(it.status) {
-                Resource.Status.SUCCESS -> {
-                    setDefaultView()
-                }
-                Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
-                }
-                Resource.Status.LOADING -> {
-                }
-
-            }
-        }
-
         userViewModel.delete.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
@@ -100,7 +86,7 @@ class GroupInfo: AppCompatActivity() {
         selectedUser = user
 
         if (loginUser != null && selectedGroup.id != null) {
-            if (userViewModel.isAdmin.value?.data == true)
+            if (loginUser.id != selectedGroup.adminId)
                 checkActionDelete()
         }
 
@@ -146,7 +132,7 @@ class GroupInfo: AppCompatActivity() {
     }
 
     private fun setDefaultView() {
-        if(userViewModel.isAdmin.value?.data == false) {
+        if(loginUser?.id != selectedGroup.adminId) {
             binding.addUser.visibility = View.INVISIBLE
             binding.addUser.isClickable = false
         }
