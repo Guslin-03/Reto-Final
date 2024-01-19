@@ -6,13 +6,12 @@ import com.example.reto_final.data.repository.local.group.DbGroup
 import com.example.reto_final.data.repository.local.group.ChatEnumType
 import com.example.reto_final.data.repository.local.group.DbUserGroup
 import com.example.reto_final.data.repository.local.message.DbMessage
+import com.example.reto_final.data.repository.local.role.DbRole
 import com.example.reto_final.data.repository.local.user.DbUser
 import com.example.reto_final.utils.MyApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.sql.Timestamp
 import java.util.Date
-import java.util.Locale
 
 class MyAppRoomDatabaseCallback(private val scope: CoroutineScope) : RoomDatabase.Callback() {
     override fun onCreate(db: SupportSQLiteDatabase) {
@@ -22,17 +21,18 @@ class MyAppRoomDatabaseCallback(private val scope: CoroutineScope) : RoomDatabas
             populateDatabase()
         }
 
-//        MyApp.db.close()
-//        MyApp.context.deleteDatabase("chat-db")
-
     }
 
     private suspend fun populateDatabase() {
-        // Llama a los métodos de DAO para insertar datos de prueba
+
+        val roleDao = MyApp.db.roleDao()
+        roleDao.createRole(DbRole(null, "Profesor"))
+        roleDao.createRole(DbRole(null, "Alumno"))
+
         val userDao = MyApp.db.userDao()
-        userDao.createUser(DbUser(null,"David", "Comeron", "davidcomeron@elorrieta.com", 601269008))
-        userDao.createUser(DbUser(null,"Joana", "Barber", "joanabarber@elorrieta.com", 601269009))
-        userDao.createUser(DbUser(null,"Robson", "Garcia", "robsongarcia@elorrieta.com", 601269010))
+        userDao.createUser(DbUser(null,"David", "Comeron", "davidcomeron@elorrieta.com", 601269008,1))
+        userDao.createUser(DbUser(null,"Joana", "Barber", "joanabarber@elorrieta.com", 601269009,2))
+        userDao.createUser(DbUser(null,"Robson", "Garcia", "robsongarcia@elorrieta.com", 601269010,2))
 
         val groupDao = MyApp.db.groupDao()
         groupDao.createGroup(DbGroup(1,"Profesores", ChatEnumType.PRIVATE.name, 1))

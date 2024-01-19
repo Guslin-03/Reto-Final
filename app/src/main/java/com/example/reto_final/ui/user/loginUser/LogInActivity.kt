@@ -12,9 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.content.ContextCompat
 import com.example.reto_final.R
-import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.LoginUser
-import com.example.reto_final.data.model.Rol
+import com.example.reto_final.data.model.Role
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
 import com.example.reto_final.databinding.LoginActivityBinding
 import com.example.reto_final.ui.group.GroupActivity
@@ -128,7 +127,7 @@ class LogInActivity : AppCompatActivity(){
 
     private fun mockData() {
 
-        val listRoles = arrayOf(Rol(1, "Profesor"))
+        val listRoles = arrayOf(Role(1, "Profesor"))
         val loginUser = LoginUser(
             1,
             "78771912V",

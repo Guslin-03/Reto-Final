@@ -346,7 +346,7 @@ class GroupActivity: AppCompatActivity() {
     private fun userIsTeacher() : Boolean {
         Log.d("ROl", ""+ user?.roles.toString())
         if (user != null) {
-            return user.roles.any { it.name == "Profesor" }
+            return user.roles.any { it.type == "Profesor" }
         }
         return false
     }

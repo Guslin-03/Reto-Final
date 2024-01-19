@@ -17,7 +17,7 @@ data class LoginUser(
     val FCTDUAL: Int,
     val email: String,
     val degrees: Array<Degree>,
-    val roles: Array<Rol>,
+    val roles: Array<Role>,
     val department_id: Int,
     var accessToken: String,
     val token: String

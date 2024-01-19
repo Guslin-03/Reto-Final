@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Rol (
-    val id: Int,
-    val name: String
+data class Role (
+    var id: Int?,
+    val type: String
 ) : Parcelable

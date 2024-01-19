@@ -41,14 +41,14 @@ class RoomUserDataSource: CommonUserRepository {
 
 }
 
-fun DbUser.toUser() = User(id, name, surname, email, phoneNumber)
-fun User.toDbUser() = DbUser(id, name, surname, email, phoneNumber)
+fun DbUser.toUser() = User(id, name, surname, email, phoneNumber, roleId)
+fun User.toDbUser() = DbUser(id, name, surname, email, phoneNumber, roleId)
 
 @Dao
 interface UserDao {
     @Query("SELECT * FROM users ORDER BY name")
     suspend fun getUsers() : List<DbUser>
-    @Query("SELECT users.id, users.name, users.surname, users.email, users.phoneNumber FROM users \n" +
+    @Query("SELECT users.id, users.name, users.surname, users.email, users.phoneNumber, users.roleId FROM users \n" +
             "JOIN group_user ON users.id == group_user.userId\n" +
             "WHERE group_user.groupId == :idGroup")
     suspend fun getUsersFromGroup(idGroup: Int?): List<DbUser>
