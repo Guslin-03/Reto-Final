@@ -26,8 +26,8 @@ class MyAppRoomDatabaseCallback(private val scope: CoroutineScope) : RoomDatabas
     private suspend fun populateDatabase() {
 
         val roleDao = MyApp.db.roleDao()
-        roleDao.createRole(DbRole(null, "Profesor"))
-        roleDao.createRole(DbRole(null, "Alumno"))
+        roleDao.createRole(DbRole(null, "PROFESOR"))
+        roleDao.createRole(DbRole(null, "ALUMNO"))
 
         val userDao = MyApp.db.userDao()
         userDao.createUser(DbUser(null,"David", "Comeron", "davidcomeron@elorrieta.com", 601269008,1))

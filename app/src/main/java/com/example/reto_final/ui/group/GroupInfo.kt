@@ -1,7 +1,7 @@
 package com.example.reto_final.ui.group
 
 import android.os.Bundle
-import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -33,13 +33,13 @@ class GroupInfo: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = GroupInfoActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setDefaultView()
         setDefaultData()
         userFragment = UserFragment(selectedGroup)
         userAdapter = UserAdapter(
             ::onIsAdmin
         )
         binding.userList.adapter = userAdapter
-
 
         binding.addUser.setOnClickListener {
             val fragmentManager = supportFragmentManager
@@ -54,6 +54,7 @@ class GroupInfo: AppCompatActivity() {
         userViewModel.usersGroup.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
+                    setTotalUsersInGroup(it.data?.size.toString())
                     userAdapter.submitList(it.data)
                 }
                 Resource.Status.ERROR -> {
@@ -68,7 +69,7 @@ class GroupInfo: AppCompatActivity() {
         userViewModel.isAdmin.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
-                    checkActionDelete()
+                    setDefaultView()
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
@@ -96,11 +97,11 @@ class GroupInfo: AppCompatActivity() {
     }
 
     private fun onIsAdmin(user: User) {
-
         selectedUser = user
 
         if (loginUser != null && selectedGroup.id != null) {
-            userViewModel.onUserIsAdmin(loginUser.id, selectedGroup.id!!)
+            if (userViewModel.isAdmin.value?.data == true)
+                checkActionDelete()
         }
 
     }
@@ -123,6 +124,15 @@ class GroupInfo: AppCompatActivity() {
 
     }
 
+    private fun setTotalUsersInGroup(totalUsers: String) {
+        val completeText = if (totalUsers == "1") {
+            "$totalUsers Miembro"
+        }else {
+            "$totalUsers Miembros"
+        }
+        binding.totalUsers.text = completeText
+    }
+
     private fun setDefaultData() {
         val receivedGroup: Group? = intent.getParcelableExtra("grupo_seleccionado")
 
@@ -132,6 +142,13 @@ class GroupInfo: AppCompatActivity() {
         } else {
             Toast.makeText(this, "Ha sucedido un error!", Toast.LENGTH_LONG).show()
             finish()
+        }
+    }
+
+    private fun setDefaultView() {
+        if(userViewModel.isAdmin.value?.data == false) {
+            binding.addUser.visibility = View.INVISIBLE
+            binding.addUser.isClickable = false
         }
     }
 

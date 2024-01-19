@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Menu
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -14,6 +15,7 @@ import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.repository.local.group.ChatEnumType
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
+import com.example.reto_final.data.repository.local.user.UserRoleType
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
 import com.example.reto_final.data.repository.remote.RemoteMessageDataSource
 import com.example.reto_final.databinding.MessageActivityBinding
@@ -171,10 +173,35 @@ class MessageActivity : AppCompatActivity(){
 
     private fun userHasPermissionToDelete() {
         if (user != null) {
-            groupViewModel.onUserHasPermissionToDelete(group.id!!, user.id)
+            if (group.type == ChatEnumType.PRIVATE.toString() && userIsTeacher()) {
+                popToDeleteGroup()
+            }else if(group.type == ChatEnumType.PUBLIC.toString()){
+                popToDeleteGroup()
+            }
         }
     }
 
+    private fun popToDeleteGroup() {
+        if (user != null) {
+            val options = arrayOf<CharSequence>("Aceptar", "Cancelar")
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("¿Seguro que quieres eliminar el grupo?")
+            builder.setItems(options) { dialog, which ->
+                when (which) {
+                    0 -> groupViewModel.onUserHasPermissionToDelete(group.id!!, user.id)
+                    1 -> dialog.dismiss()
+                }
+            }
+            builder.show()
+        }
+    }
+
+    private fun userIsTeacher() : Boolean {
+        if (user != null) {
+            return user.roles.any { it.type == UserRoleType.PROFESOR.toString() }
+        }
+        return false
+    }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.chat_configuration_top_menu,menu)
 
@@ -186,6 +213,5 @@ class MessageActivity : AppCompatActivity(){
         }
         return true
     }
-
 
 }

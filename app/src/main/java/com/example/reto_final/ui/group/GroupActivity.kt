@@ -22,6 +22,7 @@ import com.example.reto_final.data.repository.RemoteLoginUserDataSource
 import com.example.reto_final.data.repository.local.group.ChatEnumType
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.user.RoomUserDataSource
+import com.example.reto_final.data.repository.local.user.UserRoleType
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
 import com.example.reto_final.data.repository.remote.RemoteUserDataSource
 import com.example.reto_final.databinding.GroupActivityBinding
@@ -344,9 +345,8 @@ class GroupActivity: AppCompatActivity() {
     }
 
     private fun userIsTeacher() : Boolean {
-        Log.d("ROl", ""+ user?.roles.toString())
         if (user != null) {
-            return user.roles.any { it.type == "Profesor" }
+            return user.roles.any { it.type == UserRoleType.PROFESOR.toString() }
         }
         return false
     }

@@ -25,8 +25,8 @@ class UserViewModel(private val userRepository: CommonUserRepository, private va
     private val _delete = MutableLiveData<Resource<Void>>()
     val delete :LiveData<Resource<Void>> get() = _delete
 
-    private val _isAdmin = MutableLiveData<Resource<Void>>()
-    val isAdmin : LiveData<Resource<Void>> get() = _isAdmin
+    private val _isAdmin = MutableLiveData<Resource<Boolean>>()
+    val isAdmin : LiveData<Resource<Boolean>> get() = _isAdmin
 
     private suspend fun users() : Resource<List<User>> {
         return withContext(Dispatchers.IO) {

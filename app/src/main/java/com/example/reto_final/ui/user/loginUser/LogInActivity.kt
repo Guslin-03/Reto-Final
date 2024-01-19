@@ -15,6 +15,7 @@ import com.example.reto_final.R
 import com.example.reto_final.data.model.LoginUser
 import com.example.reto_final.data.model.Role
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
+import com.example.reto_final.data.repository.local.user.UserRoleType
 import com.example.reto_final.databinding.LoginActivityBinding
 import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.ui.register.RegisterChangePasswordActivity
@@ -127,7 +128,7 @@ class LogInActivity : AppCompatActivity(){
 
     private fun mockData() {
 
-        val listRoles = arrayOf(Role(1, "Profesor"))
+        val listRoles = arrayOf(Role(1, UserRoleType.PROFESOR.toString()))
         val loginUser = LoginUser(
             1,
             "78771912V",
