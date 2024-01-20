@@ -2,4 +2,14 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+<<<<<<< HEAD
+=======
+    <color name="blue_light">#81D4FA</color>
+    <color name="blue">#1FA7E1</color>
+    <color name="blue_dark">#13386C</color>
+    <color name="blue_green">#0097AC</color>
+    <color name="hint">#85736E6C</color>
+    <color name="red_error">#FF3C00</color>
+    <color name="transparent">#00000000</color>
+>>>>>>> d3113ff522baba0fd00335d7f39083eada21727e
 </resources>

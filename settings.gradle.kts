@@ -15,4 +15,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "Reto_Final"
 include(":app")
- 

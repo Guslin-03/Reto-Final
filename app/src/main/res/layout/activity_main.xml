@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+<<<<<<< HEAD
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,5 +15,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+=======
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="328dp"
+        android:layout_height="160dp"
+        android:contentDescription="@string/logo_inicial"
+        app:layout_constraintBottom_toTopOf="@+id/loadingIcon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/edit_logo" />
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/loadingIcon"
+        android:layout_width="84dp"
+        android:layout_height="95dp"
+        android:src="@drawable/loading"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+>>>>>>> d3113ff522baba0fd00335d7f39083eada21727e
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+        //NAME APP
+        <string name="app_name">Reto_Final</string>
+
+        //TITLE-ACTIVITIES
+        <string name="cambio_de_contrase_a">Cambio de Contraseña</string>
+        <string name="configuraci_n_de_usuario">Perfil - Personal</string>
+        <string name="perfil_escolar">Perfil - Escolar</string>
+
+        //DESCRIPTION LOGOS
+        <string name="logo_inicial">Logo Inicial</string>
+        <string name="logo_elorrchat">Logo ElorrChat</string>
+        <string name="logo_simplificado">logo simplificado</string>
+
+        //EDIT-TEXT
+        <string name="contrase_a_actual">Contraseña Actual</string>
+        <string name="contrase_a">Contraseña</string>
+        <string name="repetir_contrase_a">Repetir Contraseña</string>
+        <string name="nueva_contrase_a">Nueva Contraseña</string>
+        <string name="name">Nombre*</string>
+        <string name="apellido">Apellido*</string>
+        <string name="tel_fono_m_vil">Teléfono Móvil*</string>
+        <string name="tel_fono_fijo">Teléfono Fijo</string>
+        <string name="dni">DNI*</string>
+        <string name="direcci_n">Dirección*</string>
+        <string name="curso">Curso</string>
+        <string name="fct_dual">FCT-DUAL</string>
+        <string name="ciclo">Ciclo</string>
+        <string name="email">Correo</string>
+
+        //BUTTONS
+    <string name="nombre_del_grupo">Nombre del grupo</string>
+    <string name="siguiente">Siguiente</string>
+        <string name="volver">Volver</string>
+        <string name="cerrar_sesi_n">Cerrar Sesión</string>
+        <string name="login">Iniciar Sesión</string>
+        <string name="cambiar_contrase_a">Cambiar Contraseña</string>
+
+        //CHECK-BOXS
+        <string name="rememberMe">Recuérdame</string>
+    <string name="paso_1_3">Paso 1 de 3</string>
+    <string name="confirmar">Confirmar</string>
+        <string name="paso_2_3">Paso 2 de 3</string>
+        <string name="paso_3_3">Paso 3 de 3</string>
+    <string name="toast_edit_profile">A continuación, valide su Información</string>
+        <string name="toast_empty_1">Ningún campo puede estar vacío</string>
+        <string name="toast_format_email">El correo tiene un formato erróneo</string>
+        <string name="toast_password_lenght">La contraseña debe tener al menos 8 caracteres</string>
+        <string name="toast_empty_2">Hay campos obligatorios sin rellenar</string>
+        <string name="toast_format_landline_phone">El formato del teléfono fijo es erróneo</string>
+        <string name="toast_format_mobile_phone">El formato del teléfono móvil es erróneo</string>
+        <string name="toast_format_DNI">El DNI debe tener el formato 00000000A</string>
+        <string name="toast_password_default">La nueva contraseña es igual a la contraseña por defecto</string>
+        <string name="toast_password_matches">Las dos contraseñas no coinciden</string>
+        <string name="toast_password_old_new_matches">La anterior contraseña y la nueva son iguales</string>
+    <string name="imagen_perfil">Imagen de Perfil</string>
+    <string name="perfil">Perfil</string>
+    <string name="paso_1_2">Paso 1 de 2</string>
+    <string name="paso_2_2">Paso 2 de 2</string>
+    <string name="toast_success_changes">Cambios realizados con éxito</string>
+    <string name="toast_success_password">Contraseña modificada con éxito</string>
+    <string name="lista_de_ciclos">Lista de módulos</string>
+    <string name="code">Código</string>
+    <string name="name_Module">Nombre</string>
+    <string name="grupo_privado">Grupo Privado</string>
+    <string name="crear_grupo">Crear Grupo</string>
+    <string name="mensaje">Mensaje</string>
+    <string name="informaci_n_del_grupo">Información del Grupo</string>
+    <string name="a_adir_usuario">Añadir Usuario</string>
+    <string name="abandonar_grupo">Abandonar Grupo</string>
+    <string name="eliminar_grupo">Eliminar Grupo</string>
+    <string name="filter">Filtrar</string>
+    <string name="privado">Privado</string>
+    <string name="p_blico">Público</string>
+    <string name="todos">Todos</string>
+    <string name="ocultar">Ocultar</string>
+</resources>
