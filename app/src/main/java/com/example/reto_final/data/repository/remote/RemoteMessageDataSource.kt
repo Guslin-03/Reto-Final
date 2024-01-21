@@ -8,6 +8,8 @@ class RemoteMessageDataSource :BaseDataSource(), RemoteMessageRepository {
         RetrofitClient.apiInterface.getMessages()
     }
 
+
+
     override suspend fun getMessagesFromGroup(idGroup: Int) = getResult {
         RetrofitClient.apiInterface.getMessageByChatId(idGroup)
     }

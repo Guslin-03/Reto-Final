@@ -50,7 +50,7 @@ class MessageActivity : AppCompatActivity(){
         messageAdapter = MessageAdapter()
         binding.messageList.adapter = messageAdapter
 
-        messageViewModel.messaage.observe(this) {
+        messageViewModel.message.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
                     messageAdapter.submitList(it.data)
@@ -128,7 +128,9 @@ class MessageActivity : AppCompatActivity(){
             }
         }
         binding.include.send.setOnClickListener {
-            Log.d("Mensaje", "Has pulsado")
+            val message = binding.include.inputMessage.text.toString();
+            binding.include.inputMessage.setText("")
+//            messageViewModel.onSendMessage(message)
             //TODO ver como gestionar esto con sockets
         }
 

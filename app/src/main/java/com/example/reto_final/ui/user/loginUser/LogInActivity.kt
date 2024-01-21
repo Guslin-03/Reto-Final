@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.content.ContextCompat
 import com.example.reto_final.R
+import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.LoginUser
 import com.example.reto_final.data.model.Role
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
@@ -49,20 +50,19 @@ class LogInActivity : AppCompatActivity(){
         }
 
         binding.login.setOnClickListener {
-            var email = binding.email.text.toString()
-            email = lowerCaseEmail(email)
-            val password = binding.password.text.toString()
-            if(checkData()) {
-                if (InternetChecker.isNetworkAvailable(applicationContext)) {
-                    viewModel.onLogIn(email, password)
-                }else {
-                    Toast.makeText(this, "No se puede hacer login sin internet", Toast.LENGTH_LONG)
-                        .show()
-                }
-//            mockData()
-//            logIn()
-            }
-//            mockData()
+//            var email = binding.email.text.toString()
+//            email = lowerCaseEmail(email)
+//            val password = binding.password.text.toString()
+//            if(checkData()) {
+//                if (InternetChecker.isNetworkAvailable(applicationContext)) {
+//                    viewModel.onLogIn(email, password)
+//                }else {
+//                    Toast.makeText(this, "No se puede hacer login sin internet", Toast.LENGTH_LONG)
+//                        .show()
+//                }
+//
+//            }
+            mockData()
         }
 
         binding.changePassword.setOnClickListener {

@@ -33,8 +33,9 @@ class GroupInfo: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = GroupInfoActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setDefaultView()
         setDefaultData()
+        setDefaultView()
+
         userFragment = UserFragment(selectedGroup)
         userAdapter = UserAdapter(
             ::onIsAdmin
@@ -84,17 +85,15 @@ class GroupInfo: AppCompatActivity() {
 
     private fun onIsAdmin(user: User) {
         selectedUser = user
-
         if (loginUser != null && selectedGroup.id != null) {
-            if (loginUser.id != selectedGroup.adminId)
+            if (loginUser.id == selectedGroup.adminId) {
                 checkActionDelete()
+            }
         }
-
     }
 
     private fun checkActionDelete() {
         if (selectedUser.id != null && selectedGroup.id != null) {
-
             val options = arrayOf<CharSequence>("Aceptar", "Cancelar")
             val builder = AlertDialog.Builder(this)
             builder.setTitle("¿Seguro que quieres expulsar a ${selectedUser.name} ${selectedUser.surname} del grupo?")
@@ -121,7 +120,6 @@ class GroupInfo: AppCompatActivity() {
 
     private fun setDefaultData() {
         val receivedGroup: Group? = intent.getParcelableExtra("grupo_seleccionado")
-
         if (receivedGroup != null) {
             selectedGroup = receivedGroup
             receivedGroup.id?.let { userViewModel.onUsersGroup(receivedGroup.id!!) }

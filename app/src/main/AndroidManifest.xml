@@ -50,7 +50,8 @@
         <activity android:name=".ui.configuration.ConfigurationActivity" android:exported="true" android:label="Configuration">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".MainActivity"/>
         </activity>
-        <activity android:name=".ui.message.MessageActivity" android:exported="true" android:label="Chat">
+        <activity android:name=".ui.message.MessageActivity" android:exported="true" android:label="Chat"
+            android:windowSoftInputMode="adjustResize">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".MainActivity"/>
         </activity>
         <activity android:name=".ui.group.GroupInfo" android:exported="true" android:label="Chat">

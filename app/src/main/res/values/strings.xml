@@ -1,7 +1,4 @@
 <resources>
-<<<<<<< HEAD
-    <string name="app_name">Reto_Final</string>
-=======
     //NAME APP
     <string name="app_name">Reto_Final</string>
     <string name="elorrchat" translatable="false">ElorrChat</string>

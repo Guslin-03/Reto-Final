@@ -1,15 +1,5 @@
 package com.example.reto_final
 
-<<<<<<< HEAD
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-
-class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-    }
-=======
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -69,5 +59,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
->>>>>>> d3113ff522baba0fd00335d7f39083eada21727e
 }

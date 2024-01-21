@@ -274,7 +274,6 @@ class GroupActivity: AppCompatActivity() {
 
     private fun onGroupListClickItem(group: Group) {
         this.group = group
-
         if (user != null) {
             if (group.type == ChatEnumType.PRIVATE.name) {
                 group.id?.let {
