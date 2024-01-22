@@ -41,7 +41,6 @@ class LoginUserViewModel(
     private val _secondLogin = MutableLiveData<Resource<LoginUser>>()
     val secondLogin : LiveData<Resource<LoginUser>> get() = _secondLogin
 
-
     private suspend fun logIn(email:String, password:String) : Resource<LoginUser> {
         return withContext(Dispatchers.IO) {
             val user = AuthRequest(email, password, Build.MODEL)

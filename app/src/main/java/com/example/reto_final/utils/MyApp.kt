@@ -16,6 +16,7 @@ class MyApp : Application() {
         lateinit var userPreferences: UserPreferences
         lateinit var db: MyAppRoomDataBase
         lateinit var appScope: CoroutineScope
+        const val AUTHORIZATION_HEADER = "Authorization"
     }
     override fun onCreate(){
         super.onCreate()

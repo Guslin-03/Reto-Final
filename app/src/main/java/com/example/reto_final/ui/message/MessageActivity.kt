@@ -37,6 +37,7 @@ class MessageActivity : AppCompatActivity(){
     private val remoteMessageRepository = RemoteMessageDataSource()
     private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository, applicationContext) }
     private lateinit var group: Group
+    private val socketViewModel: SocketViewModel by viewModels { SocketViewModelFactory(applicationContext) }
     private val user = MyApp.userPreferences.getUser()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,7 +131,7 @@ class MessageActivity : AppCompatActivity(){
         binding.include.send.setOnClickListener {
             val message = binding.include.inputMessage.text.toString();
             binding.include.inputMessage.setText("")
-//            messageViewModel.onSendMessage(message)
+            socketViewModel.onSendMessage(message, group.name)
             //TODO ver como gestionar esto con sockets
         }
 
