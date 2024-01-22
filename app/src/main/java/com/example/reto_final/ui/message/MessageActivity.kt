@@ -37,7 +37,7 @@ class MessageActivity : AppCompatActivity(){
     private val remoteMessageRepository = RemoteMessageDataSource()
     private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository, applicationContext) }
     private lateinit var group: Group
-    private val socketViewModel: SocketViewModel by viewModels { SocketViewModelFactory(applicationContext) }
+    private val socketViewModel: SocketViewModel by viewModels { SocketViewModelFactory() }
     private val user = MyApp.userPreferences.getUser()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +51,20 @@ class MessageActivity : AppCompatActivity(){
         messageAdapter = MessageAdapter()
         binding.messageList.adapter = messageAdapter
 
+        socketViewModel.message.observe(this){
+            when(it.status) {
+                Resource.Status.SUCCESS -> {
+                    val existingList = messageAdapter.currentList.toMutableList()
+                    existingList.addAll(it.data ?: emptyList())
+                    messageAdapter.submitList(existingList)
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+                }
+            }
+        }
         messageViewModel.message.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
