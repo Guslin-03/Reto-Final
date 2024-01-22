@@ -12,7 +12,7 @@ object RetrofitClient {
     private val client = OkHttpClient.Builder().addInterceptor { chain ->
         val authToken= MyApp.userPreferences.fetchHibernateToken()
         val newRequest: Request = chain.request().newBuilder()
-            .addHeader(MyApp.AUTHORIZATION_HEADER, "Bearer $authToken")
+            .addHeader("Authorization", "Bearer $authToken")
             .build()
         chain.proceed(newRequest)
     } .build()
