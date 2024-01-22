@@ -17,6 +17,7 @@ class MyApp : Application() {
         lateinit var db: MyAppRoomDataBase
         lateinit var appScope: CoroutineScope
         const val AUTHORIZATION_HEADER = "Authorization"
+        const val API_SOCKET = "http://10.0.2.2:8085"
     }
     override fun onCreate(){
         super.onCreate()

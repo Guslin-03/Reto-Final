@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
-class SocketViewModel(private val context: Context) : ViewModel() {
+class SocketViewModel() : ViewModel() {
 
     private lateinit var mSocket: Socket
 
@@ -40,7 +40,7 @@ class SocketViewModel(private val context: Context) : ViewModel() {
 
     private fun startSocket() {
         val socketOptions = createSocketOptions()
-        mSocket = IO.socket(RetrofitClient.API_URI, socketOptions)
+        mSocket = IO.socket(MyApp.API_SOCKET, socketOptions)
         mSocket.on(SocketEvents.ON_CONNECT.value, onConnect())
         mSocket.on(SocketEvents.ON_DISCONNECT.value, onDisconnect())
         mSocket.on(SocketEvents.ON_MESSAGE_RECEIVED.value, onNewMessage())
@@ -95,7 +95,7 @@ class SocketViewModel(private val context: Context) : ViewModel() {
 
             updateMessageListWithNewMessage(message)
         } catch (ex: Exception) {
-            Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
+//            Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -110,7 +110,7 @@ class SocketViewModel(private val context: Context) : ViewModel() {
                 _message.postValue(Resource.success(listOf(incomingMessage)))
             }
         } catch (ex: Exception) {
-            Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
+//            Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -125,10 +125,9 @@ class SocketViewModel(private val context: Context) : ViewModel() {
 }
 
 class SocketViewModelFactory(
-    private val context:Context
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-        return SocketViewModelFactory(context) as T
+        return SocketViewModel() as T
     }
 
 }
