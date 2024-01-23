@@ -100,7 +100,7 @@ class RegisterChangePasswordActivity : AppCompatActivity() {
 
         if (currentPassword != newPassword1) {
             if (newPassword1 == newPassword2) {
-                if (newPassword1 == "elorrieta00") {
+                if (newPassword1 == MyApp.DEFAULT_PASS) {
                     Toast.makeText(this, R.string.toast_password_default, Toast.LENGTH_LONG).show()
                     binding.currentPasswordLayout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)
                     binding.newPassword1Layout.defaultHintTextColor = ColorStateList.valueOf(Color.RED)

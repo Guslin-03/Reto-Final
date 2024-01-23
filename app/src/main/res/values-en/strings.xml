@@ -64,4 +64,5 @@
     <string name="p_blico">Public</string>
     <string name="todos">All</string>
     <string name="ocultar">Hide</string>
+    <string name="forgot">I forgot the password</string>
 </resources>

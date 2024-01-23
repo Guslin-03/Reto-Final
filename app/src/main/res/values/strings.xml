@@ -30,6 +30,19 @@
     <string name="ciclo">Ciclo</string>
     <string name="email">Correo</string>
     <string name="nombre_del_grupo">Nombre del Grupo</string>
+    <string name="lista_de_ciclos">Lista de módulos</string>
+    <string name="grupo_privado">Grupo Privado</string>
+    <string name="crear_grupo">Crear Grupo</string>
+    <string name="mensaje">Mensaje</string>
+    <string name="informaci_n_del_grupo">Información del Grupo</string>
+    <string name="a_adir_usuario">Añadir Usuario</string>
+    <string name="abandonar_grupo">Abandonar Grupo</string>
+    <string name="eliminar_grupo">Eliminar Grupo</string>
+    <string name="filter">Filtrar</string>
+    <string name="privado">Privado</string>
+    <string name="p_blico">Público</string>
+    <string name="todos">Todos</string>
+    <string name="ocultar">Ocultar</string>
 
     //BUTTONS
     <string name="siguiente">Siguiente</string>
@@ -39,6 +52,7 @@
     <string name="cambiar_contrase_a">Cambiar Contraseña</string>
     <string name="confirmar">Confirmar</string>
     <string name="perfil">Perfil</string>
+    <string name="forgot">He olvidado la contraseña</string>
 
     //CHECK-BOXS
     <string name="rememberMe">Recuérdame</string>
@@ -68,19 +82,6 @@
     <string name="toast_password_old_new_matches">La anterior contraseña y la nueva son iguales</string>
     <string name="toast_success_changes">Cambios realizados con éxito</string>
     <string name="toast_success_password">Contraseña modificada con éxito</string>
-    <string name="lista_de_ciclos">Lista de módulos</string>
-    <string name="grupo_privado">Grupo Privado</string>
-    <string name="crear_grupo">Crear Grupo</string>
-    <string name="mensaje">Mensaje</string>
-    <string name="informaci_n_del_grupo">Información del Grupo</string>
-    <string name="a_adir_usuario">Añadir Usuario</string>
-    <string name="abandonar_grupo">Abandonar Grupo</string>
-    <string name="eliminar_grupo">Eliminar Grupo</string>
-    <string name="filter">Filtrar</string>
-    <string name="privado">Privado</string>
-    <string name="p_blico">Público</string>
-    <string name="todos">Todos</string>
-    <string name="ocultar">Ocultar</string>
+    <string name="forgot_pass">asdsfg</string>
 
->>>>>>> d3113ff522baba0fd00335d7f39083eada21727e
 </resources>

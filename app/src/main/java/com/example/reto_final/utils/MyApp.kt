@@ -20,6 +20,7 @@ class MyApp : Application() {
         const val API_SERVER = "http://10.5.7.97"
         const val API_PORT = "8063"
         const val API_SOCKET_PORT = "8085"
+        const val DEFAULT_PASS = "elorrieta00"
     }
     override fun onCreate(){
         super.onCreate()

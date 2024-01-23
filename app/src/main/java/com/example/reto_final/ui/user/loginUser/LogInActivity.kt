@@ -4,10 +4,12 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
+import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.content.ContextCompat
@@ -19,7 +21,6 @@ import com.example.reto_final.data.repository.RemoteLoginUserDataSource
 import com.example.reto_final.data.repository.local.user.UserRoleType
 import com.example.reto_final.databinding.LoginActivityBinding
 import com.example.reto_final.ui.group.GroupActivity
-import com.example.reto_final.ui.register.RegisterChangePasswordActivity
 import com.example.reto_final.ui.register.RegisterPersonalConfigurationActivity
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
@@ -37,17 +38,8 @@ class LogInActivity : AppCompatActivity(){
         binding = LoginActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        rememberMeCheckBox= binding.rememberMe
-        rememberMeCheckBox.buttonTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.blue_green))
-        //Pone el checkbox true o false segun lo guardado
-        rememberMeCheckBox.isChecked= MyApp.userPreferences.getRememberMeState()
-        //Pone pass y user si hay uno guardado
-        if(rememberMeCheckBox.isChecked){
-            binding.email.setText(MyApp.userPreferences.getUser()!!.email)
-            binding.password.setText(MyApp.userPreferences.getPass())
-        }else {
-            MyApp.userPreferences.removeData()
-        }
+        previousLoginState()
+
 
         binding.login.setOnClickListener {
             var email = binding.email.text.toString()
@@ -60,13 +52,8 @@ class LogInActivity : AppCompatActivity(){
                     Toast.makeText(this, "No se puede hacer login sin internet", Toast.LENGTH_LONG)
                         .show()
                 }
-
             }
             //mockData()
-        }
-
-        binding.changePassword.setOnClickListener {
-            changePassword()
         }
 
         viewModel.loginUser.observe(this) {
@@ -74,30 +61,20 @@ class LogInActivity : AppCompatActivity(){
                 Resource.Status.SUCCESS -> {
                     val userResource = viewModel.loginUser.value
                     if (userResource != null && userResource.status == Resource.Status.SUCCESS) {
-                        var user = userResource.data
-                        Log.d("Prueba", "Primer Login da error"+user)
+                        val user = userResource.data
                         if (user != null && binding.rememberMe.isChecked) {
-                            MyApp.userPreferences.saveUser(user)
-                            MyApp.userPreferences.saveRememberMeState(binding.rememberMe.isChecked)
                             MyApp.userPreferences.savePass(binding.password.text.toString())
-                        } else if (user != null && !binding.rememberMe.isChecked && MyApp.userPreferences.fetchHibernateToken()!=null) {
-                            user.accessToken= MyApp.userPreferences.fetchHibernateToken()!!
-                            MyApp.userPreferences.saveUser(user)
-                            MyApp.userPreferences.saveRememberMeState(false)
                         }
                         if (user != null) {
                             MyApp.userPreferences.saveAuthToken(user.token)
+                            MyApp.userPreferences.saveUser(user)
+                            MyApp.userPreferences.saveRememberMeState(binding.rememberMe.isChecked)
                         }
-                        if (binding.password.text.toString() == "elorrieta00") {
-                            logIn()
-                            Toast.makeText(this, R.string.toast_edit_profile, Toast.LENGTH_LONG).show()
-                        }else {
-                            chat()
-                        }
+                        redirectAfterLogin()
                     }
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, "El servidor de Laravel no está encendido", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }
@@ -113,10 +90,9 @@ class LogInActivity : AppCompatActivity(){
                             MyApp.userPreferences.saveHibernateToken(user.accessToken)
                         }
                     }
-
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, "El servidor no está encendido", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
 
@@ -125,7 +101,47 @@ class LogInActivity : AppCompatActivity(){
         }
 
     }
+    private fun popUpCreate() {
+        val builder = AlertDialog.Builder(this)
+        val inflater = layoutInflater
+        val dialogView = inflater.inflate(R.layout.custom_dialog_forgot, null)
 
+//        val editText = dialogView.findViewById<EditText>(R.id.editText)
+
+        builder.setView(dialogView)
+        builder.setTitle("Introduce tu correo electrónico")
+
+        builder.setPositiveButton("Aceptar") { _, _ ->
+
+
+        }
+        builder.setNegativeButton("Cancelar") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        builder.show()
+    }
+    private fun redirectAfterLogin(){
+        if (binding.password.text.toString() == MyApp.DEFAULT_PASS) {
+            logIn()
+            Toast.makeText(this, R.string.toast_edit_profile, Toast.LENGTH_LONG).show()
+        }else {
+            chat()
+        }
+    }
+    private fun previousLoginState(){
+        rememberMeCheckBox= binding.rememberMe
+        rememberMeCheckBox.buttonTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.blue_green))
+        //Pone el checkbox true o false segun lo guardado
+        rememberMeCheckBox.isChecked= MyApp.userPreferences.getRememberMeState()
+        //Pone pass y user si hay uno guardado
+        if(rememberMeCheckBox.isChecked){
+            binding.email.setText(MyApp.userPreferences.getUser()!!.email)
+            binding.password.setText(MyApp.userPreferences.getPass())
+        }else {
+            MyApp.userPreferences.removeData()
+        }
+    }
     private fun mockData() {
 
         val listRoles = arrayOf(Role(1, UserRoleType.PROFESOR.toString()))
@@ -200,12 +216,6 @@ class LogInActivity : AppCompatActivity(){
 
     private fun chat() {
         val intent = Intent(this, GroupActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
-
-    private fun changePassword() {
-        val intent = Intent(this, RegisterChangePasswordActivity::class.java)
         startActivity(intent)
         finish()
     }

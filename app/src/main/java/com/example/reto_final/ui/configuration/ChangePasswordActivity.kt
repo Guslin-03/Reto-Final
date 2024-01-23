@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -36,9 +37,11 @@ class ChangePasswordActivity: AppCompatActivity() {
         binding.changePassword.setOnClickListener {
             if (user != null) {
                 if (checkData())  {
+                    Log.d("Pass", "CHECKDATA")
                     viewModel.onChangePassword(user.email ,binding.currentPassword.text.toString(), binding.newPassword1.text.toString())
                 }
             }
+            Log.d("Pass", "NO HAY USUARIO")
             //backToLogIn()
         }
 
@@ -73,10 +76,13 @@ class ChangePasswordActivity: AppCompatActivity() {
 
         viewModel.updatePassword.observe(this) {
             when (it.status) {
+
                 Resource.Status.SUCCESS -> {
+                    Log.d("Pass", "SUCCESS")
                     viewModel.onLogOut()
                 }
                 Resource.Status.ERROR -> {
+                    Log.d("Pass", "ERROR")
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {

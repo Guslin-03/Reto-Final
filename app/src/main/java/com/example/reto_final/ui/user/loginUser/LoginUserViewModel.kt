@@ -16,6 +16,7 @@ import com.example.reto_final.data.model.LoginUser
 import com.example.reto_final.data.repository.CommonLoginUserRepository
 import com.example.reto_final.data.repository.ProfileRequest
 import com.example.reto_final.data.repository.RegisterRequest
+import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,15 +49,15 @@ class LoginUserViewModel(
             userRepository.login(user)
         }
     }
+
     fun onLogIn(email:String, password:String) {
         viewModelScope.launch {
-            _secondLogin.value = secondLogIn(email,password)
-            if(_secondLogin.value!!.status==Resource.Status.SUCCESS){
-                _login_user.value = logIn(email,password)
+            _login_user.value = logIn(email,password)
+            if(_login_user.value!!.status==Resource.Status.SUCCESS && password!=MyApp.DEFAULT_PASS){
+                _secondLogin.value = secondLogIn(email,password)
             }
         }
     }
-
 
     private suspend fun secondLogIn(email:String, password:String) : Resource<LoginUser> {
         return withContext(Dispatchers.IO) {
@@ -118,8 +119,8 @@ class LoginUserViewModel(
             userRepository.updateProfile(profileRequest)
         }
     }
-
 }
+
 class LoginUserViewModelFactory(
     private val userRepository: CommonLoginUserRepository,
     private val context: Context
