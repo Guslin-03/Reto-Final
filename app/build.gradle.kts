@@ -83,4 +83,7 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.19")
+
+    // para utilizar eventBus
+    implementation("org.greenrobot:eventbus:3.2.0")
 }

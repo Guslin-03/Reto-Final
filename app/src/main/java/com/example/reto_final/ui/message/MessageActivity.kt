@@ -1,5 +1,6 @@
 package com.example.reto_final.ui.message
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +19,7 @@ import com.example.reto_final.data.repository.local.message.RoomMessageDataSourc
 import com.example.reto_final.data.repository.local.user.UserRoleType
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
 import com.example.reto_final.data.repository.remote.RemoteMessageDataSource
+import com.example.reto_final.data.socket.SocketMessageRes
 import com.example.reto_final.databinding.MessageActivityBinding
 import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.ui.group.GroupInfo
@@ -25,6 +27,9 @@ import com.example.reto_final.ui.group.GroupViewModel
 import com.example.reto_final.ui.group.RoomGroupViewModelFactory
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class MessageActivity : AppCompatActivity(){
 
@@ -48,7 +53,7 @@ class MessageActivity : AppCompatActivity(){
 
         setDefaultData()
 
-        messageAdapter = MessageAdapter()
+        messageAdapter = MessageAdapter(group)
         binding.messageList.adapter = messageAdapter
 
         socketViewModel.message.observe(this){
@@ -57,6 +62,7 @@ class MessageActivity : AppCompatActivity(){
                     val existingList = messageAdapter.currentList.toMutableList()
                     existingList.addAll(it.data ?: emptyList())
                     messageAdapter.submitList(existingList)
+                    socketViewModel.deleteSocketList()
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
@@ -65,6 +71,24 @@ class MessageActivity : AppCompatActivity(){
                 }
             }
         }
+
+        socketViewModel.connected.observe(this) {
+            when(it.status) {
+                Resource.Status.SUCCESS -> {
+                   if (it.data == true) {
+                       Toast.makeText(this, "Se conecta al socket", Toast.LENGTH_LONG).show()
+                   } else {
+                       Toast.makeText(this, "No se conecta al socket", Toast.LENGTH_LONG).show()
+                   }
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+                }
+            }
+        }
+
         messageViewModel.message.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
@@ -143,12 +167,14 @@ class MessageActivity : AppCompatActivity(){
             }
         }
         binding.include.send.setOnClickListener {
-            val message = binding.include.inputMessage.text.toString();
-            binding.include.inputMessage.setText("")
-            socketViewModel.onSendMessage(message, group.name)
-            //TODO ver como gestionar esto con sockets
+            val message = binding.include.inputMessage.text.toString()
+            if (message.isNotBlank()) {
+                binding.include.inputMessage.setText("")
+                socketViewModel.onSendMessage(message, group.name)
+            }
         }
 
+        startChatService(this)
     }
 
     private fun setDefaultData() {
@@ -235,4 +261,39 @@ class MessageActivity : AppCompatActivity(){
         return true
     }
 
+
+
+
+    // para el EventBus
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun a(string: String) {
+        Log.d("prueba", "onNotificationEmployee $string")
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onSocketMessage(socketMessageRes: SocketMessageRes) {
+
+        Log.d("prueba", "onSocketMessage $socketMessageRes")
+        if (group.name == socketMessageRes.room) {
+            // viewmodel.updateChats
+            Log.d("prueba", "esta en el grupo")
+        }
+    }
+
+
+    private fun startChatService(context: Context) {
+        val intent = Intent(context, ChatsService::class.java)
+        ContextCompat.startForegroundService(context, intent)
+    }
 }

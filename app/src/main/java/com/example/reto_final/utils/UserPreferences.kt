@@ -4,11 +4,15 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.example.reto_final.data.model.LoginUser
 import com.google.gson.Gson
+import io.socket.client.IO
+import io.socket.client.Socket
+import org.greenrobot.eventbus.EventBus
 
 class UserPreferences {
     private val sharedPreferences: SharedPreferences by lazy{
         MyApp.context.getSharedPreferences(MyApp.context.packageName, Context.MODE_PRIVATE)
     }
+    lateinit var mSocket: Socket
     companion object {
         const val USER_TOKEN = "user_token"
         const val USER_INFO = "user_info"
@@ -74,5 +78,10 @@ class UserPreferences {
 
     fun getPass(): String? {
         return sharedPreferences.getString(PASS,null)
+    }
+
+    fun prueba() {
+
+        EventBus.getDefault().post("asd")
     }
 }

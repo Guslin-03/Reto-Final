@@ -62,7 +62,7 @@ class LogInActivity : AppCompatActivity(){
                 }
 
             }
-//            mockData()
+            //mockData()
         }
 
         binding.changePassword.setOnClickListener {

@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
 
-    const val API_URI = "http://10.0.2.2:8063/api/"
+    const val API_URI = "${MyApp.API_SERVER}:${MyApp.API_PORT}/api/"
     private val client = OkHttpClient.Builder().addInterceptor { chain ->
         val authToken= MyApp.userPreferences.fetchHibernateToken()
         val newRequest: Request = chain.request().newBuilder()
