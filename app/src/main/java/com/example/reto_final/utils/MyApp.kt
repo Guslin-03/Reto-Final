@@ -29,17 +29,11 @@ class MyApp : Application() {
 
         db = Room
             .databaseBuilder(this, MyAppRoomDataBase::class.java, "chat-db")
-            .addCallback(MyAppRoomDatabaseCallback(appScope))
             .build()
 
 //        db.close()
 //        context.deleteDatabase("chat-db")
 
     }
-/*
-    override fun onTerminate() {
-        super.onTerminate()
-        userPreferences.mSocket.disconnect()
-    }
-*/
+
 }

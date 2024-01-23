@@ -1,6 +1,7 @@
 package com.example.reto_final.data.model
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import kotlinx.parcelize.Parcelize
 import java.util.Date
 
@@ -8,7 +9,8 @@ import java.util.Date
 data class Message (
     var id: Int?,
     val text: String,
-    val date: Date?,
+    val sentDate: Date,
+    val saveDate: Date,
     val groupId: Int,
-    val userId: Int
+    val authorId: Int,
 ) : Parcelable

@@ -7,14 +7,10 @@ import com.example.reto_final.data.model.Message
 import com.example.reto_final.data.repository.local.CommonMessageRepository
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
-import java.util.Date
 
 class RoomMessageDataSource : CommonMessageRepository {
 
     private val messageDao: MessageDao = MyApp.db.messageDao()
-    override suspend fun getMessages(): Resource<List<Message>> {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun getMessagesFromGroup(idGroup: Int): Resource<List<Message>> {
         val response = messageDao.getMessagesFromGroup(idGroup).map { it.toMessage() }
@@ -27,10 +23,20 @@ class RoomMessageDataSource : CommonMessageRepository {
         return Resource.success(message)
     }
 
+
+    private val pendingMessageDao: PendingMessageDao = MyApp.db.pendingMessageDao()
+
+    override suspend fun createPendingMessage(pendingMessage: Message): Resource<Message> {
+        val dbMessage = pendingMessageDao.createMessage(pendingMessage.toDbPendingMessage())
+        pendingMessage.id = dbMessage.toInt()
+        return Resource.success(pendingMessage)
+    }
+
 }
 
-fun DbMessage.toMessage() = Message(id, text, null,groupId, userId)
-fun Message.toDbMessage() = DbMessage(id, text, groupId, userId, Date())
+fun DbMessage.toMessage() = Message(id, text, sentDate, saveDate, groupId, userId)
+fun Message.toDbMessage() = DbMessage(id, text, sentDate, saveDate, groupId, authorId)
+fun Message.toDbPendingMessage() = DbPendingMessage(id, text, sentDate, groupId, authorId)
 
 @Dao
 interface MessageDao {
@@ -38,4 +44,10 @@ interface MessageDao {
     suspend fun getMessagesFromGroup(groupId: Int): List<DbMessage>
     @Insert
     suspend fun createMessage(message: DbMessage) : Long
+}
+
+@Dao
+interface PendingMessageDao {
+    @Insert
+    suspend fun createMessage(pendingMessage: DbPendingMessage) : Long
 }

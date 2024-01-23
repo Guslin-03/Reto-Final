@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import java.util.Date
 
 class SocketViewModel() : ViewModel() {
 
@@ -39,10 +40,10 @@ class SocketViewModel() : ViewModel() {
          */
     }
 
-    fun onSendMessage(message: String, groupName: String) {
+    fun onSendMessage(groupId: Int, message: String, sent: Date) {
         Log.d("Prueba", "onSendMessage $message")
         // la sala esta hardcodeada..
-        val socketMessage = SocketMessageReq(groupName, message)
+        val socketMessage = SocketMessageReq(groupId, message, sent)
         val jsonObject = JSONObject(Gson().toJson(socketMessage))
         MyApp.userPreferences.mSocket.emit(SocketEvents.ON_SEND_MESSAGE.value, jsonObject)
     }

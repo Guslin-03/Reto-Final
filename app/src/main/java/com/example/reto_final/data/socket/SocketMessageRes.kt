@@ -4,9 +4,11 @@ import java.util.Date
 
 data class SocketMessageRes (
     val messageType: MessageType,
-    val room: String,
+    val roomId: Int,
+    val messageId: Int,
     val message: String,
     val authorName: String,
-    val dateTime: Date,
-    val authorId: Int
+    val authorId: Int,
+    val sentDate: Date,
+    val saveDate: Date,
 )

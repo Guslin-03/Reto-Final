@@ -35,7 +35,7 @@ class MessageAdapter(
         fun bind(message: Message) {
 
             binding.text.text = message.text
-            if (MyApp.userPreferences.getUser()?.id == message.userId) {
+            if (MyApp.userPreferences.getUser()?.id == message.authorId) {
                 binding.text.setTextColor(Color.parseColor("#FF0000"))
                 binding.text.gravity = Gravity.END
             }else {

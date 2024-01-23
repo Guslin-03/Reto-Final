@@ -8,7 +8,7 @@ import com.example.reto_final.data.repository.local.group.DbGroup
 import com.example.reto_final.data.repository.local.user.DbUser
 import java.util.Date
 
-@Entity(tableName = "messages", foreignKeys = [
+@Entity(tableName = "pendingMessage", foreignKeys = [
     ForeignKey(
         entity = DbGroup::class,
         parentColumns = ["id"],
@@ -22,11 +22,10 @@ import java.util.Date
         onDelete = ForeignKey.NO_ACTION
     )
 ])
-data class DbMessage(
+data class DbPendingMessage (
     @PrimaryKey(autoGenerate = true) val id: Int?,
     @ColumnInfo(name = "text") val text: String,
-    @ColumnInfo(name = "sent") val sentDate: Date,
-    @ColumnInfo(name = "saved") val saveDate: Date,
+    @ColumnInfo(name = "sentDate") val sentDate: Date,
     @ColumnInfo(name = "groupId") val groupId: Int,
     @ColumnInfo(name = "userId") val userId: Int
 )

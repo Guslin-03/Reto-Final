@@ -15,9 +15,15 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import com.example.reto_final.R
+import com.example.reto_final.data.model.Message
+import com.example.reto_final.data.repository.local.CommonMessageRepository
+import com.example.reto_final.data.repository.local.MyAppRoomDataBase
+import com.example.reto_final.data.repository.local.message.DbMessage
+import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
 import com.example.reto_final.data.socket.SocketEvents
 import com.example.reto_final.data.socket.SocketMessageRes
 import com.example.reto_final.utils.MyApp
+import com.example.reto_final.utils.Resource
 import com.google.gson.Gson
 import io.socket.client.IO
 import io.socket.emitter.Emitter
@@ -27,6 +33,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
+import java.util.Date
 
 class ChatsService : Service() {
     private val channelId = "download_channel"
@@ -74,7 +81,7 @@ class ChatsService : Service() {
         return NotificationCompat.Builder(context, channelId)
             .setContentTitle("Chat en directo")
             .setContentText(contentText)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.resume_logo)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
@@ -137,12 +144,10 @@ class ChatsService : Service() {
         try {
             val jsonObject = data as JSONObject
             val jsonObjectString = jsonObject.toString()
-            val message = Gson().fromJson(jsonObjectString, SocketMessageRes::class.java)
+            val messageRes = Gson().fromJson(jsonObjectString, SocketMessageRes::class.java)
 
-            // TODO guardar en ROOM
-
-            EventBus.getDefault().post(message)
-            updateNotification(message.message)
+            EventBus.getDefault().post(messageRes.toMessage())
+            updateNotification(messageRes.message)
 
             // updateMessageListWithNewMessage(message)
         } catch (ex: Exception) {
@@ -158,6 +163,7 @@ class ChatsService : Service() {
             notificationManager.notify(notificationId, notification)
         }
     }
+
 /*
     private fun updateMessageListWithNewMessage(message: SocketMessageRes) {
         try {
@@ -189,4 +195,7 @@ class ChatsService : Service() {
 
         return options
     }
+
+    private fun SocketMessageRes.toMessage() = Message(messageId, message, sentDate, saveDate, roomId, authorId)
+
 }

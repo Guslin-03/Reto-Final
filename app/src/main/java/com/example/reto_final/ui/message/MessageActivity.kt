@@ -13,13 +13,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
 import com.example.reto_final.data.model.Group
+import com.example.reto_final.data.model.Message
 import com.example.reto_final.data.repository.local.group.ChatEnumType
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
 import com.example.reto_final.data.repository.local.user.UserRoleType
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
 import com.example.reto_final.data.repository.remote.RemoteMessageDataSource
-import com.example.reto_final.data.socket.SocketMessageRes
 import com.example.reto_final.databinding.MessageActivityBinding
 import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.ui.group.GroupInfo
@@ -30,6 +30,7 @@ import com.example.reto_final.utils.Resource
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.util.Date
 
 class MessageActivity : AppCompatActivity(){
 
@@ -170,7 +171,10 @@ class MessageActivity : AppCompatActivity(){
             val message = binding.include.inputMessage.text.toString()
             if (message.isNotBlank()) {
                 binding.include.inputMessage.setText("")
-                socketViewModel.onSendMessage(message, group.name)
+                if (group.id != null) {
+                    socketViewModel.onSendMessage(group.id!!, message, Date())
+                }
+
             }
         }
 
@@ -262,9 +266,7 @@ class MessageActivity : AppCompatActivity(){
     }
 
 
-
-
-    // para el EventBus
+    // EVENT BUS
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
@@ -282,10 +284,13 @@ class MessageActivity : AppCompatActivity(){
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onSocketMessage(socketMessageRes: SocketMessageRes) {
+    fun onSocketMessage(message: Message) {
 
-        Log.d("prueba", "onSocketMessage $socketMessageRes")
-        if (group.name == socketMessageRes.room) {
+        messageViewModel.onCreate(message)
+
+        Log.d("prueba", "onSocketMessage $message")
+        if (group.id == message.groupId) {
+
             // viewmodel.updateChats
             Log.d("prueba", "esta en el grupo")
         }

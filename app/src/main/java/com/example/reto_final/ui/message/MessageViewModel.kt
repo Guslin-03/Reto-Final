@@ -47,24 +47,22 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
             remoteMessageRepository.getMessagesFromGroup(groupId)
         }
     }
-    private suspend fun create(text: String, groupId: Int, userId: Int) : Resource<Message> {
+    private suspend fun create(message: Message) : Resource<Message> {
         return withContext(IO) {
-            val message = Message(null, text, null,groupId, userId)
             messageLocalRepository.createMessage(message)
         }
     }
-    private suspend fun createRemote(text: String, groupId: Int, userId: Int) : Resource<Message> {
+    private suspend fun createRemote(message: Message) : Resource<Message> {
         return withContext(IO) {
-            val message = Message(null, text, null,groupId, userId)
             remoteMessageRepository.createMessage(message)
         }
     }
-    fun onCreate(text:String, groupId: Int, userId: Int) {
+    fun onCreate(message: Message) {
         viewModelScope.launch {
             if (InternetChecker.isNetworkAvailable(context)) {
-                createRemote(text, groupId, userId)
+                createRemote(message)
             }else{
-                create(text, groupId, userId)
+                create(message)
             }
             _create.value = Resource.success(true)
         }
