@@ -6,10 +6,6 @@
         android:title="@string/informaci_n_del_grupo" />
 
     <item
-        android:id="@+id/addPeople"
-        android:title="@string/a_adir_usuario" />
-
-    <item
         android:id="@+id/leaveGroup"
         android:title="@string/abandonar_grupo" />
 

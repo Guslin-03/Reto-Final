@@ -43,7 +43,6 @@ class MessageActivity : AppCompatActivity(){
     private val remoteMessageRepository = RemoteMessageDataSource()
     private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository, applicationContext) }
     private lateinit var group: Group
-    private val socketViewModel: SocketViewModel by viewModels { SocketViewModelFactory() }
     private val user = MyApp.userPreferences.getUser()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,43 +56,23 @@ class MessageActivity : AppCompatActivity(){
         messageAdapter = MessageAdapter(group)
         binding.messageList.adapter = messageAdapter
 
-        socketViewModel.message.observe(this){
-            when(it.status) {
-                Resource.Status.SUCCESS -> {
-                    val existingList = messageAdapter.currentList.toMutableList()
-                    existingList.addAll(it.data ?: emptyList())
-                    messageAdapter.submitList(existingList)
-                    socketViewModel.deleteSocketList()
-                }
-                Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
-                }
-                Resource.Status.LOADING -> {
-                }
-            }
-        }
-
-        socketViewModel.connected.observe(this) {
-            when(it.status) {
-                Resource.Status.SUCCESS -> {
-                   if (it.data == true) {
-                       Toast.makeText(this, "Se conecta al socket", Toast.LENGTH_LONG).show()
-                   } else {
-                       Toast.makeText(this, "No se conecta al socket", Toast.LENGTH_LONG).show()
-                   }
-                }
-                Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
-                }
-                Resource.Status.LOADING -> {
-                }
-            }
-        }
-
         messageViewModel.message.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
                     messageAdapter.submitList(it.data)
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+                }
+            }
+        }
+
+        messageViewModel.incomingMessage.observe(this) {
+            when(it.status) {
+                Resource.Status.SUCCESS -> {
+                    messageAdapter.currentList.add(it.data)
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
@@ -151,11 +130,6 @@ class MessageActivity : AppCompatActivity(){
                     showGroupInfo()
                     true
                 }
-                R.id.addPeople -> {
-                    addPeople()
-                    //TODO crear activity para añadir usuarios a un grupo
-                    true
-                }
                 R.id.leaveGroup -> {
                     userCanLeaveGroup()
                     true
@@ -171,8 +145,8 @@ class MessageActivity : AppCompatActivity(){
             val message = binding.include.inputMessage.text.toString()
             if (message.isNotBlank()) {
                 binding.include.inputMessage.setText("")
-                if (group.id != null) {
-                    socketViewModel.onSendMessage(group.id!!, message, Date())
+                if (group.id != null && user != null) {
+                    messageViewModel.onSendMessage(message, Date(), group.id!!, user.id)
                 }
 
             }
@@ -213,8 +187,6 @@ class MessageActivity : AppCompatActivity(){
         startActivity(intent)
         finish()
     }
-
-    private fun addPeople() {}
 
     private fun goToGroups() {
         val intent = Intent(this, GroupActivity::class.java)
@@ -284,16 +256,8 @@ class MessageActivity : AppCompatActivity(){
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onSocketMessage(message: Message) {
-
-        messageViewModel.onCreate(message)
-
-        Log.d("prueba", "onSocketMessage $message")
-        if (group.id == message.groupId) {
-
-            // viewmodel.updateChats
-            Log.d("prueba", "esta en el grupo")
-        }
+    fun onSocketIncomingMessage(message: Message) {
+        messageViewModel.onSaveIncomingMessage(message, group)
     }
 
 

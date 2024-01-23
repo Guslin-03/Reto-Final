@@ -21,6 +21,7 @@ class MyApp : Application() {
         const val API_PORT = "8063"
         const val API_SOCKET_PORT = "8085"
         const val DEFAULT_PASS = "elorrieta00"
+        const val BEARER = "Bearer "
     }
     override fun onCreate(){
         super.onCreate()
@@ -30,6 +31,7 @@ class MyApp : Application() {
 
         db = Room
             .databaseBuilder(this, MyAppRoomDataBase::class.java, "chat-db")
+            .addCallback(MyAppRoomDatabaseCallback(appScope))
             .build()
 
 //        db.close()

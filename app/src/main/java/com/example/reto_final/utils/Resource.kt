@@ -1,6 +1,6 @@
 package com.example.reto_final.utils
 
-data class Resource<out T>(val status: Status, val data: T?, val message: String?) {
+data class Resource<out T>(var status: Status, val data: T?, val message: String?) {
     enum class Status {
         SUCCESS,
         ERROR,
@@ -12,7 +12,7 @@ data class Resource<out T>(val status: Status, val data: T?, val message: String
             return Resource(Status.SUCCESS, data, null)
         }
 
-        fun <T> success(): Resource<T> {
+        fun <T> success(): Status {
             return Resource(Status.SUCCESS, null, null)
         }
 

@@ -7,7 +7,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
-import android.os.Build
+import android.graphics.EmbossMaskFilter
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.ActivityCompat
@@ -16,14 +16,13 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import com.example.reto_final.R
 import com.example.reto_final.data.model.Message
-import com.example.reto_final.data.repository.local.CommonMessageRepository
-import com.example.reto_final.data.repository.local.MyAppRoomDataBase
-import com.example.reto_final.data.repository.local.message.DbMessage
-import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
 import com.example.reto_final.data.socket.SocketEvents
 import com.example.reto_final.data.socket.SocketMessageRes
 import com.example.reto_final.utils.MyApp
-import com.example.reto_final.utils.Resource
+import com.example.reto_final.utils.MyApp.Companion.API_SERVER
+import com.example.reto_final.utils.MyApp.Companion.API_SOCKET_PORT
+import com.example.reto_final.utils.MyApp.Companion.AUTHORIZATION_HEADER
+import com.example.reto_final.utils.MyApp.Companion.BEARER
 import com.google.gson.Gson
 import io.socket.client.IO
 import io.socket.emitter.Emitter
@@ -33,7 +32,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
-import java.util.Date
 
 class ChatsService : Service() {
     private val channelId = "download_channel"
@@ -57,15 +55,13 @@ class ChatsService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                "Descargas Channel",
-                NotificationManager.IMPORTANCE_LOW
-            )
-            val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(channel)
-        }
+        val channel = NotificationChannel(
+            channelId,
+            "Descargas Channel",
+            NotificationManager.IMPORTANCE_LOW
+        )
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager.createNotificationChannel(channel)
     }
 
     private fun createNotification(contentText: String): Notification {
@@ -98,10 +94,11 @@ class ChatsService : Service() {
 
     private fun startSocket() {
         val socketOptions = createSocketOptions()
-        MyApp.userPreferences.mSocket = IO.socket("${MyApp.API_SERVER}:${MyApp.API_SOCKET_PORT}", socketOptions)
+        MyApp.userPreferences.mSocket = IO.socket("${API_SERVER}:${API_SOCKET_PORT}", socketOptions)
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_CONNECT.value, onConnect())
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_DISCONNECT.value, onDisconnect())
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_MESSAGE_RECEIVED.value, onNewMessage())
+        MyApp.userPreferences.mSocket.on(SocketEvents.ON_ROOM_LEFT.value, onRoomLeft())
         serviceScope.launch {
             connect()
         }
@@ -109,33 +106,30 @@ class ChatsService : Service() {
 
     private suspend fun connect() {
         withContext(Dispatchers.IO) {
-            Log.d("Prueba", "Coonnect")
             MyApp.userPreferences.mSocket.connect()
         }
     }
 
     private fun onConnect(): Emitter.Listener {
         return Emitter.Listener {
-            // Manejar el mensaje recibido
-            Log.d("Prueba", "onConnect")
-            // _connected.postValue(Resource.success(true))
             updateNotification("conectado")
         }
     }
 
     private fun onDisconnect(): Emitter.Listener {
         return Emitter.Listener {
-            // Manejar el mensaje recibido
-
-            Log.d("Prueba", "disConnect")
             updateNotification("disConnect")
-            // _connected.postValue(Resource.success(false))
+        }
+    }
+
+    private fun onRoomLeft(): Emitter.Listener {
+        return Emitter.Listener {
+            updateNotification("te han sacao del grupo")
         }
     }
 
     private fun onNewMessage(): Emitter.Listener {
         return Emitter.Listener {
-            Log.d("Prueba", "onNewMessage")
             onNewMessageJsonObject(it[0])
         }
     }
@@ -149,7 +143,6 @@ class ChatsService : Service() {
             EventBus.getDefault().post(messageRes.toMessage())
             updateNotification(messageRes.message)
 
-            // updateMessageListWithNewMessage(message)
         } catch (ex: Exception) {
 //            Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
         }
@@ -164,32 +157,10 @@ class ChatsService : Service() {
         }
     }
 
-/*
-    private fun updateMessageListWithNewMessage(message: SocketMessageRes) {
-        try {
-            val incomingMessage = Message(null, message.message, message.dateTime, 1, message.authorId)
-            val msgsList = _message.value?.data?.toMutableList()
-            if (msgsList != null) {
-                msgsList.add(incomingMessage)
-                _message.postValue(Resource.success(msgsList))
-            } else {
-                _message.postValue(Resource.success(listOf(incomingMessage)))
-            }
-        } catch (ex: Exception) {
-//            Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
-        }
-    }
-
-
- */
-
     private fun createSocketOptions(): IO.Options {
         val options = IO.Options()
-
-        // Add custom headers
         val headers = mutableMapOf<String, MutableList<String>>()
-        // TODO el token tendria que salir de las sharedPrefernces para conectarse
-        headers[MyApp.AUTHORIZATION_HEADER] = mutableListOf("Bearer " + MyApp.userPreferences.fetchHibernateToken())
+        headers[AUTHORIZATION_HEADER] = mutableListOf(BEARER + MyApp.userPreferences.fetchHibernateToken())
 
         options.extraHeaders = headers
 

@@ -42,18 +42,18 @@ class LogInActivity : AppCompatActivity(){
 
 
         binding.login.setOnClickListener {
-            var email = binding.email.text.toString()
-            email = lowerCaseEmail(email)
-            val password = binding.password.text.toString()
-            if(checkData()) {
-                if (InternetChecker.isNetworkAvailable(applicationContext)) {
-                    viewModel.onLogIn(email, password)
-                }else {
-                    Toast.makeText(this, "No se puede hacer login sin internet", Toast.LENGTH_LONG)
-                        .show()
-                }
-            }
-            //mockData()
+//            var email = binding.email.text.toString()
+//            email = lowerCaseEmail(email)
+//            val password = binding.password.text.toString()
+//            if(checkData()) {
+//                if (InternetChecker.isNetworkAvailable(applicationContext)) {
+//                    viewModel.onLogIn(email, password)
+//                }else {
+//                    Toast.makeText(this, "No se puede hacer login sin internet", Toast.LENGTH_LONG)
+//                        .show()
+//                }
+//            }
+            mockData()
         }
 
         viewModel.loginUser.observe(this) {

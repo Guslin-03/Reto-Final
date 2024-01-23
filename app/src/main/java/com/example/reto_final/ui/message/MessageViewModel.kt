@@ -7,14 +7,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.Message
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
 import com.example.reto_final.data.repository.remote.RemoteMessageRepository
+import com.example.reto_final.data.socket.SocketEvents
+import com.example.reto_final.data.socket.SocketMessageReq
+import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.util.Date
 
 class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource,
                        private val remoteMessageRepository: RemoteMessageRepository,
@@ -24,10 +31,9 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
     private val _message = MutableLiveData<Resource<List<Message>>>()
     val message : LiveData<Resource<List<Message>>> get() = _message
 
-    private val _create = MutableLiveData<Resource<Boolean>>()
-    val create : LiveData<Resource<Boolean>> get() = _create
+    private val _incomingMessage = MutableLiveData<Resource<Message>>()
+    val incomingMessage : LiveData<Resource<Message>> get() = _incomingMessage
 
-    //init { updateMessageList() }
     fun updateMessageList(groupId: Int) {
         viewModelScope.launch {
             _message.value  = if (InternetChecker.isNetworkAvailable(context)) {
@@ -47,24 +53,40 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
             remoteMessageRepository.getMessagesFromGroup(groupId)
         }
     }
-    private suspend fun create(message: Message) : Resource<Message> {
+    private suspend fun saveIncomingMessage(message: Message) : Resource<Message> {
         return withContext(IO) {
             messageLocalRepository.createMessage(message)
         }
     }
-    private suspend fun createRemote(message: Message) : Resource<Message> {
-        return withContext(IO) {
-            remoteMessageRepository.createMessage(message)
+
+    fun onSaveIncomingMessage(message: Message, selectedGroup: Group) {
+        viewModelScope.launch {
+            val newMessage = saveIncomingMessage(message)
+            if (newMessage.data?.groupId == selectedGroup.id) {
+                newMessage.status = Resource.Status.SUCCESS
+                _incomingMessage.value = newMessage
+            }
         }
     }
-    fun onCreate(message: Message) {
-        viewModelScope.launch {
-            if (InternetChecker.isNetworkAvailable(context)) {
-                createRemote(message)
-            }else{
-                create(message)
+
+    fun onSendMessage(message: String, sent: Date, groupId: Int, authorId: Int) {
+
+        if (InternetChecker.isNetworkAvailable(context)) {
+            val socketMessage = SocketMessageReq(groupId, message, sent)
+            val jsonObject = JSONObject(Gson().toJson(socketMessage))
+            MyApp.userPreferences.mSocket.emit(SocketEvents.ON_SEND_MESSAGE.value, jsonObject)
+        } else {
+            viewModelScope.launch {
+                val sendMessage = Message(null, message, sent, Date(), groupId, authorId)
+                sendMessage(sendMessage)
             }
-            _create.value = Resource.success(true)
+        }
+
+    }
+
+    private suspend fun sendMessage(sendMessage: Message) : Resource<Message> {
+        return withContext(IO) {
+            messageLocalRepository.createPendingMessage(sendMessage)
         }
     }
 
