@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
-import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -29,6 +28,7 @@ import java.text.DateFormat
 import java.util.Locale
 import java.util.regex.Pattern
 
+
 class LogInActivity : AppCompatActivity(){
 
     private lateinit var binding: LoginActivityBinding
@@ -42,6 +42,9 @@ class LogInActivity : AppCompatActivity(){
 
         previousLoginState()
 
+        binding.forgot?.setOnClickListener {
+            popUpCreate()
+        }
         binding.login.setOnClickListener {
             var email = binding.email.text.toString()
             email = lowerCaseEmail(email)
@@ -100,6 +103,22 @@ class LogInActivity : AppCompatActivity(){
                 }
             }
         }
+        viewModel.reset.observe(this) {
+            when (it.status) {
+                Resource.Status.SUCCESS -> {
+                    if(it.data==1){
+                        viewModel.onResetPassword()
+                    }
+                    Toast.makeText(this, "Si el correo introducido es correcto, recibirás una nueva contraseña", Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+
+                }
+            }
+        }
 
     }
     private fun popUpCreate() {
@@ -107,14 +126,12 @@ class LogInActivity : AppCompatActivity(){
         val inflater = layoutInflater
         val dialogView = inflater.inflate(R.layout.custom_dialog_forgot, null)
 
-//        val editText = dialogView.findViewById<EditText>(R.id.editText)
-
         builder.setView(dialogView)
         builder.setTitle("Introduce tu correo electrónico")
-
+        val editText = dialogView.findViewById<EditText>(R.id.editText)
         builder.setPositiveButton("Aceptar") { _, _ ->
-
-
+            val email = editText.text.toString()
+           resetPass(email)
         }
         builder.setNegativeButton("Cancelar") { dialog, _ ->
             dialog.dismiss()
@@ -122,6 +139,13 @@ class LogInActivity : AppCompatActivity(){
 
         builder.show()
     }
+private fun resetPass(email:String){
+    if (InternetChecker.isNetworkAvailable(applicationContext)) {
+        viewModel.onFindByMail(email)
+    }else{
+        Toast.makeText(this, "No se puede resetear la contraseña sin conexión", Toast.LENGTH_LONG).show()
+    }
+}
     private fun redirectAfterLogin(){
         if (binding.password.text.toString() == MyApp.DEFAULT_PASS) {
             logIn()

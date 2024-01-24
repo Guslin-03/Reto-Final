@@ -43,6 +43,9 @@ class LoginUserViewModel(
     private val _secondLogin = MutableLiveData<Resource<LoginUser>>()
     val secondLogin : LiveData<Resource<LoginUser>> get() = _secondLogin
 
+    private val _reset = MutableLiveData<Resource<Int>>()
+    val reset : LiveData<Resource<Int>> get() = _reset
+
     private suspend fun logIn(email:String, password:String) : Resource<LoginUser> {
         return withContext(Dispatchers.IO) {
             val user = AuthRequest(email, password, Build.MODEL)
@@ -117,6 +120,26 @@ class LoginUserViewModel(
     private suspend fun updateProfile(profileRequest: ProfileRequest) : Resource<Void> {
         return withContext(Dispatchers.IO) {
             userRepository.updateProfile(profileRequest)
+        }
+    }
+    fun onFindByMail(email: String) {
+        viewModelScope.launch {
+            _reset.value = findUserByEmail(email)
+        }
+    }
+    private suspend fun findUserByEmail(email: String) : Resource<Int> {
+        return withContext(Dispatchers.IO) {
+            userRepository.findUserByEmail(email)
+        }
+    }
+    fun onResetPassword(){
+        viewModelScope.launch {
+         resetPassword()
+        }
+    }
+    private suspend fun resetPassword() {
+        return withContext(Dispatchers.IO) {
+            userRepository.sendMail()
         }
     }
 }

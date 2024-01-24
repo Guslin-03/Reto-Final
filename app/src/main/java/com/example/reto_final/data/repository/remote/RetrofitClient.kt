@@ -5,6 +5,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
 
@@ -15,7 +16,11 @@ object RetrofitClient {
             .addHeader("Authorization", "Bearer $authToken")
             .build()
         chain.proceed(newRequest)
-    } .build()
+    }  .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(15, TimeUnit.SECONDS)
+        .writeTimeout(15, TimeUnit.SECONDS)
+        .retryOnConnectionFailure(true)
+        .build()
 
     private val retrofitClient: Retrofit.Builder by lazy {
         Retrofit.Builder()

@@ -59,9 +59,8 @@ interface APIInterface {
     suspend fun createMessage(@Body message: Message): Response<Message>
     @GET("users/chat/{chatId}")
     suspend fun getUserByChatId(@Path("chatId") idChat:Int): Response<List<User>>
-
-    @GET("users")
-    suspend fun getAllUsers(): Response<List<User>>
-
-
+    @GET("users/find/{email}")
+    suspend fun getUserByEmail(@Path("email") email:String): Response<Int>
+    @POST("email/send")
+    suspend fun sendMail(): Boolean
 }

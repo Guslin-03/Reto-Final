@@ -65,4 +65,5 @@
     <string name="todos">All</string>
     <string name="ocultar">Hide</string>
     <string name="forgot">I forgot the password</string>
+    <string name="email_forgot">Email</string>
 </resources>

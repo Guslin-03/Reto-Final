@@ -81,8 +81,8 @@
 
     <Button
         android:id="@+id/forgot"
-        android:layout_width="286dp"
-        android:layout_height="53dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:backgroundTint="@color/transparent"
         android:text="@string/forgot"
         android:textColor="@color/design_default_color_secondary_variant"

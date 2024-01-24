@@ -20,4 +20,7 @@ interface CommonLoginUserRepository {
 
     suspend fun updateProfile(profileRequest: ProfileRequest): Resource<Void>
 
+    suspend fun findUserByEmail(email: String): Resource<Int>
+
+    suspend fun sendMail(): Boolean
 }

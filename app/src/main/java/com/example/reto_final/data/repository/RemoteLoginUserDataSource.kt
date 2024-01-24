@@ -34,4 +34,12 @@ class RemoteLoginUserDataSource: BaseDataSource(), CommonLoginUserRepository {
         RetrofitClientLaravel.apiInterface.updateProfile(profileRequest)
     }
 
+    override suspend fun findUserByEmail(email: String) = getResult {
+        RetrofitClient.apiInterface.getUserByEmail(email)
+    }
+
+    override suspend fun sendMail() : Boolean {
+        return RetrofitClient.apiInterface.sendMail()
+    }
+
 }

@@ -65,4 +65,5 @@
     <string name="todos">Denak</string>
     <string name="ocultar">Ezkutatu</string>
     <string name="forgot">Pasahitza ahaztu dut</string>
+    <string name="email_forgot">Posta elektronikoa</string>
 </resources>

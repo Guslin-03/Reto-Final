@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="806dp"
-        android:layout_height="374dp"
+        android:layout_width="737dp"
+        android:layout_height="353dp"
         android:contentDescription="@string/logo_elorrchat"
         app:layout_constraintBottom_toTopOf="@+id/guidelineSuperior"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,19 +26,21 @@
         android:ems="10"
         android:minHeight="48dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.25" />
+        app:layout_constraintBottom_toTopOf="@+id/email"
+        app:layout_constraintGuide_percent="0.25"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/email"
-        android:layout_width="434dp"
-        android:layout_height="138dp"
+        android:layout_width="370dp"
+        android:layout_height="101dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
         android:textColorHint="#85736E6C"
-        android:textSize="24sp"
+        android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/password_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,24 +48,25 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/password_layout"
-        android:layout_width="435dp"
-        android:layout_height="121dp"
+        android:layout_width="365dp"
+        android:layout_height="95dp"
         app:endIconMode="password_toggle"
         app:layout_constraintBottom_toTopOf="@+id/rememberMe"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"
-            android:layout_width="match_parent"
-            android:layout_height="131dp"
+            android:layout_width="364dp"
+            android:layout_height="88dp"
             android:autofillHints=""
             android:ems="10"
             android:hint="@string/contrase_a"
             android:inputType="textPassword"
             android:minHeight="48dp"
-            android:textSize="24sp" />
+            android:textSize="34sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatCheckBox
@@ -72,39 +75,44 @@
         android:layout_height="wrap_content"
         android:text="@string/rememberMe"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/guidelineInferior"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toTopOf="@+id/forgot"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password_layout" />
+
+    <Button
+        android:id="@+id/forgot"
+        android:layout_width="494dp"
+        android:layout_height="123dp"
+        android:backgroundTint="@color/transparent"
+        android:text="@string/forgot"
+        android:textColor="@color/design_default_color_secondary_variant"
+        android:textSize="28sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineInferior"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rememberMe" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineInferior"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.85" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintGuide_percent="0.85"
+        app:layout_constraintTop_toBottomOf="@+id/forgot" />
 
     <Button
         android:id="@+id/login"
-        android:layout_width="296dp"
-        android:layout_height="104dp"
+        android:layout_width="279dp"
+        android:layout_height="81dp"
         android:backgroundTint="#0D47A1"
         android:text="@string/login"
-        android:textSize="24sp"
+        android:textSize="34sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/change_password"
-        app:layout_constraintTop_toBottomOf="@+id/guidelineInferior" />
-
-    <Button
-        android:id="@+id/change_password"
-        android:layout_width="330dp"
-        android:layout_height="107dp"
-        android:backgroundTint="#0D47A1"
-        android:text="@string/cambiar_contrase_a"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/login"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/guidelineInferior" />
 
