@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import android.widget.CheckBox
 import android.widget.EditText
@@ -24,6 +25,7 @@ import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.ui.register.RegisterPersonalConfigurationActivity
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
+import java.text.DateFormat
 import java.util.Locale
 import java.util.regex.Pattern
 
@@ -40,20 +42,19 @@ class LogInActivity : AppCompatActivity(){
 
         previousLoginState()
 
-
         binding.login.setOnClickListener {
-//            var email = binding.email.text.toString()
-//            email = lowerCaseEmail(email)
-//            val password = binding.password.text.toString()
-//            if(checkData()) {
-//                if (InternetChecker.isNetworkAvailable(applicationContext)) {
-//                    viewModel.onLogIn(email, password)
-//                }else {
-//                    Toast.makeText(this, "No se puede hacer login sin internet", Toast.LENGTH_LONG)
-//                        .show()
-//                }
-//            }
-            mockData()
+            var email = binding.email.text.toString()
+            email = lowerCaseEmail(email)
+            val password = binding.password.text.toString()
+            if(checkData()) {
+                if (InternetChecker.isNetworkAvailable(applicationContext)) {
+                    viewModel.onLogIn(email, password)
+                }else {
+                    Toast.makeText(this, "No se puede hacer login sin internet", Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+//            mockData()
         }
 
         viewModel.loginUser.observe(this) {

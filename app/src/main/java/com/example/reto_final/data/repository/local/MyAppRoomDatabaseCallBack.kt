@@ -5,16 +5,17 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.reto_final.data.repository.local.group.DbGroup
 import com.example.reto_final.data.repository.local.group.ChatEnumType
 import com.example.reto_final.data.repository.local.group.DbUserGroup
-import com.example.reto_final.data.repository.local.message.DbMessage
-import com.example.reto_final.data.repository.local.message.DbPendingMessage
 import com.example.reto_final.data.repository.local.role.DbRole
 import com.example.reto_final.data.repository.local.user.DbUser
+import com.example.reto_final.data.repository.remote.PopulateDataBase
 import com.example.reto_final.utils.MyApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.util.Date
 
 class MyAppRoomDatabaseCallback(private val scope: CoroutineScope) : RoomDatabase.Callback() {
+
+    private val populateDataBase = PopulateDataBase()
+
     override fun onCreate(db: SupportSQLiteDatabase) {
         super.onCreate(db)
         // Código para crear datos de prueba al crear la base de datos
@@ -27,61 +28,33 @@ class MyAppRoomDatabaseCallback(private val scope: CoroutineScope) : RoomDatabas
     private suspend fun populateDatabase() {
 
         val roleDao = MyApp.db.roleDao()
-        roleDao.createRole(DbRole(null, "PROFESOR"))
-        roleDao.createRole(DbRole(null, "ALUMNO"))
+        roleDao.createRole(DbRole(1, "PROFESOR"))
+        roleDao.createRole(DbRole(2, "ALUMNO"))
 
         val userDao = MyApp.db.userDao()
-        userDao.createUser(DbUser(null,"David", "Comeron", "davidcomeron@elorrieta.com", 601269008,1))
-        userDao.createUser(DbUser(null,"Joana", "Barber", "joanabarber@elorrieta.com", 601269009,2))
-        userDao.createUser(DbUser(null,"Robson", "Garcia", "robsongarcia@elorrieta.com", 601269010,2))
+        userDao.createUser(DbUser(34,"Margarita", "Lazaro", "margaritalazaro@elorrieta.com", 853389841,1))
+        userDao.createUser(DbUser(58,"Ander", "Galvan", "andergalvan@elorrieta.com", 515897142,2))
+
 
         val groupDao = MyApp.db.groupDao()
-        groupDao.createGroup(DbGroup(1,"Profesores", ChatEnumType.PRIVATE.name, 1))
-        groupDao.createGroup(DbGroup(2,"Alumnos", ChatEnumType.PRIVATE.name, 2))
-        groupDao.createGroup(DbGroup(3,"General", ChatEnumType.PUBLIC.name, 3))
+        groupDao.createGroup(DbGroup(2,"Grupo2", ChatEnumType.PUBLIC.name, 58))
+        groupDao.createGroup(DbGroup(3,"David", ChatEnumType.PUBLIC.name, 34))
 
-        groupDao.addUserToGroup(DbUserGroup(1,1))
-        groupDao.addUserToGroup(DbUserGroup(2,2))
-        groupDao.addUserToGroup(DbUserGroup(3,3))
+        groupDao.addUserToGroup(DbUserGroup(2,34))
+        groupDao.addUserToGroup(DbUserGroup(2,58))
+        groupDao.addUserToGroup(DbUserGroup(3,34))
 
-        val messageDao = MyApp.db.messageDao()
-        messageDao.createMessage(DbMessage(null,"Mensaje 1", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 2", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 3", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 4", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 5", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 1", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 2", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 3", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 4", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 5", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 1", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 2", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 3", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 4", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 5", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 1", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 2", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 3", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 4", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 5", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 1", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 2", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 3", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 4", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 5", Date(), Date(), 1, 1))
-        messageDao.createMessage(DbMessage(null,"Mensaje 1", Date(), Date(), 2, 2))
-        messageDao.createMessage(DbMessage(null,"Mensaje 2", Date(), Date(), 2, 2))
-        messageDao.createMessage(DbMessage(null,"Mensaje 3", Date(), Date(), 2, 2))
-        messageDao.createMessage(DbMessage(null,"Mensaje 4", Date(), Date(), 2, 2))
-        messageDao.createMessage(DbMessage(null,"Mensaje 5", Date(), Date(), 2, 2))
+        populateDataBase.getAllUsers()
+        val allGroups = populateDataBase.getGroups().data?.toList()
 
-        val pendingMessageDao = MyApp.db.pendingMessageDao()
-        pendingMessageDao.createMessage(DbPendingMessage(null,"Mensaje 1", Date(), 1, 1))
-        pendingMessageDao.createMessage(DbPendingMessage(null,"Mensaje 2", Date(), 1, 1))
-        pendingMessageDao.createMessage(DbPendingMessage(null,"Mensaje 3", Date(), 1, 1))
-        pendingMessageDao.createMessage(DbPendingMessage(null,"Mensaje 4", Date(), 1, 1))
-        pendingMessageDao.createMessage(DbPendingMessage(null,"Mensaje 5", Date(), 1, 1))
+        if (allGroups != null) {
+            for (group in allGroups) {
+                if (group.id != null) {
+                    populateDataBase.getMessageByChatId(group.id!!)
+                }
+            }
+        }
 
     }
+
 }

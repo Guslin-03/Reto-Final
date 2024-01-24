@@ -13,7 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
 import com.example.reto_final.data.model.Group
-import com.example.reto_final.data.model.Message
+import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.repository.local.group.ChatEnumType
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
@@ -30,7 +30,9 @@ import com.example.reto_final.utils.Resource
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 class MessageActivity : AppCompatActivity(){
 
@@ -62,6 +64,7 @@ class MessageActivity : AppCompatActivity(){
                     messageAdapter.submitList(it.data)
                 }
                 Resource.Status.ERROR -> {
+                    Log.d("Prueba", ""+it.message)
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
@@ -72,7 +75,10 @@ class MessageActivity : AppCompatActivity(){
         messageViewModel.incomingMessage.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
-                    messageAdapter.currentList.add(it.data)
+                    val newList = ArrayList(messageAdapter.currentList)
+                    newList.add(it.data)
+
+                    messageAdapter.submitList(newList)
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
@@ -159,6 +165,7 @@ class MessageActivity : AppCompatActivity(){
         val receivedGroup: Group? = intent.getParcelableExtra("grupo_seleccionado")
         // Verificar si se recibió el objeto Group
         if (receivedGroup != null) {
+            Log.d("Prueba", ""+receivedGroup.id)
             this.group = receivedGroup
             receivedGroup.id?.let { messageViewModel.updateMessageList(it) }
             binding.configurationTitle.text = this.group.name
@@ -241,6 +248,7 @@ class MessageActivity : AppCompatActivity(){
     // EVENT BUS
     override fun onStart() {
         super.onStart()
+        Log.d("Prueba", "Se registra")
         EventBus.getDefault().register(this)
     }
 
@@ -250,16 +258,11 @@ class MessageActivity : AppCompatActivity(){
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun a(string: String) {
-        Log.d("prueba", "onNotificationEmployee $string")
-    }
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onSocketIncomingMessage(message: Message) {
+        Log.d("Prueba", "Lo recibio2v2")
+        message.groupId = group.id!!
         messageViewModel.onSaveIncomingMessage(message, group)
     }
-
 
     private fun startChatService(context: Context) {
         val intent = Intent(context, ChatsService::class.java)

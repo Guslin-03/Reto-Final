@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.model.InternetChecker
-import com.example.reto_final.data.model.Message
+import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
 import com.example.reto_final.data.repository.remote.RemoteMessageRepository
 import com.example.reto_final.data.socket.SocketEvents
@@ -72,12 +72,12 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
     fun onSendMessage(message: String, sent: Date, groupId: Int, authorId: Int) {
 
         if (InternetChecker.isNetworkAvailable(context)) {
-            val socketMessage = SocketMessageReq(groupId, message, sent)
+            val socketMessage = SocketMessageReq(groupId, message, sent.time)
             val jsonObject = JSONObject(Gson().toJson(socketMessage))
             MyApp.userPreferences.mSocket.emit(SocketEvents.ON_SEND_MESSAGE.value, jsonObject)
         } else {
             viewModelScope.launch {
-                val sendMessage = Message(null, message, sent, Date(), groupId, authorId)
+                val sendMessage = Message(message, sent.time, sent.time, groupId, authorId)
                 sendMessage(sendMessage)
             }
         }

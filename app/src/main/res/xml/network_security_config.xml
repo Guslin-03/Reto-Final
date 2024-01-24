@@ -3,7 +3,7 @@
     <domain-config cleartextTrafficPermitted="true">
         <!-- mi localhost -->
         <domain includeSubdomains="true">10.5.7.210</domain>
-        <domain includeSubdomains="true">10.5.7.90</domain>
-        <domain includeSubdomains="true">10.5.7.97</domain>
+        <domain includeSubdomains="true">10.5.7.26</domain>
+        <domain includeSubdomains="true">10.5.7.23</domain>
     </domain-config>
 </network-security-config>

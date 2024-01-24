@@ -47,6 +47,8 @@ class GroupViewModel(
     private val _leaveGroup = MutableLiveData<Resource<Int>>()
     val leaveGroup : LiveData<Resource<Int>> get() = _leaveGroup
 
+    init { updateGroupList() }
+
     fun updateGroupList() {
         viewModelScope.launch {
             _group.value = if (InternetChecker.isNetworkAvailable(context)) {
@@ -56,8 +58,6 @@ class GroupViewModel(
             }
         }
     }
-
-    init { updateGroupList() }
 
     private suspend fun getGroups() : Resource<List<Group>> {
         return withContext(Dispatchers.IO) {

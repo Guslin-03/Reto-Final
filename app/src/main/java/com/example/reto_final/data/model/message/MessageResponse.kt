@@ -1,16 +1,15 @@
-package com.example.reto_final.data.model
+package com.example.reto_final.data.model.message
 
 import android.os.Parcelable
-import androidx.room.ColumnInfo
 import kotlinx.parcelize.Parcelize
 import java.util.Date
 
 @Parcelize
-data class Message (
+data class MessageResponse(
     var id: Int?,
     val text: String,
-    val sentDate: Date,
-    val saveDate: Date,
+    val sent: Date,
+    val saved: Date,
     val groupId: Int,
-    val authorId: Int,
+    val authorId: Int
 ) : Parcelable

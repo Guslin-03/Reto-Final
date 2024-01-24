@@ -17,7 +17,7 @@ class MyApp : Application() {
         lateinit var db: MyAppRoomDataBase
         lateinit var appScope: CoroutineScope
         const val AUTHORIZATION_HEADER = "Authorization"
-        const val API_SERVER = "http://10.5.7.97"
+        const val API_SERVER = "http://10.5.7.23"
         const val API_PORT = "8063"
         const val API_SOCKET_PORT = "8085"
         const val DEFAULT_PASS = "elorrieta00"

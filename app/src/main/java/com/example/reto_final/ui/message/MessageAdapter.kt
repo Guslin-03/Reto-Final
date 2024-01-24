@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.reto_final.data.model.Group
-import com.example.reto_final.data.model.Message
+import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.databinding.ItemMessageBinding
 import com.example.reto_final.utils.MyApp
 

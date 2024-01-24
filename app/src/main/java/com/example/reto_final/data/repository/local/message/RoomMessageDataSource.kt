@@ -1,12 +1,14 @@
 package com.example.reto_final.data.repository.local.message
 
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.reto_final.data.model.Message
+import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.repository.local.CommonMessageRepository
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
+import java.util.Date
 
 class RoomMessageDataSource : CommonMessageRepository {
 
@@ -18,6 +20,7 @@ class RoomMessageDataSource : CommonMessageRepository {
     }
 
     override suspend fun createMessage(message: Message): Resource<Message> {
+        Log.d("Prueba", ""+message)
         val dbMessage = messageDao.createMessage(message.toDbMessage())
         message.id = dbMessage.toInt()
         return Resource.success(message)
@@ -34,9 +37,9 @@ class RoomMessageDataSource : CommonMessageRepository {
 
 }
 
-fun DbMessage.toMessage() = Message(id, text, sentDate, saveDate, groupId, userId)
-fun Message.toDbMessage() = DbMessage(id, text, sentDate, saveDate, groupId, authorId)
-fun Message.toDbPendingMessage() = DbPendingMessage(id, text, sentDate, groupId, authorId)
+fun DbMessage.toMessage() = Message(id, text, sentDate.time, saveDate.time, groupId, userId)
+fun Message.toDbMessage() = DbMessage(id, text, Date(sent), Date(saved), groupId, authorId)
+fun Message.toDbPendingMessage() = DbPendingMessage(id, text, Date(sent), groupId, authorId)
 
 @Dao
 interface MessageDao {

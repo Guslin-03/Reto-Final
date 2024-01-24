@@ -7,15 +7,15 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
-import android.graphics.EmbossMaskFilter
 import android.os.IBinder
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import com.example.reto_final.R
-import com.example.reto_final.data.model.Message
+import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.socket.SocketEvents
 import com.example.reto_final.data.socket.SocketMessageRes
 import com.example.reto_final.utils.MyApp
@@ -23,6 +23,7 @@ import com.example.reto_final.utils.MyApp.Companion.API_SERVER
 import com.example.reto_final.utils.MyApp.Companion.API_SOCKET_PORT
 import com.example.reto_final.utils.MyApp.Companion.AUTHORIZATION_HEADER
 import com.example.reto_final.utils.MyApp.Companion.BEARER
+import com.example.reto_final.utils.MyApp.Companion.context
 import com.google.gson.Gson
 import io.socket.client.IO
 import io.socket.emitter.Emitter
@@ -98,7 +99,6 @@ class ChatsService : Service() {
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_CONNECT.value, onConnect())
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_DISCONNECT.value, onDisconnect())
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_MESSAGE_RECEIVED.value, onNewMessage())
-        MyApp.userPreferences.mSocket.on(SocketEvents.ON_ROOM_LEFT.value, onRoomLeft())
         serviceScope.launch {
             connect()
         }
@@ -130,6 +130,7 @@ class ChatsService : Service() {
 
     private fun onNewMessage(): Emitter.Listener {
         return Emitter.Listener {
+            Log.d("Prueba", "Lo recibio")
             onNewMessageJsonObject(it[0])
         }
     }
@@ -167,6 +168,6 @@ class ChatsService : Service() {
         return options
     }
 
-    private fun SocketMessageRes.toMessage() = Message(messageId, message, sentDate, saveDate, roomId, authorId)
+    private fun SocketMessageRes.toMessage() = Message(messageId, message, sent, saved, roomId, authorId)
 
 }

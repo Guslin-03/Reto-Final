@@ -9,6 +9,6 @@ data class SocketMessageRes (
     val message: String,
     val authorName: String,
     val authorId: Int,
-    val sentDate: Date,
-    val saveDate: Date,
+    val sent: Long,
+    val saved: Long,
 )
