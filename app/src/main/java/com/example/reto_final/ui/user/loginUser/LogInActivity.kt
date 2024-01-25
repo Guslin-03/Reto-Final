@@ -46,18 +46,18 @@ class LogInActivity : AppCompatActivity(){
             popUpCreate()
         }
         binding.login.setOnClickListener {
-            var email = binding.email.text.toString()
-            email = lowerCaseEmail(email)
-            val password = binding.password.text.toString()
-            if(checkData()) {
-                if (InternetChecker.isNetworkAvailable(applicationContext)) {
-                    viewModel.onLogIn(email, password)
-                }else {
-                    Toast.makeText(this, "No se puede hacer login sin internet", Toast.LENGTH_LONG)
-                        .show()
-                }
-            }
-//            mockData()
+//            var email = binding.email.text.toString()
+//            email = lowerCaseEmail(email)
+//            val password = binding.password.text.toString()
+//            if(checkData()) {
+//                if (InternetChecker.isNetworkAvailable(applicationContext)) {
+//                    viewModel.onLogIn(email, password)
+//                }else {
+//                    Toast.makeText(this, "No se puede hacer login sin internet", Toast.LENGTH_LONG)
+//                        .show()
+//                }
+//            }
+            mockData()
         }
 
         viewModel.loginUser.observe(this) {
@@ -139,18 +139,18 @@ class LogInActivity : AppCompatActivity(){
 
         builder.show()
     }
-private fun resetPass(email:String){
-    if (InternetChecker.isNetworkAvailable(applicationContext)) {
-        viewModel.onFindByMail(email)
-    }else{
-        Toast.makeText(this, "No se puede resetear la contraseña sin conexión", Toast.LENGTH_LONG).show()
+    private fun resetPass(email:String){
+        if (InternetChecker.isNetworkAvailable(applicationContext)) {
+            viewModel.onFindByMail(email)
+        } else {
+            Toast.makeText(this, "No se puede resetear la contraseña sin conexión", Toast.LENGTH_LONG).show()
+        }
     }
-}
     private fun redirectAfterLogin(){
         if (binding.password.text.toString() == MyApp.DEFAULT_PASS) {
             logIn()
             Toast.makeText(this, R.string.toast_edit_profile, Toast.LENGTH_LONG).show()
-        }else {
+        } else {
             chat()
         }
     }

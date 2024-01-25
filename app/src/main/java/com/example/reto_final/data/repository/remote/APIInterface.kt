@@ -63,4 +63,7 @@ interface APIInterface {
     suspend fun getUserByEmail(@Path("email") email:String): Response<Int>
     @POST("email/send")
     suspend fun sendMail(): Boolean
+
+    @GET("users")
+    suspend fun getAllUsers(): Response<List<User>>
 }
