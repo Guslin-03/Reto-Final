@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import com.example.reto_final.data.model.Role
 import com.example.reto_final.data.model.User
 import com.example.reto_final.data.repository.local.CommonUserRepository
 import com.example.reto_final.utils.MyApp
@@ -60,3 +61,4 @@ interface UserDao {
     suspend fun userIsAdmin(idAdmin: Int, idGroup: Int) : Int
 
 }
+

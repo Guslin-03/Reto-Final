@@ -6,6 +6,7 @@ import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.model.LoginUser
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.model.User
+import com.example.reto_final.data.model.UserRequest
 import com.example.reto_final.data.repository.ProfileRequest
 import com.example.reto_final.data.repository.RegisterRequest
 import retrofit2.Response
@@ -65,5 +66,5 @@ interface APIInterface {
     suspend fun sendMail(): Boolean
 
     @GET("users")
-    suspend fun getAllUsers(): Response<List<User>>
+    suspend fun findUsers(): Response<List<UserRequest>>
 }

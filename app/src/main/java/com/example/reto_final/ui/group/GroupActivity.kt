@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.CheckBox
@@ -19,17 +18,26 @@ import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
 import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
+import com.example.reto_final.data.repository.local.PopulateLocalDataBase
+import com.example.reto_final.data.repository.local.PopulateLocalDataBaseFactory
 import com.example.reto_final.data.repository.local.group.ChatEnumType
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
+import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
+import com.example.reto_final.data.repository.local.role.RoomRoleDataSource
 import com.example.reto_final.data.repository.local.user.RoomUserDataSource
 import com.example.reto_final.data.repository.local.user.UserRoleType
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
+import com.example.reto_final.data.repository.remote.RemoteMessageDataSource
+import com.example.reto_final.data.repository.remote.RemoteRoleDataSource
+import com.example.reto_final.data.repository.remote.RemoteRoleRepository
 import com.example.reto_final.data.repository.remote.RemoteUserDataSource
 import com.example.reto_final.databinding.GroupActivityBinding
 import com.example.reto_final.ui.message.MessageActivity
 import com.example.reto_final.ui.configuration.ChangePasswordActivity
 import com.example.reto_final.ui.user.loginUser.LogInActivity
 import com.example.reto_final.ui.configuration.PersonalConfigurationActivity
+import com.example.reto_final.ui.message.MessageViewModel
+import com.example.reto_final.ui.message.RoomMessageViewModelFactory
 import com.example.reto_final.ui.user.loginUser.LoginUserViewModel
 import com.example.reto_final.ui.user.loginUser.LoginUserViewModelFactory
 import com.example.reto_final.ui.user.RoomUserViewModelFactory
@@ -42,7 +50,7 @@ class GroupActivity: AppCompatActivity() {
     private lateinit var binding: GroupActivityBinding
     private lateinit var groupAdapter: GroupAdapter
     private val loginUserRepository = RemoteLoginUserDataSource()
-    private val loginUserViewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(loginUserRepository, applicationContext) }
+    private val loginUserViewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(loginUserRepository,applicationContext) }
     private val userRepository = RoomUserDataSource()
     private val remoteUserRepository = RemoteUserDataSource()
     private val userViewModel: UserViewModel by viewModels { RoomUserViewModelFactory(userRepository,remoteUserRepository,applicationContext) }
@@ -50,6 +58,14 @@ class GroupActivity: AppCompatActivity() {
     private val remoteGroupRepository = RemoteGroupDataSource()
     private lateinit var group: Group
     private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository, applicationContext) }
+    private val messageRepository = RoomMessageDataSource()
+    private val remoteMessageRepository = RemoteMessageDataSource()
+
+    private val localRoleRepository = RoomRoleDataSource()
+    private val remoteRoleRepository = RemoteRoleDataSource()
+    private val populateLocalDataBase: PopulateLocalDataBase by viewModels {
+        PopulateLocalDataBaseFactory(
+            groupRepository, remoteGroupRepository, messageRepository ,remoteMessageRepository ,userRepository, remoteUserRepository, localRoleRepository, remoteRoleRepository ) }
     private val user = MyApp.userPreferences.getUser()
     private lateinit var radioButtonPrivate: RadioButton
     private lateinit var radioButtonPublic: RadioButton

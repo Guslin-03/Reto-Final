@@ -11,6 +11,8 @@ import com.example.reto_final.R
 import com.example.reto_final.data.model.Module
 import com.example.reto_final.data.model.LoginUser
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
+import com.example.reto_final.data.repository.local.role.RoomRoleDataSource
+import com.example.reto_final.data.repository.local.user.RoomUserDataSource
 import com.example.reto_final.databinding.ConfigurationActvityBinding
 import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.ui.module.ModuleAdapter
@@ -25,7 +27,7 @@ class ConfigurationActivity : AppCompatActivity() {
     private lateinit var moduleAdapter: ModuleAdapter
     private lateinit var nombresDeGrados: Array<String>
     private val userRepository = RemoteLoginUserDataSource()
-    private val viewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(userRepository,applicationContext) }
+    private val viewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(userRepository, applicationContext) }
     private val user = MyApp.userPreferences.getUser()
 
     override fun onCreate(savedInstanceState: Bundle?) {

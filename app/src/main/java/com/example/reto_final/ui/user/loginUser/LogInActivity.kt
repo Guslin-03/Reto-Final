@@ -18,6 +18,8 @@ import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.LoginUser
 import com.example.reto_final.data.model.Role
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
+import com.example.reto_final.data.repository.local.role.RoomRoleDataSource
+import com.example.reto_final.data.repository.local.user.RoomUserDataSource
 import com.example.reto_final.data.repository.local.user.UserRoleType
 import com.example.reto_final.databinding.LoginActivityBinding
 import com.example.reto_final.ui.group.GroupActivity
@@ -27,7 +29,6 @@ import com.example.reto_final.utils.Resource
 import java.text.DateFormat
 import java.util.Locale
 import java.util.regex.Pattern
-
 
 class LogInActivity : AppCompatActivity(){
 
@@ -187,6 +188,7 @@ class LogInActivity : AppCompatActivity(){
             "",
             "")
         MyApp.userPreferences.saveUser(loginUser)
+
         chat()
 
     }

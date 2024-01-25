@@ -1,5 +1,6 @@
 package com.example.reto_final.data.repository.local.role
 
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Insert
 import com.example.reto_final.data.model.Role
@@ -12,9 +13,16 @@ class RoomRoleDataSource : CommonRoleRepository {
     private val roleDao: RoleDao = MyApp.db.roleDao()
 
     override suspend fun createRole(role: Role): Resource<Role> {
-        val dbRole = roleDao.createRole(role.toDbRole())
-        role.id = dbRole.toInt()
+
+        try {
+            val dbRole = roleDao.createRole(role.toDbRole())
+            role.id = dbRole.toInt()
+
+        } catch (ex : Exception) {
+            Log.d("Prueba", "Prueba")
+        }
         return Resource.success(role)
+
     }
 
 }
