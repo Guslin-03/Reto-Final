@@ -35,7 +35,7 @@ class MessageAdapter(
         fun bind(message: Message) {
 
             binding.text.text = message.text
-            if (MyApp.userPreferences.getUser()?.id == message.authorId) {
+            if (MyApp.userPreferences.getUser()?.id == message.userId) {
                 binding.text.setTextColor(Color.parseColor("#FF0000"))
                 binding.text.gravity = Gravity.END
             }else {
@@ -53,7 +53,7 @@ class MessageAdapter(
         }
 
         override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean {
-            return (oldItem.id == newItem.id && oldItem.text == newItem.text && oldItem.groupId == newItem.groupId)
+            return (oldItem.id == newItem.id && oldItem.text == newItem.text && oldItem.chatId == newItem.userId)
         }
 
     }

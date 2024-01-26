@@ -62,7 +62,7 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
     fun onSaveIncomingMessage(message: Message, selectedGroup: Group) {
         viewModelScope.launch {
             val newMessage = saveIncomingMessage(message)
-            if (newMessage.data?.groupId == selectedGroup.id) {
+            if (newMessage.data?.chatId == selectedGroup.id) {
                 newMessage.status = Resource.Status.SUCCESS
                 _incomingMessage.value = newMessage
             }

@@ -1,5 +1,6 @@
 package com.example.reto_final.data.repository.local
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -46,31 +47,56 @@ class PopulateLocalDataBase(
 
     private val _allRole = MutableLiveData<Resource<List<Role>>>()
 
-    init {
-        getAllData()
-        if (_allMessage.value?.status == Resource.Status.SUCCESS
-            && _allUser.value?.status == Resource.Status.SUCCESS
-            && _allGroup.value?.status == Resource.Status.SUCCESS
-            && _allRole.value?.status == Resource.Status.SUCCESS) {
-            setAllData()
-        }
-    }
+    private val listaDePares = mutableListOf<Pair<Int, Int>>()
 
-    private fun getAllData() {
+//    init {
+//        getAllData()
+//        if (_allMessage.value?.status == Resource.Status.SUCCESS
+//            && _allUser.value?.status == Resource.Status.SUCCESS
+//            && _allGroup.value?.status == Resource.Status.SUCCESS
+//            && _allRole.value?.status == Resource.Status.SUCCESS) {
+//            setAllData()
+//        }
+//    }
+
+    fun toInit() {
         viewModelScope.launch {
-            _allMessage.value = getAllMessages()
-            _allUser.value = getAllUsers()
-            _allGroup.value = getAllGroups()
-            _allRole.value = getAllRoles()
+            getAllData()
+            if (_allMessage.value?.status == Resource.Status.SUCCESS
+            && _allUser.value?.status == Resource.Status.SUCCESS
+            && _allGroup.value?.status == Resource.Status.SUCCESS) {
+                setAllData()
+            }
         }
     }
 
-    private fun setAllData() {
-        viewModelScope.launch{
-            setAllMessages()
-            setAllGroups()
-            setAllUsers()
-            setAllRoles()
+    private suspend fun getAllData() {
+//        _allRole.value = getAllRoles()
+        _allUser.value = getAllUsers()
+        _allGroup.value = getAllGroups()
+        _allMessage.value = getAllMessages()
+    }
+
+    private suspend fun setAllData() {
+        setAllRoles()
+        setAllUsers()
+        setAllGroups()
+        setAllUsersToGroups()
+        setAllMessages()
+    }
+
+    private suspend fun setAllRoles() {
+        return withContext(Dispatchers.IO) {
+//            val allRole = _allRole.value?.data
+//            if (allRole != null) {
+            val roles = listOf(
+                Role(2, "PROFESOR"),
+                Role(3, "ALUMNO")
+            )
+            for (role in roles) {
+                localRoleRepository.createRole(role)
+            }
+//            }
         }
     }
 
@@ -83,7 +109,7 @@ class PopulateLocalDataBase(
                     userLocalRepository.createUser(user)
                     for (int in userRequest.chatId) {
                         if (user.id != null) {
-                            groupLocalRepository.addUserToGroup(user.id!!, int)
+                            listaDePares.add(Pair(int, user.id!!))
                         }
                     }
                 }
@@ -92,7 +118,7 @@ class PopulateLocalDataBase(
     }
 
     private suspend fun setAllGroups() {
-        return withContext(Dispatchers.IO) {
+        withContext(Dispatchers.IO) {
             val allGroup = _allGroup.value?.data
             if (allGroup != null) {
                 for (group in allGroup) {
@@ -101,6 +127,16 @@ class PopulateLocalDataBase(
             }
         }
     }
+
+    private suspend fun setAllUsersToGroups() {
+        return withContext(Dispatchers.IO) {
+            for (pares in listaDePares) {
+                Log.d("p1", pares.toString())
+                groupLocalRepository.addUserToGroup(pares.first, pares.second)
+            }
+        }
+    }
+
 
     private suspend fun setAllMessages() {
         return withContext(Dispatchers.IO) {
@@ -113,16 +149,6 @@ class PopulateLocalDataBase(
         }
     }
 
-    private suspend fun setAllRoles() {
-        return withContext(Dispatchers.IO) {
-            val allRole = _allRole.value?.data
-            if (allRole != null) {
-                for (role in allRole) {
-                    localRoleRepository.createRole(role)
-                }
-            }
-        }
-    }
     private suspend fun getAllMessages(): Resource<List<Message>> {
         return withContext(Dispatchers.IO) {
             remoteMessageRepository.getMessages()

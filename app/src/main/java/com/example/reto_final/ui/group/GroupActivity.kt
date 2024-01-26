@@ -29,15 +29,12 @@ import com.example.reto_final.data.repository.local.user.UserRoleType
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
 import com.example.reto_final.data.repository.remote.RemoteMessageDataSource
 import com.example.reto_final.data.repository.remote.RemoteRoleDataSource
-import com.example.reto_final.data.repository.remote.RemoteRoleRepository
 import com.example.reto_final.data.repository.remote.RemoteUserDataSource
 import com.example.reto_final.databinding.GroupActivityBinding
 import com.example.reto_final.ui.message.MessageActivity
 import com.example.reto_final.ui.configuration.ChangePasswordActivity
 import com.example.reto_final.ui.user.loginUser.LogInActivity
 import com.example.reto_final.ui.configuration.PersonalConfigurationActivity
-import com.example.reto_final.ui.message.MessageViewModel
-import com.example.reto_final.ui.message.RoomMessageViewModelFactory
 import com.example.reto_final.ui.user.loginUser.LoginUserViewModel
 import com.example.reto_final.ui.user.loginUser.LoginUserViewModelFactory
 import com.example.reto_final.ui.user.RoomUserViewModelFactory
@@ -63,9 +60,9 @@ class GroupActivity: AppCompatActivity() {
 
     private val localRoleRepository = RoomRoleDataSource()
     private val remoteRoleRepository = RemoteRoleDataSource()
-    private val populateLocalDataBase: PopulateLocalDataBase by viewModels {
-        PopulateLocalDataBaseFactory(
-            groupRepository, remoteGroupRepository, messageRepository ,remoteMessageRepository ,userRepository, remoteUserRepository, localRoleRepository, remoteRoleRepository ) }
+//    private val populateLocalDataBase: PopulateLocalDataBase by viewModels {
+//        PopulateLocalDataBaseFactory(
+//            groupRepository, remoteGroupRepository, messageRepository ,remoteMessageRepository ,userRepository, remoteUserRepository, localRoleRepository, remoteRoleRepository ) }
     private val user = MyApp.userPreferences.getUser()
     private lateinit var radioButtonPrivate: RadioButton
     private lateinit var radioButtonPublic: RadioButton
@@ -74,6 +71,7 @@ class GroupActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = GroupActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+//        populateLocalDataBase.toInit()
         radioButtonPrivate = findViewById(R.id.radioButtonFilterPrivate)
         radioButtonPublic = findViewById(R.id.radioButtonFilterPublic)
         setSupportActionBar(binding.toolbarPersonalConfiguration)

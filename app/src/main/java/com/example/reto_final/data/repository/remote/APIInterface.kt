@@ -4,6 +4,7 @@ import com.example.reto_final.data.model.AuthRequest
 import com.example.reto_final.data.model.ChangePasswordRequest
 import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.model.LoginUser
+import com.example.reto_final.data.model.Role
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.model.User
 import com.example.reto_final.data.model.UserRequest
@@ -64,7 +65,9 @@ interface APIInterface {
     suspend fun getUserByEmail(@Path("email") email:String): Response<Int>
     @POST("email/send")
     suspend fun sendMail(): Boolean
-
     @GET("users")
     suspend fun findUsers(): Response<List<UserRequest>>
+    @GET("roles")
+    suspend fun getRoles(): Response<List<Role>>
+
 }

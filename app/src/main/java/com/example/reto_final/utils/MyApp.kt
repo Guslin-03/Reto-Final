@@ -3,6 +3,7 @@ package com.example.reto_final.utils
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
 import com.example.reto_final.data.repository.local.MyAppRoomDataBase
 import com.example.reto_final.data.repository.local.MyAppRoomDatabaseCallback
@@ -17,7 +18,7 @@ class MyApp : Application() {
         lateinit var db: MyAppRoomDataBase
         lateinit var appScope: CoroutineScope
         const val AUTHORIZATION_HEADER = "Authorization"
-        const val API_SERVER = "http://10.5.7.44"
+        const val API_SERVER = "http://10.5.7.56"
         const val API_PORT = "8063"
         const val API_SOCKET_PORT = "8085"
         const val DEFAULT_PASS = "elorrieta00"
@@ -28,7 +29,7 @@ class MyApp : Application() {
         context = this
         userPreferences = UserPreferences()
         appScope = CoroutineScope(Dispatchers.IO)
-
+        Log.d("Hola", "Hola")
         db = Room
             .databaseBuilder(this, MyAppRoomDataBase::class.java, "chat-db")
             .addCallback(MyAppRoomDatabaseCallback(appScope))

@@ -9,14 +9,14 @@ data class Message(
     val text: String,
     val sent: Long,
     val saved: Long,
-    var groupId: Int,
-    val authorId: Int
+    var chatId: Int,
+    val userId: Int
 ) : Parcelable {
     constructor(
         text: String,
         sent: Long,
         saved: Long,
-        groupId: Int,
-        authorId: Int
-    ) : this(null, text, sent, saved, groupId, authorId)
+        chatId: Int,
+        userId: Int
+    ) : this(null, text, sent, saved, chatId, userId)
 }

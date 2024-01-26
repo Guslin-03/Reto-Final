@@ -38,8 +38,8 @@ class RoomMessageDataSource : CommonMessageRepository {
 }
 
 fun DbMessage.toMessage() = Message(id, text, sentDate.time, saveDate.time, groupId, userId)
-fun Message.toDbMessage() = DbMessage(id, text, Date(sent), Date(saved), groupId, authorId)
-fun Message.toDbPendingMessage() = DbPendingMessage(id, text, Date(sent), groupId, authorId)
+fun Message.toDbMessage() = DbMessage(id, text, Date(sent), Date(saved), chatId, userId)
+fun Message.toDbPendingMessage() = DbPendingMessage(id, text, Date(sent), chatId, userId)
 
 @Dao
 interface MessageDao {

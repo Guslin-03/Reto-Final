@@ -260,7 +260,7 @@ class MessageActivity : AppCompatActivity(){
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onSocketIncomingMessage(message: Message) {
         Log.d("Prueba", "Lo recibio2v2")
-        message.groupId = group.id!!
+        message.chatId = group.id!!
         messageViewModel.onSaveIncomingMessage(message, group)
     }
 
