@@ -38,8 +38,8 @@ class RemoteLoginUserDataSource: BaseDataSource(), CommonLoginUserRepository {
         RetrofitClient.apiInterface.getUserByEmail(email)
     }
 
-    override suspend fun sendMail() : Boolean {
-        return RetrofitClient.apiInterface.sendMail()
+    override suspend fun resetPassword(email: String) =getResult {
+        RetrofitClient.apiInterface.resetPassword(email)
     }
 
 }

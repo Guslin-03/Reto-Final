@@ -22,5 +22,5 @@ interface CommonLoginUserRepository {
 
     suspend fun findUserByEmail(email: String): Resource<Int>
 
-    suspend fun sendMail(): Boolean
+    suspend fun resetPassword(email:String): Resource<Int>
 }

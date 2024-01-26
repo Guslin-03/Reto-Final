@@ -36,6 +36,7 @@ class LogInActivity : AppCompatActivity(){
     private val userRepository = RemoteLoginUserDataSource()
     private val viewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(userRepository,applicationContext) }
     private lateinit var rememberMeCheckBox: AppCompatCheckBox
+    private lateinit var email:String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = LoginActivityBinding.inflate(layoutInflater)
@@ -104,11 +105,28 @@ class LogInActivity : AppCompatActivity(){
                 }
             }
         }
+        viewModel.email.observe(this) {
+            when (it.status) {
+                Resource.Status.SUCCESS -> {
+                    if(it.data==1){
+                        viewModel.onResetPassword(email)
+//                        Toast.makeText(this, "Si el correo introducido es correcto, recibirás una nueva contraseña", Toast.LENGTH_LONG).show()
+                    }
+
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+
+                }
+            }
+        }
         viewModel.reset.observe(this) {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
                     if(it.data==1){
-                        viewModel.onResetPassword()
+
                     }
                     Toast.makeText(this, "Si el correo introducido es correcto, recibirás una nueva contraseña", Toast.LENGTH_LONG).show()
                 }
@@ -131,8 +149,8 @@ class LogInActivity : AppCompatActivity(){
         builder.setTitle("Introduce tu correo electrónico")
         val editText = dialogView.findViewById<EditText>(R.id.editText)
         builder.setPositiveButton("Aceptar") { _, _ ->
-            val email = editText.text.toString()
-           resetPass(email)
+            email = editText.text.toString()
+           sendEmail(email)
         }
         builder.setNegativeButton("Cancelar") { dialog, _ ->
             dialog.dismiss()
@@ -140,7 +158,7 @@ class LogInActivity : AppCompatActivity(){
 
         builder.show()
     }
-    private fun resetPass(email:String){
+    private fun sendEmail(email:String){
         if (InternetChecker.isNetworkAvailable(applicationContext)) {
             viewModel.onFindByMail(email)
         } else {
