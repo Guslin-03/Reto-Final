@@ -22,7 +22,7 @@ class MyApp : Application() {
         const val API_SOCKET_PORT = "8085"
         const val DEFAULT_PASS = "elorrieta00"
         const val BEARER = "Bearer "
-        var isDatabaseCreated: Boolean = false
+
     }
     override fun onCreate(){
         super.onCreate()
@@ -35,7 +35,6 @@ class MyApp : Application() {
             .addCallback(MyAppRoomDatabaseCallback(appScope))
             .build()
 
-        isDatabaseCreated = true
 //        db.close()
 //        context.deleteDatabase("chat-db")
 

@@ -99,6 +99,8 @@ class ChatsService : Service() {
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_CONNECT.value, onConnect())
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_DISCONNECT.value, onDisconnect())
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_MESSAGE_RECEIVED.value, onNewMessage())
+        MyApp.userPreferences.mSocket.on(SocketEvents.ON_ROMM_JOIN.value,onRoomJoin() )
+        MyApp.userPreferences.mSocket.on(SocketEvents.ON_ROMM_LEFT.value, onRoomLeft())
         serviceScope.launch {
             connect()
         }
@@ -119,6 +121,12 @@ class ChatsService : Service() {
     private fun onDisconnect(): Emitter.Listener {
         return Emitter.Listener {
             updateNotification("disConnect")
+        }
+    }
+
+    private fun onRoomJoin(): Emitter.Listener {
+        return Emitter.Listener {
+            updateNotification("Alguien ha entrao al grupo")
         }
     }
 

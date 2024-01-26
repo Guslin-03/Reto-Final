@@ -13,13 +13,27 @@ class UserPreferences {
         MyApp.context.getSharedPreferences(MyApp.context.packageName, Context.MODE_PRIVATE)
     }
     lateinit var mSocket: Socket
+
     companion object {
         const val USER_TOKEN = "user_token"
         const val USER_INFO = "user_info"
         const val REMEMBER_ME = "remember_me"
         const val PASS = "pass"
         const val HIBERNATE_TOKEN = "hibernate_token"
+        const val DATABASE_CREATED = "isDatabaseCreated"
+
     }
+
+    fun saveDataBaseIsCreated(isDatabaseCreated: Boolean) {
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(DATABASE_CREATED, isDatabaseCreated)
+        editor.apply()
+    }
+
+    fun getSaveDataBaseIsCreated(): Boolean {
+        return sharedPreferences.getBoolean(DATABASE_CREATED, false)
+    }
+
     fun saveAuthToken(token:String){
         val editor = sharedPreferences.edit()
         editor.putString(USER_TOKEN, token)

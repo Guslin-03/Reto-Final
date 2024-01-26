@@ -73,9 +73,12 @@ class GroupActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = GroupActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        if (!MyApp.isDatabaseCreated) {
+        if (MyApp.userPreferences.getSaveDataBaseIsCreated()) {
+            Log.d("p1", "Adios")
             populateLocalDataBase.toInit()
+            MyApp.userPreferences.saveDataBaseIsCreated(false)
         }
+
         groupViewModel.updateGroupList()
         radioButtonPrivate = findViewById(R.id.radioButtonFilterPrivate)
         radioButtonPublic = findViewById(R.id.radioButtonFilterPublic)
@@ -86,6 +89,21 @@ class GroupActivity: AppCompatActivity() {
         )
 
         binding.groupList.adapter = groupAdapter
+
+        populateLocalDataBase.finish.observe(this) {
+            when(it.status) {
+                Resource.Status.SUCCESS -> {
+                    Log.d("p1", "hola")
+                    groupViewModel.updateGroupList()
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+                }
+
+            }
+        }
 
         groupViewModel.group.observe(this) {
             when(it.status) {

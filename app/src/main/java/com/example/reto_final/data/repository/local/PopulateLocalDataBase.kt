@@ -1,6 +1,6 @@
 package com.example.reto_final.data.repository.local
 
-import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -47,6 +47,9 @@ class PopulateLocalDataBase(
 
     private val _allRole = MutableLiveData<Resource<List<Role>>>()
 
+    private val _finish = MutableLiveData<Resource<Boolean>>()
+    val finish : LiveData<Resource<Boolean>> get() = _finish
+
     private val usersGroups = mutableListOf<Pair<Int, Int>>()
 
     fun toInit() {
@@ -57,7 +60,9 @@ class PopulateLocalDataBase(
             && _allGroup.value?.status == Resource.Status.SUCCESS) {
                 setAllData()
             }
+            _finish.value = Resource.success(true)
         }
+
     }
 
     private suspend fun getAllData() {
@@ -120,9 +125,7 @@ class PopulateLocalDataBase(
 
     private suspend fun setAllUsersToGroups() {
         return withContext(Dispatchers.IO) {
-            Log.d("p2", ""+usersGroups)
             for (pares in usersGroups) {
-                Log.d("p2", pares.toString())
                 groupLocalRepository.addUserToGroup(pares.first, pares.second)
             }
         }
