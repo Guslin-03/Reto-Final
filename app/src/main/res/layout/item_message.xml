@@ -3,14 +3,55 @@
     android:id="@+id/messageList"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="16dp">
 
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginStart="16dp"
-        android:textSize="16sp"/>
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_bubble"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="David Comeron"
+            android:textSize="16sp"
+            android:layout_marginBottom="5sp"/>
+
+
+        <LinearLayout
+            android:id="@+id/messageAndHour"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Hola amigos, estoy encantado de estar en ste grupo,
+            espero que mi estancia aqui sea la jodida polla cabronzao"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/sentHour"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:text="16:05"
+            android:gravity="bottom"
+            android:layout_marginEnd="5sp"
+            android:textSize="16sp"/>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

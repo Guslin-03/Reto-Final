@@ -363,7 +363,7 @@ class GroupActivity: AppCompatActivity() {
         builder.setPositiveButton("Aceptar") { _, _ ->
             val text = editText.text.toString()
             val isChecked = checkBox.isChecked
-            if(InternetChecker.isNetworkAvailable(applicationContext)){
+            if(!InternetChecker.isNetworkAvailable(applicationContext)){
                 Toast.makeText(this, "Necesitas internet para crear un grupo", Toast.LENGTH_LONG).show()
             }
             else if (isChecked && userIsTeacher()) {
