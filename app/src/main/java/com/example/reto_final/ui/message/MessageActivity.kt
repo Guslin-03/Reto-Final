@@ -2,6 +2,7 @@ package com.example.reto_final.ui.message
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -23,6 +24,7 @@ import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
 import com.example.reto_final.data.repository.remote.RemoteMessageDataSource
 import com.example.reto_final.databinding.MessageActivityBinding
 import com.example.reto_final.ui.group.GroupActivity
+import com.example.reto_final.ui.group.GroupAdapter
 import com.example.reto_final.ui.group.GroupInfo
 import com.example.reto_final.ui.group.GroupViewModel
 import com.example.reto_final.ui.group.RoomGroupViewModelFactory
@@ -56,7 +58,8 @@ class MessageActivity : AppCompatActivity(){
 
         setDefaultData()
 
-        messageAdapter = MessageAdapter(group)
+        messageAdapter = MessageAdapter(group, ::onMapClickItem)
+
         binding.messageList.adapter = messageAdapter
 
         messageViewModel.message.observe(this) {
@@ -159,9 +162,35 @@ class MessageActivity : AppCompatActivity(){
             }
         }
 
+        binding.include.location.setOnClickListener {
+            val latitude = "37.7749" // Latitud de la ubicación
+            val longitude = "-122.4194" // Longitud de la ubicación
+
+            // Crear un enlace de Google Maps con las coordenadas de la ubicación
+            val mapLink = "https://www.google.com/maps?q=$latitude,$longitude"
+
+            if (group.id != null && user != null) {
+                messageViewModel.onSendMessage(mapLink, Date(), group.id!!, user.id)
+            }
+        }
+
+        binding.include.camera.setOnClickListener {
+
+        }
+
         startChatService(this)
     }
+    private fun onMapClickItem(message: Message) {
 
+        var messageClick=message.text
+        Log.d("Message", "Click "+messageClick.startsWith("https://www.google.com/maps?q="))
+        if (messageClick.startsWith("https://www.google.com/maps?q=")) {
+            // Si es así, crea un Intent y ábrelo en Google Maps
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(messageClick))
+            Log.d("Message", "Hola "+intent.resolveActivity(packageManager))
+                startActivity(intent)
+        }
+    }
     private fun setDefaultData() {
         val receivedGroup: Group? = intent.getParcelableExtra("grupo_seleccionado")
         // Verificar si se recibió el objeto Group

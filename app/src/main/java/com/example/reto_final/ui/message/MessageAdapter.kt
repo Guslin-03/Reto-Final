@@ -13,7 +13,8 @@ import com.example.reto_final.databinding.ItemMessageBinding
 import com.example.reto_final.utils.MyApp
 
 class MessageAdapter(
-    private val selectedGroup: Group
+    private val selectedGroup: Group,
+    private val onClickListener: (Message) -> Unit
 )
     : ListAdapter<Message, MessageAdapter.MessageViewHolder>(MessageDiffCallback()){
 
@@ -26,7 +27,9 @@ class MessageAdapter(
     override fun onBindViewHolder(holder: MessageAdapter.MessageViewHolder, position: Int) {
         val message = getItem(position)
         holder.bind(message)
-
+        holder.itemView.setOnClickListener {
+            onClickListener(message)
+        }
     }
 
     inner class MessageViewHolder(private val binding: ItemMessageBinding) :
