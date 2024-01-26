@@ -44,7 +44,7 @@ class LogInActivity : AppCompatActivity(){
 
         previousLoginState()
 
-        binding.forgot?.setOnClickListener {
+        binding.forgot.setOnClickListener {
             popUpCreate()
         }
         binding.login.setOnClickListener {

@@ -1,6 +1,7 @@
 package com.example.reto_final.data.repository.local.group
 
 import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -19,11 +20,22 @@ class RoomGroupDataSource : CommonGroupRepository {
         return Resource.success(response)
     }
 
-    override suspend fun createGroup(group: Group): Resource<Void> {
+    override suspend fun createGroupAsAdmin(group: Group): Resource<Void> {
         return try {
             val dbGroup = groupDao.createGroup(group.toDbGroup())
             val user = MyApp.userPreferences.getUser()
+            Log.d("p1", "Entra")
             if (user != null) groupDao.addUserToGroup(DbUserGroup(dbGroup.toInt(), user.id))
+            Resource.success()
+        } catch (exception: SQLiteConstraintException) {
+            Resource.error("El nombre del grupo ya esta en uso")
+        }
+
+    }
+
+    override suspend fun createGroup(group: Group): Resource<Void> {
+        return try {
+            groupDao.createGroup(group.toDbGroup())
             Resource.success()
         } catch (exception: SQLiteConstraintException) {
             Resource.error("El nombre del grupo ya esta en uso")
@@ -52,6 +64,7 @@ class RoomGroupDataSource : CommonGroupRepository {
     }
 
     override suspend fun addUserToGroup(idGroup: Int, idUser: Int): Resource<Int> {
+        Log.d("p1", "Entra")
         val response = groupDao.addUserToGroup(DbUserGroup(idGroup, idUser))
         return Resource.success(response.toInt())
     }

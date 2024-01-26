@@ -6,6 +6,7 @@ import com.example.reto_final.utils.Resource
 interface CommonGroupRepository {
 
     suspend fun getGroups() : Resource<List<Group>>
+    suspend fun createGroupAsAdmin(group: Group): Resource<Void>
     suspend fun createGroup(group: Group) : Resource<Void>
     suspend fun deleteGroup(group:Group) : Resource<Void>
     suspend fun userHasPermission(idGroup: Int?, idUser: Int): Resource<Int>

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.CheckBox
@@ -60,10 +61,10 @@ class GroupActivity: AppCompatActivity() {
 
     private val localRoleRepository = RoomRoleDataSource()
     private val remoteRoleRepository = RemoteRoleDataSource()
-//    private val populateLocalDataBase: PopulateLocalDataBase by viewModels {
-//        PopulateLocalDataBaseFactory(
-//            groupRepository, remoteGroupRepository, messageRepository ,remoteMessageRepository ,userRepository, remoteUserRepository, localRoleRepository, remoteRoleRepository ) }
-    private val user = MyApp.userPreferences.getUser()
+    private val populateLocalDataBase: PopulateLocalDataBase by viewModels {
+        PopulateLocalDataBaseFactory(
+            groupRepository, remoteGroupRepository, messageRepository ,remoteMessageRepository ,userRepository, remoteUserRepository, localRoleRepository, remoteRoleRepository ) }
+    private val loginUser = MyApp.userPreferences.getUser()
     private lateinit var radioButtonPrivate: RadioButton
     private lateinit var radioButtonPublic: RadioButton
 
@@ -71,7 +72,9 @@ class GroupActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = GroupActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//        populateLocalDataBase.toInit()
+        if (!MyApp.isDatabaseCreated) {
+            populateLocalDataBase.toInit()
+        }
         radioButtonPrivate = findViewById(R.id.radioButtonFilterPrivate)
         radioButtonPublic = findViewById(R.id.radioButtonFilterPublic)
         setSupportActionBar(binding.toolbarPersonalConfiguration)
@@ -194,7 +197,7 @@ class GroupActivity: AppCompatActivity() {
                     true
                 }
                 R.id.closeSesion -> {
-                    if (user != null) {
+                    if (loginUser != null) {
                         loginUserViewModel.onLogOut()
                     }
                     backToLogIn()
@@ -288,28 +291,28 @@ class GroupActivity: AppCompatActivity() {
 
     private fun onGroupListClickItem(group: Group) {
         this.group = group
-        if (user != null) {
+        if (loginUser != null) {
             if (group.type == ChatEnumType.PRIVATE.name) {
                 group.id?.let {
                     groupViewModel.onUserHasPermission(
-                        it, user.id)
+                        it, loginUser.id)
                 }
             } else {
-                group.id?.let { groupViewModel.onUserHasAlreadyInGroup(it, user.id) }
+                group.id?.let { groupViewModel.onUserHasAlreadyInGroup(it, loginUser.id) }
             }
         }
 
     }
 
     private fun joinGroup() {
-        if (user != null) {
+        if (loginUser != null) {
             if (group.id != null) {
                 val options = arrayOf<CharSequence>("Aceptar", "Cancelar")
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("¿Quieres entrar al grupo?")
                 builder.setItems(options) { dialog, which ->
                     when (which) {
-                        0 -> groupViewModel.onAddUserToGroup(group.id!!, user.id)
+                        0 -> groupViewModel.onAddUserToGroup(group.id!!, loginUser.id)
                         1 -> dialog.dismiss()
                     }
                 }
@@ -358,8 +361,8 @@ class GroupActivity: AppCompatActivity() {
     }
 
     private fun userIsTeacher() : Boolean {
-        if (user != null) {
-            return user.roles.any { it.type == UserRoleType.PROFESOR.toString() }
+        if (loginUser != null) {
+            return loginUser.roles.any { it.type == UserRoleType.PROFESOR.toString() }
         }
         return false
     }

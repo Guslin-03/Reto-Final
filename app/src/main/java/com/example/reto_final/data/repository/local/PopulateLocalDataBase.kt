@@ -47,17 +47,7 @@ class PopulateLocalDataBase(
 
     private val _allRole = MutableLiveData<Resource<List<Role>>>()
 
-    private val listaDePares = mutableListOf<Pair<Int, Int>>()
-
-//    init {
-//        getAllData()
-//        if (_allMessage.value?.status == Resource.Status.SUCCESS
-//            && _allUser.value?.status == Resource.Status.SUCCESS
-//            && _allGroup.value?.status == Resource.Status.SUCCESS
-//            && _allRole.value?.status == Resource.Status.SUCCESS) {
-//            setAllData()
-//        }
-//    }
+    private val usersGroups = mutableListOf<Pair<Int, Int>>()
 
     fun toInit() {
         viewModelScope.launch {
@@ -109,7 +99,7 @@ class PopulateLocalDataBase(
                     userLocalRepository.createUser(user)
                     for (int in userRequest.chatId) {
                         if (user.id != null) {
-                            listaDePares.add(Pair(int, user.id!!))
+                            usersGroups.add(Pair(int, user.id!!))
                         }
                     }
                 }
@@ -130,8 +120,9 @@ class PopulateLocalDataBase(
 
     private suspend fun setAllUsersToGroups() {
         return withContext(Dispatchers.IO) {
-            for (pares in listaDePares) {
-                Log.d("p1", pares.toString())
+            Log.d("p2", ""+usersGroups)
+            for (pares in usersGroups) {
+                Log.d("p2", pares.toString())
                 groupLocalRepository.addUserToGroup(pares.first, pares.second)
             }
         }

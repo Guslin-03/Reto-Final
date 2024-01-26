@@ -51,17 +51,13 @@ class GroupViewModel(
 
     fun updateGroupList() {
         viewModelScope.launch {
-            _group.value = if (InternetChecker.isNetworkAvailable(context)) {
-                getGroupsRemote()
-            } else {
-                getGroups()
-            }
+            getGroups()
         }
     }
 
     private suspend fun getGroups() : Resource<List<Group>> {
         return withContext(Dispatchers.IO) {
-                groupLocalRepository.getGroups()
+            groupLocalRepository.getGroups()
         }
     }
     private suspend fun getGroupsRemote() : Resource<List<Group>> {
@@ -78,7 +74,7 @@ class GroupViewModel(
     private suspend fun create(name:String, chatEnumType:String, idAdmin: Int) : Resource<Void> {
         return withContext(Dispatchers.IO) {
             val group = Group(null, name, chatEnumType, idAdmin)
-            groupLocalRepository.createGroup(group)
+            groupLocalRepository.createGroupAsAdmin(group)
         }
     }
     fun onCreate(name:String, chatEnumType: String, idAdmin: Int) {
