@@ -75,6 +75,7 @@ class GroupActivity: AppCompatActivity() {
         if (!MyApp.isDatabaseCreated) {
             populateLocalDataBase.toInit()
         }
+        groupViewModel.updateGroupList()
         radioButtonPrivate = findViewById(R.id.radioButtonFilterPrivate)
         radioButtonPublic = findViewById(R.id.radioButtonFilterPublic)
         setSupportActionBar(binding.toolbarPersonalConfiguration)

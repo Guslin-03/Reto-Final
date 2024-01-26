@@ -35,7 +35,7 @@ class MyApp : Application() {
             .addCallback(MyAppRoomDatabaseCallback(appScope))
             .build()
 
-//        isDatabaseCreated = true
+        isDatabaseCreated = true
 //        db.close()
 //        context.deleteDatabase("chat-db")
 

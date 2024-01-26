@@ -47,11 +47,9 @@ class GroupViewModel(
     private val _leaveGroup = MutableLiveData<Resource<Int>>()
     val leaveGroup : LiveData<Resource<Int>> get() = _leaveGroup
 
-    init { updateGroupList() }
-
     fun updateGroupList() {
         viewModelScope.launch {
-            getGroups()
+            _group.value = getGroups()
         }
     }
 
