@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.reto_final.data.model.Group
+import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.User
 import com.example.reto_final.data.repository.local.user.RoomUserDataSource
 import com.example.reto_final.data.repository.remote.RemoteUserDataSource
@@ -86,8 +87,10 @@ class GroupInfo: AppCompatActivity() {
     private fun onIsAdmin(user: User) {
         selectedUser = user
         if (loginUser != null && selectedGroup.id != null) {
-            if (loginUser.id == selectedGroup.adminId) {
+            if (loginUser.id == selectedGroup.adminId && InternetChecker.isNetworkAvailable(applicationContext)) {
                 checkActionDelete()
+            }else{
+                Toast.makeText(this, "No puedes eliminar a usuarios sin internet", Toast.LENGTH_LONG).show()
             }
         }
     }

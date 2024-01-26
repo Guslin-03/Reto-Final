@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
 import com.example.reto_final.data.model.Group
+import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.repository.local.group.ChatEnumType
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
@@ -175,8 +176,9 @@ class MessageActivity : AppCompatActivity(){
     }
 
     private fun userCanLeaveGroup() {
-
-        if (group.type == ChatEnumType.PUBLIC.toString()) {
+        if (!InternetChecker.isNetworkAvailable(applicationContext)){
+            Toast.makeText(this, "No se puede abandonar un grupo sin internet", Toast.LENGTH_LONG).show()
+        } else if (group.type == ChatEnumType.PUBLIC.toString()) {
             if (user != null) {
                 if (group.id != null) {
                     groupViewModel.onLeaveGroup(group.id!!, user.id)
@@ -202,7 +204,10 @@ class MessageActivity : AppCompatActivity(){
     }
 
     private fun userHasPermissionToDelete() {
-        if (user != null) {
+        if (!InternetChecker.isNetworkAvailable(applicationContext)){
+            Toast.makeText(this, "No se puede eliminar un grupo sin internet", Toast.LENGTH_LONG).show()
+        }
+        else if (user != null) {
             if (group.type == ChatEnumType.PRIVATE.toString() && userIsTeacher()) {
                 popToDeleteGroup()
             }else if(group.type == ChatEnumType.PUBLIC.toString()){

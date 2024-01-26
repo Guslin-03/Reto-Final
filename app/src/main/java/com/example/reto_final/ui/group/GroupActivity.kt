@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
 import com.example.reto_final.data.model.Group
+import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
 import com.example.reto_final.data.repository.local.PopulateLocalDataBase
 import com.example.reto_final.data.repository.local.PopulateLocalDataBaseFactory
@@ -344,8 +345,10 @@ class GroupActivity: AppCompatActivity() {
         builder.setPositiveButton("Aceptar") { _, _ ->
             val text = editText.text.toString()
             val isChecked = checkBox.isChecked
-
-            if (isChecked && userIsTeacher()) {
+            if(InternetChecker.isNetworkAvailable(applicationContext)){
+                Toast.makeText(this, "Necesitas internet para crear un grupo", Toast.LENGTH_LONG).show()
+            }
+            else if (isChecked && userIsTeacher()) {
                 MyApp.userPreferences.getUser()?.let { groupViewModel.onCreate(text, "PRIVATE", it.id) }
             } else if (isChecked) {
                 Toast.makeText(this, "No tienes permisos para crear grupos privados", Toast.LENGTH_LONG).show()
@@ -381,9 +384,14 @@ class GroupActivity: AppCompatActivity() {
     }
 
     private fun changePassword() {
-        val intent = Intent(this, ChangePasswordActivity::class.java)
-        startActivity(intent)
-        finish()
+        if (InternetChecker.isNetworkAvailable(applicationContext)){
+            val intent = Intent(this, ChangePasswordActivity::class.java)
+            startActivity(intent)
+            finish()
+        }else{
+            Toast.makeText(this, "No puedes cambiar la contraseña sin internet", Toast.LENGTH_LONG).show()
+        }
+
     }
 
     private fun filter(){

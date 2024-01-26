@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.reto_final.R
+import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.Module
 import com.example.reto_final.data.model.LoginUser
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
@@ -56,7 +57,7 @@ class ConfigurationActivity : AppCompatActivity() {
 
         binding.next.setOnClickListener {
 
-            if (user != null) {
+            if (user != null &&  InternetChecker.isNetworkAvailable(applicationContext)) {
                 Log.i("Prueba", ""+user.name)
                 viewModel.onUpdateProfile(
                     user.DNI,
@@ -68,8 +69,10 @@ class ConfigurationActivity : AppCompatActivity() {
                     "photo",
                     user.email
                 )
-            }
-//            backToGroupActivity()
+            } else{
+                Toast.makeText(this, "No puedes cambiar datos personales sin internet", Toast.LENGTH_LONG).show()
+        }
+            backToGroupActivity()
         }
 
         binding.back.setOnClickListener {

@@ -47,7 +47,6 @@ class MainActivity : AppCompatActivity() {
                     logIn()
                 } else {
                     Toast.makeText(this, "Sin conexión, acceso a funcionalidades limitadas", Toast.LENGTH_SHORT).show()
-                    MyApp.userPreferences.removeData()
                      if (MyApp.userPreferences.getUser() != null && !InternetChecker.isNetworkAvailable(
                             applicationContext)) {
                          chat()
