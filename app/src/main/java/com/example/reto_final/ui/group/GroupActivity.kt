@@ -73,10 +73,9 @@ class GroupActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = GroupActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        if (MyApp.userPreferences.getSaveDataBaseIsCreated()) {
-            Log.d("p1", "Adios")
+        if (!MyApp.userPreferences.getSaveDataBaseIsCreated()) {
             populateLocalDataBase.toInit()
-            MyApp.userPreferences.saveDataBaseIsCreated(false)
+            MyApp.userPreferences.saveDataBaseIsCreated(true)
         }
 
         groupViewModel.updateGroupList()

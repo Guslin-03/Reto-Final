@@ -29,8 +29,6 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
     }
 
-
-
     val apiInterface: APIInterface by lazy {
         retrofitClient
             .build()

@@ -1,56 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/messageList"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:background="@drawable/background_sent"
+    android:minWidth="50dp"
     android:layout_marginStart="16dp"
-    android:layout_marginTop="16dp">
+    android:layout_marginEnd="16dp"
+    android:layout_marginTop="10dp"
+    android:layout_gravity="end">
 
     <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_bubble"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="5dp">
 
         <TextView
             android:id="@+id/name"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="David Comeron"
-            android:textSize="16sp"
-            android:layout_marginBottom="5sp"/>
-
-
-        <LinearLayout
-            android:id="@+id/messageAndHour"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:text="David Comeron"
+            android:textSize="14sp"
+            android:textColor="@color/white"/>
 
         <TextView
             android:id="@+id/text"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Hola amigos, estoy encantado de estar en ste grupo,
-            espero que mi estancia aqui sea la jodida polla cabronzao"
-            android:textSize="16sp"/>
-
-        <TextView
-            android:id="@+id/sentHour"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="16dp"
-            android:text="16:05"
-            android:gravity="bottom"
-            android:layout_marginEnd="5sp"
-            android:textSize="16sp"/>
+            android:layout_height="wrap_content"
+            android:text="Hola amigos"
+            android:layout_marginBottom="6dp"
+            android:textColor="@color/white"
+            android:textSize="14sp"/>
 
-
-        </LinearLayout>
+<!--            <TextView-->
+<!--                android:id="@+id/sentHour"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignEnd="@+id/text"-->
+<!--                android:layout_alignBottom="@+id/text"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:layout_marginEnd="16dp"-->
+<!--                android:text="16:05"-->
+<!--                android:textColor="#81FFFFFF"-->
+<!--                android:textSize="11sp" />-->
 
     </LinearLayout>
 

@@ -1,16 +1,21 @@
 package com.example.reto_final.ui.message
 
-import android.graphics.Color
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.reto_final.R
 import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.databinding.ItemMessageBinding
 import com.example.reto_final.utils.MyApp
+import com.example.reto_final.utils.MyApp.Companion.context
+
 
 class MessageAdapter(
     private val selectedGroup: Group,
@@ -38,12 +43,21 @@ class MessageAdapter(
         fun bind(message: Message) {
 
             binding.text.text = message.text
+
             if (MyApp.userPreferences.getUser()?.id == message.userId) {
-                binding.text.setTextColor(Color.parseColor("#FF0000"))
-                binding.text.gravity = Gravity.END
+                val drawable = ContextCompat.getDrawable(context, R.drawable.background_sent)
+                binding.messageList.background = drawable
+
+
+
+                binding.name.visibility = View.GONE
+
             }else {
-                binding.text.setTextColor(Color.parseColor("#0000FF"))
-                binding.text.gravity = Gravity.START
+                val drawable = ContextCompat.getDrawable(context, R.drawable.background_received)
+                binding.messageList.background = drawable
+
+                binding.name.text = message.id.toString()
+
             }
 
         }
