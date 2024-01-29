@@ -1,5 +1,6 @@
 package com.example.reto_final.ui.group
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -37,6 +38,7 @@ import com.example.reto_final.ui.message.MessageActivity
 import com.example.reto_final.ui.configuration.ChangePasswordActivity
 import com.example.reto_final.ui.user.loginUser.LogInActivity
 import com.example.reto_final.ui.configuration.PersonalConfigurationActivity
+import com.example.reto_final.ui.message.ChatsService
 import com.example.reto_final.ui.user.loginUser.LoginUserViewModel
 import com.example.reto_final.ui.user.loginUser.LoginUserViewModelFactory
 import com.example.reto_final.ui.user.RoomUserViewModelFactory
@@ -59,7 +61,6 @@ class GroupActivity: AppCompatActivity() {
     private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository, applicationContext) }
     private val messageRepository = RoomMessageDataSource()
     private val remoteMessageRepository = RemoteMessageDataSource()
-
     private val localRoleRepository = RoomRoleDataSource()
     private val remoteRoleRepository = RemoteRoleDataSource()
     private val populateLocalDataBase: PopulateLocalDataBase by viewModels {
@@ -275,6 +276,8 @@ class GroupActivity: AppCompatActivity() {
             filter()
         }
 
+        startChatService(this)
+
     }
 
     private fun filterByText(s: CharSequence?): List<Group>{
@@ -345,7 +348,6 @@ class GroupActivity: AppCompatActivity() {
         val intent = Intent(this, MessageActivity::class.java)
         intent.putExtra("grupo_seleccionado", this.group)
         startActivity(intent)
-//        finish()
     }
 
     private fun popUpCreate() {
@@ -434,6 +436,11 @@ class GroupActivity: AppCompatActivity() {
             binding.toolbarPersonalConfiguration.overflowIcon = newIcon
         }
         return true
+    }
+
+    private fun startChatService(context: Context) {
+        val intent = Intent(context, ChatsService::class.java)
+        ContextCompat.startForegroundService(context, intent)
     }
 
 }

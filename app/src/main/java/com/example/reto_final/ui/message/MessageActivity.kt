@@ -24,7 +24,6 @@ import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
 import com.example.reto_final.data.repository.remote.RemoteMessageDataSource
 import com.example.reto_final.databinding.MessageActivityBinding
 import com.example.reto_final.ui.group.GroupActivity
-import com.example.reto_final.ui.group.GroupAdapter
 import com.example.reto_final.ui.group.GroupInfo
 import com.example.reto_final.ui.group.GroupViewModel
 import com.example.reto_final.ui.group.RoomGroupViewModelFactory
@@ -33,9 +32,7 @@ import com.example.reto_final.utils.Resource
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 class MessageActivity : AppCompatActivity(){
 
@@ -58,7 +55,7 @@ class MessageActivity : AppCompatActivity(){
 
         setDefaultData()
 
-        messageAdapter = MessageAdapter(group, ::onMapClickItem)
+        messageAdapter = MessageAdapter(::onMapClickItem)
 
         binding.messageList.adapter = messageAdapter
 
@@ -151,6 +148,7 @@ class MessageActivity : AppCompatActivity(){
                 else -> false // Manejo predeterminado para otros elementos
             }
         }
+
         binding.include.send.setOnClickListener {
             val message = binding.include.inputMessage.text.toString()
             if (message.isNotBlank()) {
@@ -178,7 +176,6 @@ class MessageActivity : AppCompatActivity(){
 
         }
 
-        startChatService(this)
     }
     private fun onMapClickItem(message: Message) {
 
@@ -278,7 +275,6 @@ class MessageActivity : AppCompatActivity(){
         return true
     }
 
-
     // EVENT BUS
     override fun onStart() {
         super.onStart()
@@ -298,8 +294,4 @@ class MessageActivity : AppCompatActivity(){
         messageViewModel.onSaveIncomingMessage(message, group)
     }
 
-    private fun startChatService(context: Context) {
-        val intent = Intent(context, ChatsService::class.java)
-        ContextCompat.startForegroundService(context, intent)
-    }
 }

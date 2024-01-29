@@ -1,55 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/messageList"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="@drawable/background_sent"
-    android:minWidth="50dp"
     android:layout_marginStart="16dp"
     android:layout_marginEnd="16dp"
-    android:layout_marginTop="10dp"
-    android:layout_gravity="end">
+    android:layout_marginTop="10dp">
 
-    <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="5dp">
-
-        <TextView
-            android:id="@+id/name"
+        <LinearLayout
+            android:id="@+id/linearLayout1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="David Comeron"
-            android:textSize="14sp"
-            android:textColor="@color/white"/>
+            android:background="@drawable/background_sent"
+            android:orientation="vertical"
+            android:layout_alignParentEnd="true">
 
-        <TextView
-            android:id="@+id/text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hola amigos"
-            android:layout_marginBottom="6dp"
-            android:textColor="@color/white"
-            android:textSize="14sp"/>
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="10dp"
+                android:text="David Comeron"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="@color/white"/>
 
-<!--            <TextView-->
-<!--                android:id="@+id/sentHour"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_alignEnd="@+id/text"-->
-<!--                android:layout_alignBottom="@+id/text"-->
-<!--                android:layout_marginTop="10dp"-->
-<!--                android:layout_marginEnd="16dp"-->
-<!--                android:text="16:05"-->
-<!--                android:textColor="#81FFFFFF"-->
-<!--                android:textSize="11sp" />-->
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="Hola amigos"
+                    android:maxWidth="300dp"
+                    android:layout_marginBottom="6dp"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"/>
 
-</LinearLayout>
+                <TextView
+                    android:id="@+id/sentHour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/text"
+                    android:layout_alignBottom="@id/text"
+                    android:minWidth="30dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="16:05"
+                    android:textColor="#81FFFFFF"
+                    android:textSize="11sp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+</RelativeLayout>

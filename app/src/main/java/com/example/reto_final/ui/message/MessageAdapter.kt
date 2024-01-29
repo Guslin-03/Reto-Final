@@ -1,10 +1,9 @@
 package com.example.reto_final.ui.message
 
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -15,10 +14,11 @@ import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.databinding.ItemMessageBinding
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.MyApp.Companion.context
-
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class MessageAdapter(
-    private val selectedGroup: Group,
     private val onClickListener: (Message) -> Unit
 )
     : ListAdapter<Message, MessageAdapter.MessageViewHolder>(MessageDiffCallback()){
@@ -45,20 +45,36 @@ class MessageAdapter(
             binding.text.text = message.text
 
             if (MyApp.userPreferences.getUser()?.id == message.userId) {
-                val drawable = ContextCompat.getDrawable(context, R.drawable.background_sent)
-                binding.messageList.background = drawable
-
-
-
                 binding.name.visibility = View.GONE
+                binding.sentHour.text = parseDate(message.sent)
+
+                val drawable = ContextCompat.getDrawable(context, R.drawable.background_sent)
+                binding.linearLayout1.background = drawable
 
             }else {
-                val drawable = ContextCompat.getDrawable(context, R.drawable.background_received)
-                binding.messageList.background = drawable
 
-                binding.name.text = message.id.toString()
+                val linearLayout = binding.linearLayout1
+                val layoutParams = linearLayout.layoutParams as RelativeLayout.LayoutParams
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
+                linearLayout.layoutParams = layoutParams
+
+                val drawable = ContextCompat.getDrawable(context, R.drawable.background_received)
+                binding.linearLayout1.background = drawable
+
+                binding.name.text = message.userId.toString()
+
+                binding.sentHour.text = parseDate(message.saved)
 
             }
+
+        }
+
+        private fun parseDate(hour: Long): String {
+
+            val hora = Date(hour)
+            val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+            return formatter.format(hora)
 
         }
     }
