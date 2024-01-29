@@ -11,14 +11,16 @@ interface RemoteGroupRepository {
 
     suspend fun deleteGroup(idGroup:Int) : Resource<Void>
 
-    suspend fun canEnterUserChat(idGroup:Int): Resource<Int>
+    suspend fun canEnterUserChat(idGroup:Int) : Resource<Int>
 
     suspend fun countByAndAdminId(idGroup:Int) : Resource<Int>
 
-    suspend fun existsByIdAndUsers_Id(idGroup:Int): Resource<Int>
+    suspend fun existsByIdAndUsers_Id(idGroup:Int) : Resource<Int>
 
-    suspend fun addUserToChat(idGroup: Int): Resource<Int>
+    suspend fun addUserToChat(idGroup: Int, idUser: Int) : Resource<Int>
 
-    suspend fun leaveChat(idGroup: Int): Resource<Int>
+    suspend fun joinGroup(idGroup: Int) : Resource<Int>
+
+    suspend fun leaveChat(idGroup: Int) : Resource<Int>
 
 }

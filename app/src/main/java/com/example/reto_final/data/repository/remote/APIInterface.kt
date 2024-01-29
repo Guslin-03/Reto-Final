@@ -49,8 +49,10 @@ interface APIInterface {
     suspend fun countByIdAndAdminId(@Path("idChat") idGroup: Int): Response<Int>
     @GET("chats/existsOnChat/{idChat}")
     suspend fun existsByIdAndUsers_Id(@Path("idChat") idGroup: Int): Response<Int>
+    @POST("chats/addToGroup/{idChat}/{idUser}")
+    suspend fun addUserToChat(@Path("idChat") idGroup: Int, @Path("idUser") idUser: Int): Response<Int>
     @POST("chats/addToGroup/{idChat}")
-    suspend fun addUserToChat(@Path("idChat") idGroup: Int): Response<Int>
+    suspend fun joinToChat(@Path("idChat") idGroup: Int): Response<Int>
     @DELETE("chats/leaveChat/{idChat}")
     suspend fun leaveChat(@Path("idChat") idGroup: Int): Response<Int>
     @GET("messages")

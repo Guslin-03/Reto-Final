@@ -1,7 +1,6 @@
 package com.example.reto_final.ui.group
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -63,32 +62,23 @@ class GroupViewModel(
             remoteGroupRepository.getGroups()
         }
     }
+
     private suspend fun createRemote(name:String, chatEnumType:String, idAdmin: Int) : Resource<Void> {
         return withContext(Dispatchers.IO) {
             val group = Group(null, name, chatEnumType, idAdmin)
             remoteGroupRepository.createGroup(group)
         }
     }
-    private suspend fun create(name:String, chatEnumType:String, idAdmin: Int) : Resource<Void> {
-        return withContext(Dispatchers.IO) {
-            val group = Group(null, name, chatEnumType, idAdmin)
-            groupLocalRepository.createGroupAsAdmin(group)
-        }
-    }
+
+
     fun onCreate(name:String, chatEnumType: String, idAdmin: Int) {
         viewModelScope.launch {
-            _create.value = if (InternetChecker.isNetworkAvailable(context)) {
-                createRemote(name, chatEnumType, idAdmin)
-            }else{
-                create(name, chatEnumType, idAdmin)
+             if (InternetChecker.isNetworkAvailable(context)) {
+                 _create.value = createRemote(name, chatEnumType, idAdmin)
             }
         }
     }
-    private suspend fun delete(group: Group) : Resource<Void> {
-        return withContext(Dispatchers.IO) {
-            groupLocalRepository.deleteGroup(group)
-        }
-    }
+
     private suspend fun deleteRemote(group: Group) : Resource<Void> {
         return withContext(Dispatchers.IO) {
                 remoteGroupRepository.deleteGroup(group.id!!)
@@ -98,10 +88,8 @@ class GroupViewModel(
         viewModelScope.launch {
             if (InternetChecker.isNetworkAvailable(context)) {
                 deleteRemote(group)
-            }else{
-                delete(group)
+                _delete.value = Resource.success(true)
             }
-            _delete.value = Resource.success(true)
         }
     }
 
@@ -177,28 +165,42 @@ class GroupViewModel(
             }
         }
     }
-    private suspend fun addUserToGroupRemote(idGroup: Int) : Resource<Int> {
+
+    private suspend fun addUserToGroupRemote(idGroup: Int, idUser: Int) : Resource<Int> {
         return withContext(Dispatchers.IO) {
-            remoteGroupRepository.addUserToChat(idGroup)
+            remoteGroupRepository.addUserToChat(idGroup, idUser)
         }
     }
-    private suspend fun addUserToGroup(idGroup: Int, idUser: Int) : Resource<Int> {
-        return withContext(Dispatchers.IO) {
-            groupLocalRepository.addUserToGroup(idGroup, idUser)
-        }
-    }
+
     fun onAddUserToGroup(idGroup: Int, idUser: Int) {
         viewModelScope.launch {
-            val result = if (InternetChecker.isNetworkAvailable(context)) {
-                addUserToGroupRemote(idGroup)
-            }else{
-                addUserToGroup(idGroup, idUser)
+            if (InternetChecker.isNetworkAvailable(context)) {
+                val result = addUserToGroupRemote(idGroup, idUser)
+                if (result.data != 0) {
+                    _addUserToGroup.value = Resource.success(true)
+                }else {
+                    _addUserToGroup.value = Resource.error("Ha ocurrido un error, no has podido unirte al grupo")
+                }
             }
-            if (result.data != 0) {
-                _addUserToGroup.value = Resource.success(true)
-            }else {
-                _addUserToGroup.value = Resource.error("Ha ocurrido un error, no has podido unirte al grupo")
+        }
+    }
+
+    fun onJoinGroup(idGroup: Int) {
+        viewModelScope.launch {
+            if (InternetChecker.isNetworkAvailable(context)) {
+                val result = joinGroup(idGroup)
+                if (result.data != 0) {
+                    _addUserToGroup.value = Resource.success(true)
+                }else {
+                    _addUserToGroup.value = Resource.error("Ha ocurrido un error, no has podido unirte al grupo")
+                }
             }
+        }
+    }
+
+    private suspend fun joinGroup(idGroup: Int) : Resource<Int> {
+        return withContext(Dispatchers.IO) {
+            remoteGroupRepository.joinGroup(idGroup)
         }
     }
 

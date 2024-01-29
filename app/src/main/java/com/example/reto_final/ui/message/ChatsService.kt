@@ -9,13 +9,14 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import com.example.reto_final.R
+import com.example.reto_final.data.model.UserGroup
 import com.example.reto_final.data.model.message.Message
+import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.socket.SocketEvents
 import com.example.reto_final.data.socket.SocketMessageRes
 import com.example.reto_final.utils.MyApp
@@ -23,7 +24,6 @@ import com.example.reto_final.utils.MyApp.Companion.API_SERVER
 import com.example.reto_final.utils.MyApp.Companion.API_SOCKET_PORT
 import com.example.reto_final.utils.MyApp.Companion.AUTHORIZATION_HEADER
 import com.example.reto_final.utils.MyApp.Companion.BEARER
-import com.example.reto_final.utils.MyApp.Companion.context
 import com.google.gson.Gson
 import io.socket.client.IO
 import io.socket.emitter.Emitter
@@ -38,6 +38,8 @@ class ChatsService : Service() {
     private val channelId = "download_channel"
     private val notificationId = 1
     private lateinit var serviceScope: CoroutineScope
+
+    private val groupRepository = RoomGroupDataSource()
 
     override fun onCreate() {
         super.onCreate()
@@ -99,7 +101,7 @@ class ChatsService : Service() {
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_CONNECT.value, onConnect())
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_DISCONNECT.value, onDisconnect())
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_MESSAGE_RECEIVED.value, onNewMessage())
-        MyApp.userPreferences.mSocket.on(SocketEvents.ON_ROMM_JOIN.value,onRoomJoin() )
+        MyApp.userPreferences.mSocket.on(SocketEvents.ON_ROMM_JOIN.value, onRoomJoin())
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_ROMM_LEFT.value, onRoomLeft())
         serviceScope.launch {
             connect()
@@ -124,37 +126,51 @@ class ChatsService : Service() {
         }
     }
 
+    private fun onNewMessage(): Emitter.Listener {
+        return Emitter.Listener {
+            Log.d("Prueba", "Lo recibio")
+            val response = onJSONtoAnyClass(it[0], SocketMessageRes::class.java)
+            if (response != null) {
+                val messageRes = onJSONtoAnyClass(response, UserGroup::class.java) as SocketMessageRes
+                EventBus.getDefault().post(messageRes.toMessage())
+                updateNotification(messageRes.message)
+            }
+        }
+    }
+
     private fun onRoomJoin(): Emitter.Listener {
         return Emitter.Listener {
-            updateNotification("Alguien ha entrao al grupo")
+            val response = onJSONtoAnyClass(it[0], UserGroup::class.java)
+            if (response != null) {
+                val userGroup = onJSONtoAnyClass(response, UserGroup::class.java) as UserGroup
+                updateNotification("${userGroup.name} ha entrado al grupo.")
+                serviceScope.launch {
+                    addUserToGroup(userGroup)
+                }
+            }
+
         }
+    }
+
+    private suspend fun addUserToGroup(userGroupRes: UserGroup) {
+        groupRepository.addUserToGroup(userGroupRes.roomId, userGroupRes.userId)
     }
 
     private fun onRoomLeft(): Emitter.Listener {
         return Emitter.Listener {
-            updateNotification("te han sacao del grupo")
+            val response = onJSONtoAnyClass(it[0], UserGroup::class.java)
+            if (response != null) {
+                val userGroup = onJSONtoAnyClass(response, UserGroup::class.java) as UserGroup
+                updateNotification("${userGroup.name} ha salido del grupo.")
+                serviceScope.launch {
+                    leaveGroup(userGroup)
+                }
+            }
         }
     }
 
-    private fun onNewMessage(): Emitter.Listener {
-        return Emitter.Listener {
-            Log.d("Prueba", "Lo recibio")
-            onNewMessageJsonObject(it[0])
-        }
-    }
-
-    private fun onNewMessageJsonObject(data : Any) {
-        try {
-            val jsonObject = data as JSONObject
-            val jsonObjectString = jsonObject.toString()
-            val messageRes = Gson().fromJson(jsonObjectString, SocketMessageRes::class.java)
-
-            EventBus.getDefault().post(messageRes.toMessage())
-            updateNotification(messageRes.message)
-
-        } catch (ex: Exception) {
-//            Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
-        }
+    private suspend fun leaveGroup(userGroupRes: UserGroup) {
+        groupRepository.leaveGroup(userGroupRes.roomId, userGroupRes.userId)
     }
 
     private fun updateNotification(contentText: String) {
@@ -176,6 +192,18 @@ class ChatsService : Service() {
         return options
     }
 
-    private fun SocketMessageRes.toMessage() = Message(messageId, message, sent, saved, roomId, authorId)
+    private fun onJSONtoAnyClass(data : Any, convertClass: Class<*>): Any? {
+        return try {
+            val jsonObject = data as JSONObject
+            val jsonObjectString = jsonObject.toString()
+            Gson().fromJson(jsonObjectString, convertClass::class.java)
+
+        } catch (ex: Exception) {
+//            Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
+            null
+        }
+    }
+
+    private fun SocketMessageRes.toMessage() = Message(messageId, message, sent, saved, room, authorId)
 
 }

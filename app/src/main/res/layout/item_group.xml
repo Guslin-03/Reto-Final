@@ -4,23 +4,36 @@
     android:id="@+id/groupList"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/groupName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.75"
-        android:padding="16dp"
-        android:textSize="16sp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/groupType"
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.15"
-        android:padding="16dp"
-        app:srcCompat="@drawable/privategroup"
-        android:contentDescription="@string/grupo_privado" />
+        <TextView
+            android:id="@+id/groupName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.75"
+            android:padding="16dp"
+            android:textSize="16sp"/>
+
+        <ImageView
+            android:id="@+id/groupType"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.15"
+            android:padding="16dp"
+            app:srcCompat="@drawable/privategroup"
+            android:contentDescription="@string/grupo_privado" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="center"
+        android:background="@android:color/black" />
 
 </LinearLayout>
+

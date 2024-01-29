@@ -1,6 +1,5 @@
 package com.example.reto_final.ui.message
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -58,6 +57,12 @@ class MessageActivity : AppCompatActivity(){
         messageAdapter = MessageAdapter(::onMapClickItem)
 
         binding.messageList.adapter = messageAdapter
+
+        binding.messageList.postDelayed({
+            if (messageAdapter.itemCount > 0) {
+                binding.messageList.scrollToPosition(messageAdapter.itemCount - 1)
+            }
+        }, 200)
 
         messageViewModel.message.observe(this) {
             when(it.status) {
@@ -179,7 +184,7 @@ class MessageActivity : AppCompatActivity(){
     }
     private fun onMapClickItem(message: Message) {
 
-        var messageClick=message.text
+        val messageClick=message.text
         Log.d("Message", "Click "+messageClick.startsWith("https://www.google.com/maps?q="))
         if (messageClick.startsWith("https://www.google.com/maps?q=")) {
             // Si es así, crea un Intent y ábrelo en Google Maps
@@ -289,8 +294,7 @@ class MessageActivity : AppCompatActivity(){
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onSocketIncomingMessage(message: Message) {
-        Log.d("Prueba", "Lo recibio2v2")
-        message.chatId = group.id!!
+        Log.d("Prueba", ""+message)
         messageViewModel.onSaveIncomingMessage(message, group)
     }
 

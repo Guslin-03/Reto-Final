@@ -52,6 +52,7 @@ android {
 
 dependencies {
 
+    implementation("com.google.ar.sceneform:filament-android:1.17.1")
     val room_version = "2.5.0"
 
     implementation("androidx.room:room-runtime:$room_version")
