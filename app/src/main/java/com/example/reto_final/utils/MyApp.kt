@@ -29,7 +29,7 @@ class MyApp : Application() {
         context = this
         userPreferences = UserPreferences()
         appScope = CoroutineScope(Dispatchers.IO)
-
+        isDatabaseExists(context)
         db = Room
             .databaseBuilder(this, MyAppRoomDataBase::class.java, "chat-db")
             .addCallback(MyAppRoomDatabaseCallback(appScope))
@@ -37,6 +37,15 @@ class MyApp : Application() {
 
 //        db.close()
 //        context.deleteDatabase("chat-db")
+
+    }
+
+    private fun isDatabaseExists(context: Context) {
+        val dbFile = context.getDatabasePath("chat-db")
+
+        if(!dbFile.exists()) {
+            userPreferences.saveDataBaseIsCreated(false)
+        }
 
     }
 
