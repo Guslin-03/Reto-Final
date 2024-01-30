@@ -1,6 +1,7 @@
 package com.example.reto_final.ui.message
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -34,6 +35,9 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
     private val _incomingMessage = MutableLiveData<Resource<Message>>()
     val incomingMessage : LiveData<Resource<Message>> get() = _incomingMessage
 
+    private val _createLocalMessage = MutableLiveData<Resource<Message>>()
+    val createLocalMessage : LiveData<Resource<Message>> get() = _createLocalMessage
+
     fun updateMessageList(groupId: Int) {
         viewModelScope.launch {
             _message.value  = if (InternetChecker.isNetworkAvailable(context)) {
@@ -55,7 +59,7 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
     }
     private suspend fun saveIncomingMessage(message: Message) : Resource<Message> {
         return withContext(IO) {
-            messageLocalRepository.createMessage(message)
+            messageLocalRepository.updateMessage(message)
         }
     }
 
@@ -74,12 +78,11 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
         viewModelScope.launch {
             val sendMessage = sendMessage(Message(message, sent.time, groupId, authorId))
             localId = sendMessage.data?.id!!
-        }
+            if (localId != 0) {
+                sendMessage.status = Resource.Status.SUCCESS
+                _createLocalMessage.value = sendMessage
+            }
 
-        if (InternetChecker.isNetworkAvailable(context)) {
-            val socketMessage = SocketMessageReq(groupId, localId, message, sent.time)
-            val jsonObject = JSONObject(Gson().toJson(socketMessage))
-            MyApp.userPreferences.mSocket.emit(SocketEvents.ON_SEND_MESSAGE.value, jsonObject)
         }
 
     }

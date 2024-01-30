@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -18,14 +17,12 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
@@ -38,6 +35,8 @@ import com.example.reto_final.data.repository.local.message.RoomMessageDataSourc
 import com.example.reto_final.data.repository.local.user.UserRoleType
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
 import com.example.reto_final.data.repository.remote.RemoteMessageDataSource
+import com.example.reto_final.data.socket.SocketEvents
+import com.example.reto_final.data.socket.SocketMessageReq
 import com.example.reto_final.databinding.MessageActivityBinding
 import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.ui.group.GroupInfo
@@ -45,6 +44,7 @@ import com.example.reto_final.ui.group.GroupViewModel
 import com.example.reto_final.ui.group.RoomGroupViewModelFactory
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
+import com.google.gson.Gson
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -54,6 +54,7 @@ import com.karumi.dexter.listener.single.PermissionListener
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.util.Date
@@ -109,10 +110,39 @@ class MessageActivity : AppCompatActivity(){
         messageViewModel.incomingMessage.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
+                    if (group.id != null) {
+                        messageViewModel.updateMessageList(group.id!!)
+                    }
+
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+                }
+            }
+        }
+
+        messageViewModel.createLocalMessage.observe(this) {
+            when(it.status) {
+                Resource.Status.SUCCESS -> {
                     val newList = ArrayList(messageAdapter.currentList)
-                    newList.add(it.data)
+                    val newMessage = it.data
+                    newList.add(newMessage)
 
                     messageAdapter.submitList(newList)
+
+                    if (InternetChecker.isNetworkAvailable(this)) {
+                        if (newMessage != null && group.id != null && newMessage.id != null) {
+                            Log.d("p1", "Id del mensaje en ROOM ${newMessage.id}")
+                            val socketMessage = SocketMessageReq(group.id!!,
+                                newMessage.id!!, newMessage.text, newMessage.sent)
+                            val jsonObject = JSONObject(Gson().toJson(socketMessage))
+                            MyApp.userPreferences.mSocket.emit(SocketEvents.ON_SEND_MESSAGE.value, jsonObject)
+                        }
+
+                    }
+
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()

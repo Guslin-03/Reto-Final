@@ -131,12 +131,10 @@ class ChatsService : Service() {
     private fun onNewMessage(): Emitter.Listener {
         return Emitter.Listener {
             Log.d("Prueba", "Lo recibio")
-            val response = onJSONtoAnyClass(it[0], SocketMessageRes::class.java)
-            if (response != null) {
-                val messageRes = onJSONtoAnyClass(response, UserGroup::class.java) as SocketMessageRes
-                EventBus.getDefault().post(messageRes.toMessage())
-                updateNotification(messageRes.message)
-            }
+            val response = onJSONtoAnyClass(it[0], SocketMessageRes::class.java) as SocketMessageRes
+            Log.d("Prueba", "$response")
+            EventBus.getDefault().post(response.toMessage())
+            updateNotification(response.message)
         }
     }
 
@@ -196,9 +194,10 @@ class ChatsService : Service() {
 
     private fun onJSONtoAnyClass(data : Any, convertClass: Class<*>): Any? {
         return try {
+            Log.d("Hola", "Hola")
             val jsonObject = data as JSONObject
             val jsonObjectString = jsonObject.toString()
-            Gson().fromJson(jsonObjectString, convertClass::class.java)
+            Gson().fromJson(jsonObjectString, convertClass)
 
         } catch (ex: Exception) {
 //            Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()

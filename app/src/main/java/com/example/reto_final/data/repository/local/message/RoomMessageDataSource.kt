@@ -1,5 +1,6 @@
 package com.example.reto_final.data.repository.local.message
 
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -21,6 +22,12 @@ class RoomMessageDataSource : CommonMessageRepository {
     override suspend fun createMessage(message: Message): Resource<Message> {
         val dbMessage = messageDao.createMessage(message.toDbMessage())
         message.id = dbMessage.toInt()
+        return Resource.success(message)
+    }
+
+    override suspend fun updateMessage(message: Message): Resource<Message> {
+        val dbMessage = messageDao.updateMessage(message.id ,message.saved)
+        message.id = dbMessage
         return Resource.success(message)
     }
 
@@ -46,6 +53,9 @@ interface MessageDao {
     suspend fun getMessagesFromGroup(groupId: Int): List<DbMessage>
     @Insert
     suspend fun createMessage(message: DbMessage) : Long
+
+    @Query("UPDATE messages SET saved = :saved WHERE id = :messageId")
+    suspend fun updateMessage(messageId: Int?, saved: Long?) : Int
 }
 
 //@Dao
