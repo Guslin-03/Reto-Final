@@ -129,11 +129,8 @@ class GroupViewModel(
     }
     fun onUserHasPermissionToDelete(idGroup: Int, idUser: Int) {
         viewModelScope.launch {
-            val result = if (InternetChecker.isNetworkAvailable(context)) {
-                userHasPermissionToDeleteRemote(idGroup)
-            }else{
-                userHasPermissionToDelete(idGroup, idUser)
-            }
+            val result = userHasPermissionToDeleteRemote(idGroup)
+
             if (result.data == 1) {
                 _groupPermissionToDelete.value = Resource.success(true)
             }else {

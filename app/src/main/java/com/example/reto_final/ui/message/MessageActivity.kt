@@ -3,7 +3,6 @@ package com.example.reto_final.ui.message
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -58,6 +57,7 @@ import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.util.Date
+import kotlin.random.Random
 
 class MessageActivity : AppCompatActivity(){
 
@@ -343,10 +343,10 @@ class MessageActivity : AppCompatActivity(){
         messageViewModel.onSaveIncomingMessage(message, group)
     }
 
-    private fun startChatService(context: Context) {
-        val intent = Intent(context, ChatsService::class.java)
-        ContextCompat.startForegroundService(context, intent)
-    }
+//    private fun startChatService(context: Context) {
+//        val intent = Intent(context, ChatsService::class.java)
+//        ContextCompat.startForegroundService(context, intent)
+//    }
 
     @SuppressLint("RestrictedApi")
     private fun showAttachmentOptions(view: View) {
@@ -390,10 +390,9 @@ class MessageActivity : AppCompatActivity(){
     }
 
     private fun showMyLocation(){
-        val latitude = "37.7749" // Latitud de la ubicación
-        val longitude = "-122.4194" // Longitud de la ubicación
+        val latitude =  getRandomCoordinate(-90.0, 90.0)
+        val longitude =  getRandomCoordinate(-180.0, 180.0)
 
-        // Crear un enlace de Google Maps con las coordenadas de la ubicación
         val mapLink = "https://www.google.com/maps?q=$latitude,$longitude"
 
         if (group.id != null && user != null) {
@@ -491,5 +490,8 @@ class MessageActivity : AppCompatActivity(){
             return Base64.encodeToString(byteArray, Base64.DEFAULT)
         }
         return ""
+    }
+    private fun getRandomCoordinate(min: Double, max: Double): String {
+        return String.format("%.6f", Random.nextDouble(min, max))
     }
 }
