@@ -69,6 +69,7 @@ class GroupActivity: AppCompatActivity() {
     private val loginUser = MyApp.userPreferences.getUser()
     private lateinit var radioButtonPrivate: RadioButton
     private lateinit var radioButtonPublic: RadioButton
+    lateinit var context: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -390,7 +391,18 @@ class GroupActivity: AppCompatActivity() {
         return false
     }
 
+    private fun checkBd(){
+        context=this
+        val dbFile = context.getDatabasePath("chat-db")
+      if (dbFile.exists() && !MyApp.userPreferences.getRememberMeState()){
+            dbFile.delete()
+            MyApp.userPreferences.saveDataBaseIsCreated(false)
+        }
+    }
+
     private fun backToLogIn() {
+        checkBd()
+        MyApp.userPreferences.removeData()
         val intent = Intent(this, LogInActivity::class.java)
         startActivity(intent)
         finish()

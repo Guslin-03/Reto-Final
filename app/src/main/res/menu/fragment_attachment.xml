@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_camera"
+        android:title="      Cámara de fotos"
+        android:icon="@android:drawable/ic_menu_camera"/>
+
+    <item
+        android:id="@+id/action_file"
+        android:title="      Adjuntar archivo"
+        android:icon="@android:drawable/ic_menu_slideshow"/>
+
+    <item
+        android:id="@+id/action_image"
+        android:title="     Adjuntar imagen"
+        android:icon="@android:drawable/ic_menu_gallery" />
+
+    <item
+        android:id="@+id/action_location"
+        android:title="     Compartir ubicación"
+        android:icon="@android:drawable/ic_menu_mylocation" />
+</menu>

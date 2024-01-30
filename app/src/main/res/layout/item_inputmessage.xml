@@ -18,17 +18,11 @@
         android:textSize="16sp" />
 
     <ImageView
-        android:id="@+id/location"
+        android:id="@+id/attatch"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.15"
-        app:srcCompat="@android:drawable/ic_menu_mylocation" />
-    <ImageView
-        android:id="@+id/camera"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.15"
-        app:srcCompat="@android:drawable/ic_menu_camera" />
+        android:layout_height="match_parent"
+        android:layout_weight="0.10"
+        app:srcCompat="@drawable/attatch" />
 
     <ImageView
         android:id="@+id/send"

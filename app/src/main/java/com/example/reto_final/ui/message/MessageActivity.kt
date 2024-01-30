@@ -1,14 +1,31 @@
 package com.example.reto_final.ui.message
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.provider.Settings
+import android.util.Base64
 import android.util.Log
 import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.appcompat.view.menu.MenuPopupHelper
+import androidx.appcompat.widget.PopupMenu
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
@@ -28,9 +45,17 @@ import com.example.reto_final.ui.group.GroupViewModel
 import com.example.reto_final.ui.group.RoomGroupViewModelFactory
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.single.PermissionListener
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import java.util.Date
 
 class MessageActivity : AppCompatActivity(){
@@ -45,6 +70,10 @@ class MessageActivity : AppCompatActivity(){
     private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository, applicationContext) }
     private lateinit var group: Group
     private val user = MyApp.userPreferences.getUser()
+    private val CAMERA_REQUEST_CODE = 1
+    private val IMAGE_REQUEST_CODE = 2
+    private val FILE_REQUEST_CODE = 3
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = MessageActivityBinding.inflate(layoutInflater)
@@ -53,7 +82,6 @@ class MessageActivity : AppCompatActivity(){
         setSupportActionBar(binding.toolbarChatConfiguration)
 
         setDefaultData()
-
         messageAdapter = MessageAdapter(::onMapClickItem)
 
         binding.messageList.adapter = messageAdapter
@@ -164,21 +192,8 @@ class MessageActivity : AppCompatActivity(){
 
             }
         }
-
-        binding.include.location.setOnClickListener {
-            val latitude = "37.7749" // Latitud de la ubicación
-            val longitude = "-122.4194" // Longitud de la ubicación
-
-            // Crear un enlace de Google Maps con las coordenadas de la ubicación
-            val mapLink = "https://www.google.com/maps?q=$latitude,$longitude"
-
-            if (group.id != null && user != null) {
-                messageViewModel.onSendMessage(mapLink, Date(), group.id!!, user.id)
-            }
-        }
-
-        binding.include.camera.setOnClickListener {
-
+        binding.include.attatch.setOnClickListener{
+            showAttachmentOptions(it)
         }
 
     }
@@ -298,4 +313,153 @@ class MessageActivity : AppCompatActivity(){
         messageViewModel.onSaveIncomingMessage(message, group)
     }
 
+    private fun startChatService(context: Context) {
+        val intent = Intent(context, ChatsService::class.java)
+        ContextCompat.startForegroundService(context, intent)
+    }
+
+    @SuppressLint("RestrictedApi")
+    private fun showAttachmentOptions(view: View) {
+        val popupMenu = PopupMenu(this, view)
+        val inflater: MenuInflater = popupMenu.menuInflater
+        inflater.inflate(R.menu.fragment_attachment, popupMenu.menu)
+
+        // Configurar las opciones de visualización del menú para forzar la visualización de los iconos
+        try {
+            val menuHelper = MenuPopupHelper(this, popupMenu.menu as MenuBuilder, view)
+            menuHelper.setForceShowIcon(true)
+            menuHelper.show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return
+        }
+
+        popupMenu.setOnMenuItemClickListener { item: MenuItem ->
+            when (item.itemId) {
+                R.id.action_camera -> {
+                    openCamera()
+                    true
+                }
+                R.id.action_file -> {
+                    attachFile()
+                    true
+                }
+                R.id.action_image -> {
+                    attachImage()
+                    true
+                }
+                R.id.action_location -> {
+                    showMyLocation()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        popupMenu.show()
+    }
+
+    private fun showMyLocation(){
+        val latitude = "37.7749" // Latitud de la ubicación
+        val longitude = "-122.4194" // Longitud de la ubicación
+
+        // Crear un enlace de Google Maps con las coordenadas de la ubicación
+        val mapLink = "https://www.google.com/maps?q=$latitude,$longitude"
+
+        if (group.id != null && user != null) {
+            messageViewModel.onSendMessage(mapLink, Date(), group.id!!, user.id)
+        }
+    }
+    private fun openCamera() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE)
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            val base64String = convertBitmapToBase64(imageBitmap)
+
+        }else if(requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            if (data?.data != null) {
+                val imageUri: Uri = data.data!!
+                val imageBitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
+                val base64String = convertBitmapToBase64(imageBitmap)
+            }
+        }else if(requestCode == FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            if (data?.data != null) {
+                val fileUri: Uri = data.data!!
+                val base64String = convertFileToBase64(fileUri)
+            }
+        }
+    }
+
+    private fun convertBitmapToBase64(bitmap: Bitmap): String {
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val b = baos.toByteArray()
+        return Base64.encodeToString(b, Base64.DEFAULT)
+    }
+
+    private fun attachImage(){
+        Dexter.withContext(this).withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+            .withListener(object : PermissionListener {
+
+                override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
+                    val intent = Intent(Intent.ACTION_GET_CONTENT)
+                    intent.type = "image/*"
+                    startActivityForResult(intent, IMAGE_REQUEST_CODE)
+                }
+
+                override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri = Uri.fromParts("package", packageName, null)
+                    intent.data = uri
+                    startActivity(intent)
+                }
+
+                override fun onPermissionRationaleShouldBeShown(p0: PermissionRequest?, p1: PermissionToken?) {
+                }
+
+            }).check()
+    }
+    private fun attachFile(){
+        Dexter.withContext(this).withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+            .withListener(object : PermissionListener {
+
+                override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
+                    val intent = Intent(Intent.ACTION_GET_CONTENT)
+                    intent.type =  "application/pdf"
+                    startActivityForResult(intent, FILE_REQUEST_CODE)
+                }
+
+                override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri = Uri.fromParts("package", packageName, null)
+                    intent.data = uri
+                    startActivity(intent)
+                }
+
+                override fun onPermissionRationaleShouldBeShown(p0: PermissionRequest?, p1: PermissionToken?) {
+                }
+
+            }).check()
+    }
+    private fun convertFileToBase64(fileUri: Uri): String {
+        val inputStream: InputStream? = contentResolver.openInputStream(fileUri)
+        inputStream?.use { input ->
+            val buffer = ByteArray(8192)
+            val output = ByteArrayOutputStream()
+
+            var bytesRead: Int
+            while (input.read(buffer).also { bytesRead = it } != -1) {
+                output.write(buffer, 0, bytesRead)
+            }
+
+            val byteArray = output.toByteArray()
+            return Base64.encodeToString(byteArray, Base64.DEFAULT)
+        }
+        return ""
+    }
 }
