@@ -9,8 +9,6 @@ import com.example.reto_final.data.repository.local.message.DbMessage
 import com.example.reto_final.data.repository.local.message.MessageDao
 import com.example.reto_final.data.repository.local.user.DbUser
 import com.example.reto_final.data.repository.local.group.DbUserGroup
-import com.example.reto_final.data.repository.local.message.DbPendingMessage
-import com.example.reto_final.data.repository.local.message.PendingMessageDao
 import com.example.reto_final.data.repository.local.role.DbRole
 import com.example.reto_final.data.repository.local.role.RoleDao
 import com.example.reto_final.data.repository.local.user.UserDao
@@ -19,7 +17,7 @@ import com.example.reto_final.data.repository.local.user.UserDao
     entities = [
         DbGroup::class,
         DbMessage::class,
-        DbPendingMessage::class,
+//        DbPendingMessage::class,
         DbUser::class,
         DbUserGroup::class,
         DbRole::class],
@@ -30,7 +28,7 @@ import com.example.reto_final.data.repository.local.user.UserDao
 abstract class MyAppRoomDataBase: RoomDatabase() {
     abstract fun groupDao(): GroupDao
     abstract fun messageDao(): MessageDao
-    abstract fun pendingMessageDao(): PendingMessageDao
+//    abstract fun pendingMessageDao(): PendingMessageDao
     abstract fun userDao(): UserDao
     abstract fun roleDao(): RoleDao
 }

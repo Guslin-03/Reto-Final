@@ -26,7 +26,7 @@ data class DbMessage(
     @PrimaryKey(autoGenerate = true) val id: Int?,
     @ColumnInfo(name = "text") val text: String,
     @ColumnInfo(name = "sent") val sentDate: Date,
-    @ColumnInfo(name = "saved") val saveDate: Date,
+    @ColumnInfo(name = "saved") val saveDate: Date?,
     @ColumnInfo(name = "groupId") val groupId: Int,
     @ColumnInfo(name = "userId") val userId: Int
 )

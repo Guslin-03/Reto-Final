@@ -101,8 +101,10 @@ class ChatsService : Service() {
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_CONNECT.value, onConnect())
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_DISCONNECT.value, onDisconnect())
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_MESSAGE_RECEIVED.value, onNewMessage())
-        MyApp.userPreferences.mSocket.on(SocketEvents.ON_ROMM_JOIN.value, onRoomJoin())
-        MyApp.userPreferences.mSocket.on(SocketEvents.ON_ROMM_LEFT.value, onRoomLeft())
+        MyApp.userPreferences.mSocket.on(SocketEvents.ON_ROOM_JOIN.value, onRoomJoin())
+        MyApp.userPreferences.mSocket.on(SocketEvents.ON_ROOM_LEFT.value, onRoomLeft())
+        MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_ADDED.value, onRoomJoin())
+        MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_THROW_OUT.value, onRoomLeft())
         serviceScope.launch {
             connect()
         }
@@ -143,7 +145,7 @@ class ChatsService : Service() {
             val response = onJSONtoAnyClass(it[0], UserGroup::class.java)
             if (response != null) {
                 val userGroup = onJSONtoAnyClass(response, UserGroup::class.java) as UserGroup
-                updateNotification("${userGroup.name} ha entrado al grupo.")
+                updateNotification("${userGroup.name} se ha unido al grupo.")
                 serviceScope.launch {
                     addUserToGroup(userGroup)
                 }

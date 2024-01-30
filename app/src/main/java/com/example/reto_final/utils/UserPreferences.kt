@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.example.reto_final.data.model.LoginUser
 import com.google.gson.Gson
-import io.socket.client.IO
 import io.socket.client.Socket
 import org.greenrobot.eventbus.EventBus
 

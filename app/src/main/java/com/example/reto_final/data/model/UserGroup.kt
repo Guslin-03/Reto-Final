@@ -8,5 +8,6 @@ data class UserGroup (
     val roomId: Int,
     val userId: Int,
     val name: String,
+    val adminId: Int?,
+    val adminName: String?
 ):Parcelable
-

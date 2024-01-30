@@ -63,7 +63,7 @@ class MessageAdapter(
 
                 binding.name.text = message.userId.toString()
 
-                binding.sentHour.text = parseDate(message.saved)
+                binding.sentHour.text = message.saved?.let { parseDate(it) }
 
             }
 

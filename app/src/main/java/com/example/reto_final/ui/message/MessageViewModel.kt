@@ -70,23 +70,23 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
     }
 
     fun onSendMessage(message: String, sent: Date, groupId: Int, authorId: Int) {
+            var localId = 0
+        viewModelScope.launch {
+            val sendMessage = sendMessage(Message(message, sent.time, groupId, authorId))
+            localId = sendMessage.data?.id!!
+        }
 
         if (InternetChecker.isNetworkAvailable(context)) {
-            val socketMessage = SocketMessageReq(groupId, message, sent.time)
+            val socketMessage = SocketMessageReq(groupId, localId, message, sent.time)
             val jsonObject = JSONObject(Gson().toJson(socketMessage))
             MyApp.userPreferences.mSocket.emit(SocketEvents.ON_SEND_MESSAGE.value, jsonObject)
-        } else {
-            viewModelScope.launch {
-                val sendMessage = Message(message, sent.time, sent.time, groupId, authorId)
-                sendMessage(sendMessage)
-            }
         }
 
     }
 
     private suspend fun sendMessage(sendMessage: Message) : Resource<Message> {
         return withContext(IO) {
-            messageLocalRepository.createPendingMessage(sendMessage)
+            messageLocalRepository.createMessage(sendMessage)
         }
     }
 

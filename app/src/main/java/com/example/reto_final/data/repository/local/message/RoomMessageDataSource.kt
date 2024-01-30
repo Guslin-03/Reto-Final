@@ -1,6 +1,5 @@
 package com.example.reto_final.data.repository.local.message
 
-import android.util.Log
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -20,26 +19,26 @@ class RoomMessageDataSource : CommonMessageRepository {
     }
 
     override suspend fun createMessage(message: Message): Resource<Message> {
-        Log.d("Prueba", ""+message)
         val dbMessage = messageDao.createMessage(message.toDbMessage())
         message.id = dbMessage.toInt()
         return Resource.success(message)
     }
 
 
-    private val pendingMessageDao: PendingMessageDao = MyApp.db.pendingMessageDao()
+//    private val pendingMessageDao: PendingMessageDao = MyApp.db.pendingMessageDao()
 
-    override suspend fun createPendingMessage(pendingMessage: Message): Resource<Message> {
-        val dbMessage = pendingMessageDao.createMessage(pendingMessage.toDbPendingMessage())
-        pendingMessage.id = dbMessage.toInt()
-        return Resource.success(pendingMessage)
-    }
+//    override suspend fun createPendingMessage(pendingMessage: Message): Resource<Message> {
+//        val dbMessage = pendingMessageDao.createMessage(pendingMessage.toDbPendingMessage())
+//        pendingMessage.id = dbMessage.toInt()
+//        return Resource.success(pendingMessage)
+//    }
 
 }
 
-fun DbMessage.toMessage() = Message(id, text, sentDate.time, saveDate.time, groupId, userId)
-fun Message.toDbMessage() = DbMessage(id, text, Date(sent), Date(saved), chatId, userId)
-fun Message.toDbPendingMessage() = DbPendingMessage(id, text, Date(sent), chatId, userId)
+fun DbMessage.toMessage() = Message(id, text, sentDate.time, saveDate?.time, groupId, userId)
+fun Message.toDbMessage() = DbMessage(id, text, Date(sent), saved?.let { Date(it) }, chatId, userId)
+
+//fun Message.toDbPendingMessage() = DbPendingMessage(id, text, Date(sent), chatId, userId)
 
 @Dao
 interface MessageDao {
@@ -49,8 +48,8 @@ interface MessageDao {
     suspend fun createMessage(message: DbMessage) : Long
 }
 
-@Dao
-interface PendingMessageDao {
-    @Insert
-    suspend fun createMessage(pendingMessage: DbPendingMessage) : Long
-}
+//@Dao
+//interface PendingMessageDao {
+//    @Insert
+//    suspend fun createMessage(pendingMessage: DbPendingMessage) : Long
+//}
