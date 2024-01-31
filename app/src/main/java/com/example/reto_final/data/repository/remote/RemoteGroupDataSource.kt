@@ -1,7 +1,6 @@
 package com.example.reto_final.data.repository.remote
 
 import com.example.reto_final.data.model.Group
-import com.example.reto_final.utils.Resource
 
 class RemoteGroupDataSource : BaseDataSource(), RemoteGroupRepository{
     override suspend fun getGroups()= getResult {
@@ -24,8 +23,8 @@ class RemoteGroupDataSource : BaseDataSource(), RemoteGroupRepository{
         RetrofitClient.apiInterface.countByIdAndAdminId(idGroup)
     }
 
-    override suspend fun existsByIdAndUsers_Id(idGroup: Int) = getResult {
-        RetrofitClient.apiInterface.existsByIdAndUsers_Id(idGroup)
+    override suspend fun existsByIdAndUsersId(idGroup: Int) = getResult {
+        RetrofitClient.apiInterface.existsByIdAndUsersId(idGroup)
     }
 
     override suspend fun addUserToChat(idGroup: Int, idUser: Int) = getResult {
@@ -38,6 +37,10 @@ class RemoteGroupDataSource : BaseDataSource(), RemoteGroupRepository{
 
     override suspend fun leaveChat(idGroup: Int) = getResult {
         RetrofitClient.apiInterface.leaveChat(idGroup)
+    }
+
+    override suspend fun chatThrowOut(idGroup: Int, idUser: Int) = getResult {
+        RetrofitClient.apiInterface.chatThrowOut(idGroup, idUser)
     }
 
 }

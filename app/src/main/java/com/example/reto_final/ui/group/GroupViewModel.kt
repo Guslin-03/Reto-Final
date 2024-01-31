@@ -12,13 +12,14 @@ import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
 import com.example.reto_final.data.repository.remote.RemoteGroupRepository
+import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class GroupViewModel(
-    private val groupLocalRepository: RoomGroupDataSource,
+    private val localGroupRepository: RoomGroupDataSource,
     private val remoteGroupRepository: RemoteGroupRepository,
     private var context: Context) : ViewModel() {
 
@@ -28,20 +29,23 @@ class GroupViewModel(
     private val _create = MutableLiveData<Resource<Void>>()
     val create : LiveData<Resource<Void>> get() = _create
 
-    private val _delete = MutableLiveData<Resource<Boolean>>()
-    val delete : LiveData<Resource<Boolean>> get() = _delete
+    private val _delete = MutableLiveData<Resource<Void>>()
+    val delete : LiveData<Resource<Void>> get() = _delete
 
-    private val _groupPermission = MutableLiveData<Resource<Boolean>>()
-    val groupPermission : LiveData<Resource<Boolean>> get() = _groupPermission
+    private val _groupPermission = MutableLiveData<Resource<Int>>()
+    val groupPermission : LiveData<Resource<Int>> get() = _groupPermission
 
-    private val _groupPermissionToDelete = MutableLiveData<Resource<Boolean>>()
-    val groupPermissionToDelete : LiveData<Resource<Boolean>> get() = _groupPermissionToDelete
+    private val _groupPermissionToDelete = MutableLiveData<Resource<Int>>()
+    val groupPermissionToDelete : LiveData<Resource<Int>> get() = _groupPermissionToDelete
 
-    private val _userHasAlreadyInGroup = MutableLiveData<Resource<Boolean>>()
-    val userHasAlreadyInGroup : LiveData<Resource<Boolean>> get() = _userHasAlreadyInGroup
+    private val _userHasAlreadyInGroup = MutableLiveData<Resource<Int>>()
+    val userHasAlreadyInGroup : LiveData<Resource<Int>> get() = _userHasAlreadyInGroup
 
-    private val _addUserToGroup = MutableLiveData<Resource<Boolean>>()
-    val addUserToGroup : LiveData<Resource<Boolean>> get() = _addUserToGroup
+    private val _joinGroup = MutableLiveData<Resource<Boolean>>()
+    val joinGroup : LiveData<Resource<Boolean>> get() = _joinGroup
+
+    private val _addUserToGroup = MutableLiveData<Resource<Int>>()
+    val addUserToGroup : LiveData<Resource<Int>> get() = _addUserToGroup
 
     private val _leaveGroup = MutableLiveData<Resource<Int>>()
     val leaveGroup : LiveData<Resource<Int>> get() = _leaveGroup
@@ -54,12 +58,28 @@ class GroupViewModel(
 
     private suspend fun getGroups() : Resource<List<Group>> {
         return withContext(Dispatchers.IO) {
-            groupLocalRepository.getGroups()
+            localGroupRepository.getGroups()
         }
     }
     private suspend fun getGroupsRemote() : Resource<List<Group>> {
         return withContext(Dispatchers.IO) {
             remoteGroupRepository.getGroups()
+        }
+    }
+
+    // FUNCIONES CREATE GROUP
+    fun onCreate(name:String, chatEnumType: String, idAdmin: Int) {
+        viewModelScope.launch {
+             if (InternetChecker.isNetworkAvailable(context)) {
+                 _create.value = createRemote(name, chatEnumType, idAdmin)
+                 if (_create.value!!.status == Resource.Status.SUCCESS) {
+                    createLocal(name, chatEnumType, idAdmin)
+                 } else {
+                     _create.value = Resource.error("Ha ocurrido un error, el grupo no se ha creado")
+                 }
+            } else {
+                 _create.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
+            }
         }
     }
 
@@ -70,32 +90,56 @@ class GroupViewModel(
         }
     }
 
+    private suspend fun createLocal(name:String, chatEnumType:String, idAdmin: Int) : Resource<Void> {
+        return withContext(Dispatchers.IO) {
+            val group = Group(null, name, chatEnumType, idAdmin)
+            localGroupRepository.createGroup(group)
+        }
+    }
 
-    fun onCreate(name:String, chatEnumType: String, idAdmin: Int) {
+    ///////////////////////////////////////////////////////////////////////////////
+
+    // FUNCIONES DELETE GROUP
+
+    fun onDelete(group: Group) {
         viewModelScope.launch {
-             if (InternetChecker.isNetworkAvailable(context)) {
-                 _create.value = createRemote(name, chatEnumType, idAdmin)
+            if (InternetChecker.isNetworkAvailable(context)) {
+                _delete.value = deleteRemote(group)
+                if (_delete.value!!.status == Resource.Status.SUCCESS) {
+                    deleteLocal(group)
+                } else {
+                    _delete.value = Resource.error("Ha ocurrido un error, el grupo no se ha eliminado")
+                }
+            } else {
+                _delete.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
             }
+
         }
     }
 
     private suspend fun deleteRemote(group: Group) : Resource<Void> {
         return withContext(Dispatchers.IO) {
-                remoteGroupRepository.deleteGroup(group.id!!)
-        }
-    }
-    fun onDelete(group: Group) {
-        viewModelScope.launch {
-            if (InternetChecker.isNetworkAvailable(context)) {
-                deleteRemote(group)
-                _delete.value = Resource.success(true)
-            }
+            remoteGroupRepository.deleteGroup(group.id!!)
         }
     }
 
-    private suspend fun userHasPermission(idGroup: Int, idUser: Int) : Resource<Int> {
+    private suspend fun deleteLocal(group: Group) : Resource<Void> {
         return withContext(Dispatchers.IO) {
-            groupLocalRepository.userHasPermission(idGroup, idUser)
+            localGroupRepository.deleteGroup(group)
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+
+
+    // FUNCIONES PERMISOS ENTRAR AL GRUPO
+    fun onUserHasPermission(idGroup: Int) {
+        viewModelScope.launch {
+            if (InternetChecker.isNetworkAvailable(context)) {
+                _groupPermission.value = userHasPermissionRemote(idGroup)
+            } else {
+                _delete.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
+            }
         }
     }
     private suspend fun userHasPermissionRemote(idGroup: Int) : Resource<Int> {
@@ -103,23 +147,17 @@ class GroupViewModel(
             remoteGroupRepository.canEnterUserChat(idGroup)
         }
     }
-    fun onUserHasPermission(idGroup: Int, idUser: Int) {
+
+    /////////////////////////////////////////////////////////////////////////////////
+
+    // FUNCIONES PERMISOS ELIMINAR GRUPO
+    fun onUserHasPermissionToDelete(idGroup: Int) {
         viewModelScope.launch {
-            val result = if (InternetChecker.isNetworkAvailable(context)) {
-                userHasPermissionRemote(idGroup)
-            }else{
-                userHasPermission(idGroup, idUser)
+            if (InternetChecker.isNetworkAvailable(context)) {
+                _groupPermissionToDelete.value = userHasPermissionToDeleteRemote(idGroup)
+            } else {
+                _groupPermissionToDelete.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
             }
-            if (result.data == 1) {
-                _groupPermission.value = Resource.success(true)
-            }else {
-                _groupPermission.value = Resource.error("No permission")
-            }
-        }
-    }
-    private suspend fun userHasPermissionToDelete(idGroup: Int, idUser: Int) : Resource<Int> {
-        return withContext(Dispatchers.IO) {
-            groupLocalRepository.userHasPermissionToDelete(idGroup, idUser)
         }
     }
     private suspend fun userHasPermissionToDeleteRemote(idGroup: Int) : Resource<Int> {
@@ -127,38 +165,44 @@ class GroupViewModel(
             remoteGroupRepository.countByAndAdminId(idGroup)
         }
     }
-    fun onUserHasPermissionToDelete(idGroup: Int, idUser: Int) {
-        viewModelScope.launch {
-            val result = userHasPermissionToDeleteRemote(idGroup)
 
-            if (result.data == 1) {
-                _groupPermissionToDelete.value = Resource.success(true)
-            }else {
-                _groupPermissionToDelete.value = Resource.error("No permission")
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    // FUNCIONES VALIDACION USUARIO YA ESTA EN EL GRUPO
+    fun onUserHasAlreadyInGroup(idGroup: Int, idUser: Int) {
+        viewModelScope.launch {
+            _userHasAlreadyInGroup.value = if (InternetChecker.isNetworkAvailable(context)) {
+                userHasAlreadyInGroupRemote(idGroup)
+            } else{
+                userHasAlreadyInGroup(idGroup, idUser)
             }
         }
     }
     private suspend fun userHasAlreadyInGroupRemote(idGroup: Int) : Resource<Int> {
         return withContext(Dispatchers.IO) {
-            remoteGroupRepository.existsByIdAndUsers_Id(idGroup)
+            remoteGroupRepository.existsByIdAndUsersId(idGroup)
         }
     }
     private suspend fun userHasAlreadyInGroup(idGroup: Int, idUser: Int) : Resource<Int> {
         return withContext(Dispatchers.IO) {
-            groupLocalRepository.userHasAlreadyInGroup(idGroup, idUser)
+            localGroupRepository.userHasAlreadyInGroup(idGroup, idUser)
         }
     }
-    fun onUserHasAlreadyInGroup(idGroup: Int, idUser: Int) {
+
+    //////////////////////////////////////////////////////////////////////////////////////
+
+    // FUNCIONES AÑADIR USUARIO A UN GRUPO
+    fun onAddUserToGroup(idGroup: Int, idUser: Int) {
         viewModelScope.launch {
-            val result = if (InternetChecker.isNetworkAvailable(context)) {
-                userHasAlreadyInGroupRemote(idGroup)
-            }else{
-                userHasAlreadyInGroup(idGroup, idUser)
-            }
-            if (result.data == 1) {
-                _userHasAlreadyInGroup.value = Resource.success(true)
+            if (InternetChecker.isNetworkAvailable(context)) {
+                _addUserToGroup.value = addUserToGroupRemote(idGroup, idUser)
+                if (_addUserToGroup.value!!.status == Resource.Status.SUCCESS) {
+                    addUserToGroupLocal(idGroup, idUser)
+                } else {
+                    _addUserToGroup.value = Resource.error("Ha ocurrido un error, no has unir al usuario al grupo")
+                }
             } else {
-                _userHasAlreadyInGroup.value = Resource.error("Is not on Group")
+                _addUserToGroup.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
             }
         }
     }
@@ -169,41 +213,59 @@ class GroupViewModel(
         }
     }
 
-    fun onAddUserToGroup(idGroup: Int, idUser: Int) {
-        viewModelScope.launch {
-            if (InternetChecker.isNetworkAvailable(context)) {
-                val result = addUserToGroupRemote(idGroup, idUser)
-                if (result.data != 0) {
-                    _addUserToGroup.value = Resource.success(true)
-                }else {
-                    _addUserToGroup.value = Resource.error("Ha ocurrido un error, no has podido unirte al grupo")
-                }
-            }
+    private suspend fun addUserToGroupLocal(idGroup: Int, idUser: Int) : Resource<Int> {
+        return withContext(Dispatchers.IO) {
+            localGroupRepository.addUserToGroup(idGroup, idUser)
         }
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////
+
+    // FUNCIONES UNIRSE A UN GRUPO
 
     fun onJoinGroup(idGroup: Int) {
         viewModelScope.launch {
             if (InternetChecker.isNetworkAvailable(context)) {
                 val result = joinGroup(idGroup)
-                if (result.data != 0) {
-                    _addUserToGroup.value = Resource.success(true)
-                }else {
-                    _addUserToGroup.value = Resource.error("Ha ocurrido un error, no has podido unirte al grupo")
+                if (result.data != 0 && MyApp.userPreferences.getUser()?.id != null) {
+                    _joinGroup.value = Resource.success(true)
+//                    joinGroupLocal(idGroup, MyApp.userPreferences.getUser()!!.id)
+                } else {
+                    _joinGroup.value = Resource.error("Ha ocurrido un error, no has podido unirte al grupo")
                 }
+            } else {
+                _joinGroup.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
             }
         }
     }
-
     private suspend fun joinGroup(idGroup: Int) : Resource<Int> {
         return withContext(Dispatchers.IO) {
             remoteGroupRepository.joinGroup(idGroup)
         }
     }
+//    private suspend fun joinGroupLocal(idGroup: Int, idUser: Int) : Resource<Int> {
+//        return withContext(Dispatchers.IO) {
+//            localGroupRepository.addUserToGroup(idGroup, idUser)
+//        }
+//    }
 
-    private suspend fun leaveGroup(idGroup: Int, idUser: Int) : Resource<Int> {
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    // FUNCIONES SALIR DE UN GRUPO
+
+    fun onLeaveGroup(idGroup: Int, idUser: Int) {
+        viewModelScope.launch {
+
+            val leaveGroup = leaveGroupLocal(idGroup, idUser)
+
+            if (InternetChecker.isNetworkAvailable(context) && leaveGroup.data == 1) {
+                _leaveGroup.value = leaveGroupRemote(idGroup)
+            }
+        }
+    }
+    private suspend fun leaveGroupLocal(idGroup: Int, idUser: Int) : Resource<Int> {
         return withContext(Dispatchers.IO) {
-            groupLocalRepository.leaveGroup(idGroup, idUser)
+            localGroupRepository.leaveGroup(idGroup, idUser)
         }
     }
     private suspend fun leaveGroupRemote(idGroup: Int) : Resource<Int> {
@@ -211,15 +273,26 @@ class GroupViewModel(
             remoteGroupRepository.leaveChat(idGroup)
         }
     }
-    fun onLeaveGroup(idGroup: Int, idUser: Int) {
+
+    //////////////////////////////////////////////////////////////////////////////////////
+
+    // FUNCIONES EXPULSAR USUARIO DE UN GRUPO
+
+    fun onChatThrowOut(idGroup: Int, idUser: Int) {
         viewModelScope.launch {
-            _leaveGroup.value = if (InternetChecker.isNetworkAvailable(context)) {
-                leaveGroupRemote(idGroup)
+            if (InternetChecker.isNetworkAvailable(context)) {
+                chatThrowOut(idGroup, idUser)
             } else {
-                leaveGroup(idGroup, idUser)
+                _joinGroup.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
             }
         }
     }
+    private suspend fun chatThrowOut(idGroup: Int, idUser: Int) : Resource<Int> {
+        return withContext(Dispatchers.IO) {
+            remoteGroupRepository.leaveChat(idGroup)
+        }
+    }
+
 }
 
 class RoomGroupViewModelFactory(

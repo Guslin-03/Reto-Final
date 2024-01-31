@@ -15,12 +15,14 @@ interface RemoteGroupRepository {
 
     suspend fun countByAndAdminId(idGroup:Int) : Resource<Int>
 
-    suspend fun existsByIdAndUsers_Id(idGroup:Int) : Resource<Int>
+    suspend fun existsByIdAndUsersId(idGroup:Int) : Resource<Int>
 
     suspend fun addUserToChat(idGroup: Int, idUser: Int) : Resource<Int>
 
     suspend fun joinGroup(idGroup: Int) : Resource<Int>
 
     suspend fun leaveChat(idGroup: Int) : Resource<Int>
+
+    suspend fun chatThrowOut(idGroup: Int, idUser: Int) : Resource<Int>
 
 }

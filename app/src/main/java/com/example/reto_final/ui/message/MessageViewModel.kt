@@ -74,10 +74,9 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
     }
 
     fun onSendMessage(message: String, sent: Date, groupId: Int, authorId: Int) {
-            var localId = 0
         viewModelScope.launch {
             val sendMessage = sendMessage(Message(message, sent.time, groupId, authorId))
-            localId = sendMessage.data?.id!!
+            val localId = sendMessage.data?.id!!
             if (localId != 0) {
                 sendMessage.status = Resource.Status.SUCCESS
                 _createLocalMessage.value = sendMessage

@@ -101,10 +101,10 @@ class ChatsService : Service() {
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_CONNECT.value, onConnect())
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_DISCONNECT.value, onDisconnect())
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_MESSAGE_RECEIVED.value, onNewMessage())
-        MyApp.userPreferences.mSocket.on(SocketEvents.ON_ROOM_JOIN.value, onRoomJoin())
-        MyApp.userPreferences.mSocket.on(SocketEvents.ON_ROOM_LEFT.value, onRoomLeft())
-        MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_ADDED.value, onRoomJoin())
-        MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_THROW_OUT.value, onRoomLeft())
+        MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_JOIN.value, onChatJoin())
+        MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_LEFT.value, onChatLeft())
+        MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_ADDED.value, onChatAdded())
+        MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_THROW_OUT.value, onChatThrowOut())
         serviceScope.launch {
             connect()
         }
@@ -138,17 +138,23 @@ class ChatsService : Service() {
         }
     }
 
-    private fun onRoomJoin(): Emitter.Listener {
+    private fun onChatJoin(): Emitter.Listener {
         return Emitter.Listener {
-            val response = onJSONtoAnyClass(it[0], UserGroup::class.java)
-            if (response != null) {
-                val userGroup = onJSONtoAnyClass(response, UserGroup::class.java) as UserGroup
-                updateNotification("${userGroup.name} se ha unido al grupo.")
-                serviceScope.launch {
-                    addUserToGroup(userGroup)
-                }
+            val response = onJSONtoAnyClass(it[0], UserGroup::class.java) as UserGroup
+            updateNotification("${response.name} se ha unido al grupo.")
+            serviceScope.launch {
+                addUserToGroup(response)
             }
+        }
+    }
 
+    private fun onChatAdded(): Emitter.Listener {
+        return Emitter.Listener {
+            val response = onJSONtoAnyClass(it[0], UserGroup::class.java) as UserGroup
+            updateNotification("${response.adminName} ha añadido a ${response.name}.")
+            serviceScope.launch {
+                addUserToGroup(response)
+            }
         }
     }
 
@@ -156,15 +162,22 @@ class ChatsService : Service() {
         groupRepository.addUserToGroup(userGroupRes.roomId, userGroupRes.userId)
     }
 
-    private fun onRoomLeft(): Emitter.Listener {
+    private fun onChatLeft(): Emitter.Listener {
         return Emitter.Listener {
-            val response = onJSONtoAnyClass(it[0], UserGroup::class.java)
-            if (response != null) {
-                val userGroup = onJSONtoAnyClass(response, UserGroup::class.java) as UserGroup
-                updateNotification("${userGroup.name} ha salido del grupo.")
-                serviceScope.launch {
-                    leaveGroup(userGroup)
-                }
+            val response = onJSONtoAnyClass(it[0], UserGroup::class.java) as UserGroup
+            updateNotification("${response.name} ha salido del grupo.")
+            serviceScope.launch {
+                leaveGroup(response)
+            }
+        }
+    }
+
+    private fun onChatThrowOut(): Emitter.Listener {
+        return Emitter.Listener {
+            val response = onJSONtoAnyClass(it[0], UserGroup::class.java) as UserGroup
+            updateNotification("${response.adminName} ha expulsado a ${response.name}.")
+            serviceScope.launch {
+                addUserToGroup(response)
             }
         }
     }
@@ -194,11 +207,9 @@ class ChatsService : Service() {
 
     private fun onJSONtoAnyClass(data : Any, convertClass: Class<*>): Any? {
         return try {
-            Log.d("Hola", "Hola")
             val jsonObject = data as JSONObject
             val jsonObjectString = jsonObject.toString()
             Gson().fromJson(jsonObjectString, convertClass)
-
         } catch (ex: Exception) {
 //            Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
             null

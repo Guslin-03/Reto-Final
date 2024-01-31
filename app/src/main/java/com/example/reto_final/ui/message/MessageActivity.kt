@@ -299,7 +299,7 @@ class MessageActivity : AppCompatActivity(){
             builder.setTitle("¿Seguro que quieres eliminar el grupo?")
             builder.setItems(options) { dialog, which ->
                 when (which) {
-                    0 -> groupViewModel.onUserHasPermissionToDelete(group.id!!, user.id)
+                    0 -> groupViewModel.onUserHasPermissionToDelete(group.id!!)
                     1 -> dialog.dismiss()
                 }
             }

@@ -48,13 +48,15 @@ interface APIInterface {
     @GET("chats/deletePermission/{idChat}")
     suspend fun countByIdAndAdminId(@Path("idChat") idGroup: Int): Response<Int>
     @GET("chats/existsOnChat/{idChat}")
-    suspend fun existsByIdAndUsers_Id(@Path("idChat") idGroup: Int): Response<Int>
+    suspend fun existsByIdAndUsersId(@Path("idChat") idGroup: Int): Response<Int>
     @POST("chats/addToGroup/{idChat}/{idUser}")
     suspend fun addUserToChat(@Path("idChat") idGroup: Int, @Path("idUser") idUser: Int): Response<Int>
     @POST("chats/addToGroup/{idChat}")
     suspend fun joinToChat(@Path("idChat") idGroup: Int): Response<Int>
     @DELETE("chats/leaveChat/{idChat}")
     suspend fun leaveChat(@Path("idChat") idGroup: Int): Response<Int>
+    @DELETE("chats/throwFromChat/{idChat}/{idUser}")
+    suspend fun chatThrowOut(idGroup: Int, idUser: Int): Response<Int>
     @GET("messages")
     suspend fun getMessages(): Response<List<Message>>
     @GET("messages/chat/{chatId}")
@@ -67,7 +69,6 @@ interface APIInterface {
     suspend fun getUserByEmail(@Path("email") email:String): Response<Int>
     @POST("users/reset/{email}")
     suspend fun resetPassword(@Path("email") email:String): Response<Int>
-
     @GET("users")
     suspend fun findUsers(): Response<List<UserRequest>>
     @GET("roles")

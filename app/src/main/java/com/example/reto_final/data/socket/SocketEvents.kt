@@ -6,9 +6,9 @@ enum class SocketEvents(val value: String) {
     ON_CONNECT("connect"),
     ON_DISCONNECT("disconnect"),
 
-    ON_ROOM_JOIN("room join"),
+    ON_CHAT_JOIN("chat join"),
     ON_CHAT_ADDED("added to chat"),
-    ON_ROOM_LEFT("room left"),
-    ON_CHAT_THROW_OUT("throw out to chat"),
+    ON_CHAT_LEFT("chat left"),
+    ON_CHAT_THROW_OUT("throw out from chat"),
 
 }

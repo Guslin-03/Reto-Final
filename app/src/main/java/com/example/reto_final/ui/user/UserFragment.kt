@@ -136,7 +136,7 @@ class UserFragment(private val selectedGroup: Group) : DialogFragment() {
                 builder.setTitle("¿Quieres añadir a ${user.name} ${user.surname} al grupo?")
                 builder.setItems(options) { dialog, which ->
                     when (which) {
-                        0 -> groupViewModel.onJoinGroup(selectedGroup.id!!)
+                        0 -> groupViewModel.onAddUserToGroup(selectedGroup.id!!, user.id!!)
                         1 -> dialog.dismiss()
                     }
                 }

@@ -185,7 +185,7 @@ class GroupActivity: AppCompatActivity() {
             }
         }
 
-        groupViewModel.addUserToGroup.observe(this) {
+        groupViewModel.joinGroup.observe(this) {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
                     goToChat()
@@ -317,8 +317,7 @@ class GroupActivity: AppCompatActivity() {
         if (loginUser != null) {
             if (group.type == ChatEnumType.PRIVATE.name) {
                 group.id?.let {
-                    groupViewModel.onUserHasPermission(
-                        it, loginUser.id)
+                    groupViewModel.onUserHasPermission(it)
                 }
             } else {
                 group.id?.let { groupViewModel.onUserHasAlreadyInGroup(it, loginUser.id) }
@@ -335,7 +334,7 @@ class GroupActivity: AppCompatActivity() {
                 builder.setTitle("¿Quieres entrar al grupo?")
                 builder.setItems(options) { dialog, which ->
                     when (which) {
-                        0 -> groupViewModel.onAddUserToGroup(group.id!!, loginUser.id)
+                        0 -> groupViewModel.onJoinGroup(group.id!!)
                         1 -> dialog.dismiss()
                     }
                 }

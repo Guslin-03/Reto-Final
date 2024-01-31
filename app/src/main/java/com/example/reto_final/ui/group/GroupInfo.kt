@@ -9,7 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.User
+import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.user.RoomUserDataSource
+import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
 import com.example.reto_final.data.repository.remote.RemoteUserDataSource
 import com.example.reto_final.databinding.GroupInfoActivityBinding
 import com.example.reto_final.ui.user.RoomUserViewModelFactory
@@ -26,6 +28,9 @@ class GroupInfo: AppCompatActivity() {
     private val userRepository = RoomUserDataSource()
     private val remoteUserRepository = RemoteUserDataSource()
     private val userViewModel: UserViewModel by viewModels { RoomUserViewModelFactory(userRepository,remoteUserRepository,applicationContext) }
+    private val groupRepository = RoomGroupDataSource()
+    private val remoteGroupRepository = RemoteGroupDataSource()
+    private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository, applicationContext) }
     private val loginUser = MyApp.userPreferences.getUser()
     private lateinit var userFragment : UserFragment
     private var selectedGroup = Group()
@@ -102,7 +107,7 @@ class GroupInfo: AppCompatActivity() {
             builder.setTitle("¿Seguro que quieres expulsar a ${selectedUser.name} ${selectedUser.surname} del grupo?")
             builder.setItems(options) { dialog, which ->
                 when (which) {
-                    0 -> userViewModel.onDelete(selectedUser.id!!, selectedGroup.id!!)
+                    0 -> groupViewModel.onChatThrowOut(selectedGroup.id!!, selectedUser.id!!)
                     1 -> dialog.dismiss()
                 }
             }
