@@ -80,12 +80,13 @@ class LogInActivity : AppCompatActivity(){
                     }
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Los datos introducidos no pertenecen a un usuario del centro", Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }
             }
         }
+
         viewModel.secondLogin.observe(this) {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
@@ -105,40 +106,36 @@ class LogInActivity : AppCompatActivity(){
                 }
             }
         }
+
         viewModel.email.observe(this) {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
                     if(it.data==1){
                         viewModel.onResetPassword(email)
-//                        Toast.makeText(this, "Si el correo introducido es correcto, recibirás una nueva contraseña", Toast.LENGTH_LONG).show()
                     }
 
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Ha habido algun error procesando la solicitud", Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
 
                 }
             }
         }
+
         viewModel.reset.observe(this) {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
-                    if(it.data==1){
-
-                    }
                     Toast.makeText(this, "Si el correo introducido es correcto, recibirás una nueva contraseña", Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
-
                 }
             }
         }
-
     }
     private fun popUpCreate() {
         val builder = AlertDialog.Builder(this)
@@ -240,9 +237,7 @@ class LogInActivity : AppCompatActivity(){
             binding.password.setHintTextColor(Color.BLACK)
             return false
         }
-
         return true
-
     }
 
     private fun validarEmail(email: String): Boolean {

@@ -4,12 +4,12 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
-import android.util.Base64
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
@@ -54,11 +54,10 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONObject
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
 import java.util.Date
 import kotlin.random.Random
 
+@Suppress("DEPRECATION")
 class MessageActivity : AppCompatActivity(){
 
     private lateinit var binding: MessageActivityBinding
@@ -74,6 +73,7 @@ class MessageActivity : AppCompatActivity(){
     private val CAMERA_REQUEST_CODE = 1
     private val IMAGE_REQUEST_CODE = 2
     private val FILE_REQUEST_CODE = 3
+    private val fileConverter = FileConverter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -142,7 +142,6 @@ class MessageActivity : AppCompatActivity(){
                         }
 
                     }
-
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
@@ -219,7 +218,6 @@ class MessageActivity : AppCompatActivity(){
                 if (group.id != null && user != null) {
                     messageViewModel.onSendMessage(message, Date(), group.id!!, user.id)
                 }
-
             }
         }
         binding.include.attatch.setOnClickListener{
@@ -230,11 +228,8 @@ class MessageActivity : AppCompatActivity(){
     private fun onMapClickItem(message: Message) {
 
         val messageClick=message.text
-        Log.d("Message", "Click "+messageClick.startsWith("https://www.google.com/maps?q="))
         if (messageClick.startsWith("https://www.google.com/maps?q=")) {
-            // Si es así, crea un Intent y ábrelo en Google Maps
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(messageClick))
-            Log.d("Message", "Hola "+intent.resolveActivity(packageManager))
                 startActivity(intent)
         }
     }
@@ -343,18 +338,13 @@ class MessageActivity : AppCompatActivity(){
         messageViewModel.onSaveIncomingMessage(message, group)
     }
 
-//    private fun startChatService(context: Context) {
-//        val intent = Intent(context, ChatsService::class.java)
-//        ContextCompat.startForegroundService(context, intent)
-//    }
-
     @SuppressLint("RestrictedApi")
     private fun showAttachmentOptions(view: View) {
         val popupMenu = PopupMenu(this, view)
         val inflater: MenuInflater = popupMenu.menuInflater
-        inflater.inflate(R.menu.fragment_attachment, popupMenu.menu)
+        inflater.inflate(R.menu.popup_menu_attatchment, popupMenu.menu)
 
-        // Configurar las opciones de visualización del menú para forzar la visualización de los iconos
+        // Con esto se visualizan los iconos
         try {
             val menuHelper = MenuPopupHelper(this, popupMenu.menu as MenuBuilder, view)
             menuHelper.setForceShowIcon(true)
@@ -386,7 +376,6 @@ class MessageActivity : AppCompatActivity(){
             }
         }
 
-        popupMenu.show()
     }
 
     private fun showMyLocation(){
@@ -400,36 +389,36 @@ class MessageActivity : AppCompatActivity(){
         }
     }
     private fun openCamera() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE)
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE)
+        } else {
+            Toast.makeText(this, "Este dispositivo no tiene una cámara", Toast.LENGTH_SHORT).show()
+        }
     }
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
+        var base64String=""
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
-            val base64String = convertBitmapToBase64(imageBitmap)
+            base64String = fileConverter.convertBitmapToBase64(imageBitmap)
 
         }else if(requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK){
             if (data?.data != null) {
                 val imageUri: Uri = data.data!!
                 val imageBitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
-                val base64String = convertBitmapToBase64(imageBitmap)
+                base64String = fileConverter.convertBitmapToBase64(imageBitmap)
             }
         }else if(requestCode == FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (data?.data != null) {
                 val fileUri: Uri = data.data!!
-                val base64String = convertFileToBase64(fileUri)
+                base64String = fileConverter.convertFileToBase64(fileUri)
             }
         }
+        user?.let { messageViewModel.onSendMessage(base64String, Date(), group.id!!, it.id) }
     }
 
-    private fun convertBitmapToBase64(bitmap: Bitmap): String {
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-        val b = baos.toByteArray()
-        return Base64.encodeToString(b, Base64.DEFAULT)
-    }
 
     private fun attachImage(){
         Dexter.withContext(this).withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -475,22 +464,7 @@ class MessageActivity : AppCompatActivity(){
 
             }).check()
     }
-    private fun convertFileToBase64(fileUri: Uri): String {
-        val inputStream: InputStream? = contentResolver.openInputStream(fileUri)
-        inputStream?.use { input ->
-            val buffer = ByteArray(8192)
-            val output = ByteArrayOutputStream()
 
-            var bytesRead: Int
-            while (input.read(buffer).also { bytesRead = it } != -1) {
-                output.write(buffer, 0, bytesRead)
-            }
-
-            val byteArray = output.toByteArray()
-            return Base64.encodeToString(byteArray, Base64.DEFAULT)
-        }
-        return ""
-    }
     private fun getRandomCoordinate(min: Double, max: Double): String {
         return String.format("%.6f", Random.nextDouble(min, max))
     }

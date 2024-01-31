@@ -58,7 +58,6 @@ class ConfigurationActivity : AppCompatActivity() {
         binding.next.setOnClickListener {
 
             if (user != null &&  InternetChecker.isNetworkAvailable(applicationContext)) {
-                Log.i("Prueba", ""+user.name)
                 viewModel.onUpdateProfile(
                     user.DNI,
                     user.name,
@@ -85,7 +84,7 @@ class ConfigurationActivity : AppCompatActivity() {
                     backToGroupActivity()
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "No se ha podido actualizar el perfil", Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }

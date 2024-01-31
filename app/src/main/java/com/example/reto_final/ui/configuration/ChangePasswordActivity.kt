@@ -67,7 +67,7 @@ class ChangePasswordActivity: AppCompatActivity() {
                     MyApp.userPreferences.removeData()
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "No se ha podido cerrar la sesión", Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }
@@ -78,18 +78,15 @@ class ChangePasswordActivity: AppCompatActivity() {
             when (it.status) {
 
                 Resource.Status.SUCCESS -> {
-                    Log.d("Pass", "SUCCESS")
                     viewModel.onLogOut()
                 }
                 Resource.Status.ERROR -> {
-                    Log.d("Pass", "ERROR")
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "No se ha podido actualizar la contraseña", Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }
             }
         }
-
     }
 
     private fun checkData(): Boolean {

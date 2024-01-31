@@ -3,6 +3,7 @@ package com.example.reto_final.ui.configuration
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
@@ -63,9 +64,7 @@ class PersonalConfigurationActivity: AppCompatActivity() {
             val dialog = builder.create()
             dialog.show()
         }
-
         binding.profilePicture.setOnClickListener { pickPhoto() }
-
     }
 
     private fun pickPhoto() {
@@ -83,8 +82,12 @@ class PersonalConfigurationActivity: AppCompatActivity() {
     }
 
     private fun takePhotoFromCamera() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(takePictureIntent, 1)
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(takePictureIntent, 1)
+        } else {
+            Toast.makeText(this, "Este dispositivo no tiene una cámara", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun pickPhotoFromGallery() {
@@ -150,7 +153,6 @@ class PersonalConfigurationActivity: AppCompatActivity() {
             binding.dni.setHintTextColor(hintColor)
 
             return false
-
         }
         if (phoneNumber != "" ) {
             if(!validatePhone(phoneNumber)) {
