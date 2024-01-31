@@ -24,6 +24,7 @@ import java.util.Date
 ])
 data class DbMessage(
     @PrimaryKey(autoGenerate = true) val id: Int?,
+    @ColumnInfo(name = "idServer") val idServer: Int?,
     @ColumnInfo(name = "text") val text: String,
     @ColumnInfo(name = "sent") val sentDate: Date,
     @ColumnInfo(name = "saved") val saveDate: Date?,

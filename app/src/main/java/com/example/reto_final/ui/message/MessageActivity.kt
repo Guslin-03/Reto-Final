@@ -230,7 +230,7 @@ class MessageActivity : AppCompatActivity(){
         val messageClick=message.text
         if (messageClick.startsWith("https://www.google.com/maps?q=")) {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(messageClick))
-                startActivity(intent)
+            startActivity(intent)
         }
     }
     private fun setDefaultData() {

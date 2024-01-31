@@ -61,11 +61,6 @@ class GroupViewModel(
             localGroupRepository.getGroups()
         }
     }
-    private suspend fun getGroupsRemote() : Resource<List<Group>> {
-        return withContext(Dispatchers.IO) {
-            remoteGroupRepository.getGroups()
-        }
-    }
 
     // FUNCIONES CREATE GROUP
     fun onCreate(name:String, chatEnumType: String, idAdmin: Int) {

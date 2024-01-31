@@ -14,5 +14,6 @@ interface CommonGroupRepository {
     suspend fun addUserToGroup(idGroup: Int, idUser: Int) : Resource<Int>
     suspend fun leaveGroup(idGroup: Int, idUser: Int): Resource<Int>
     suspend fun userHasAlreadyInGroup(idGroup: Int?, idUser: Int): Resource<Int>
+    suspend fun getLastGroup(): Resource<Group?>
 
 }

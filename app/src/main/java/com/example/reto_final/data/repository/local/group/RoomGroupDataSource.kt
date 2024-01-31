@@ -74,6 +74,11 @@ class RoomGroupDataSource : CommonGroupRepository {
         return Resource.success()
     }
 
+    override suspend fun getLastGroup(): Resource<Group?> {
+        val response = groupDao.getLastGroup()
+        return Resource.success(response)
+    }
+
 }
 
 fun DbGroup.toGroup() = Group(id, name, chatEnumType, adminId)
@@ -97,5 +102,8 @@ interface GroupDao {
     suspend fun leaveGroup(idGroup: Int, idUser: Int) : Int
     @Query("SELECT COUNT(groupId) FROM group_user WHERE groupId = :idGroup AND userId = :idUser")
     suspend fun userHasAlreadyInGroup(idGroup: Int?, idUser: Int): Int
+
+    @Query("SELECT * FROM groups WHERE id = (SELECT MAX(id) FROM groups)")
+    suspend fun getLastGroup(): Group?
 
 }

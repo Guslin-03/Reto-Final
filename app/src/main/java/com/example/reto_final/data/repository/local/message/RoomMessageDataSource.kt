@@ -1,6 +1,5 @@
 package com.example.reto_final.data.repository.local.message
 
-import android.util.Log
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -31,35 +30,30 @@ class RoomMessageDataSource : CommonMessageRepository {
         return Resource.success(message)
     }
 
-
-//    private val pendingMessageDao: PendingMessageDao = MyApp.db.pendingMessageDao()
-
-//    override suspend fun createPendingMessage(pendingMessage: Message): Resource<Message> {
-//        val dbMessage = pendingMessageDao.createMessage(pendingMessage.toDbPendingMessage())
-//        pendingMessage.id = dbMessage.toInt()
-//        return Resource.success(pendingMessage)
-//    }
+    override suspend fun getLastMessage(): Resource<Message?> {
+        val dbMessage = messageDao.getLastMessage()
+        return if (dbMessage != null) {
+            Resource.success(dbMessage.toMessage())
+        } else {
+            Resource.success(null)
+        }
+    }
 
 }
 
-fun DbMessage.toMessage() = Message(id, text, sentDate.time, saveDate?.time, groupId, userId)
-fun Message.toDbMessage() = DbMessage(id, text, Date(sent), saved?.let { Date(it) }, chatId, userId)
-
-//fun Message.toDbPendingMessage() = DbPendingMessage(id, text, Date(sent), chatId, userId)
+fun DbMessage.toMessage() = Message(id, idServer, text, sentDate.time, saveDate?.time, groupId, userId)
+fun Message.toDbMessage() = DbMessage(id, idServer, text, Date(sent), saved?.let { Date(it) }, chatId, userId)
 
 @Dao
 interface MessageDao {
     @Query("SELECT * FROM messages WHERE groupId = :groupId ORDER BY id ASC")
     suspend fun getMessagesFromGroup(groupId: Int): List<DbMessage>
+
+    @Query("SELECT * FROM messages WHERE idServer = (SELECT MAX(idServer) FROM messages)")
+    suspend fun getLastMessage(): DbMessage?
     @Insert
     suspend fun createMessage(message: DbMessage) : Long
 
     @Query("UPDATE messages SET saved = :saved WHERE id = :messageId")
     suspend fun updateMessage(messageId: Int?, saved: Long?) : Int
 }
-
-//@Dao
-//interface PendingMessageDao {
-//    @Insert
-//    suspend fun createMessage(pendingMessage: DbPendingMessage) : Long
-//}

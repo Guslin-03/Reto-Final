@@ -7,5 +7,5 @@ interface CommonMessageRepository {
     suspend fun getMessagesFromGroup(idGroup: Int) : Resource<List<Message>>
     suspend fun createMessage(message: Message) : Resource<Message>
     suspend fun updateMessage(message: Message) : Resource<Message>
-//    suspend fun createPendingMessage(pendingMessage: Message) : Resource<Message>
+    suspend fun getLastMessage() : Resource<Message?>
 }

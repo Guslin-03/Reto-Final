@@ -9,4 +9,5 @@ interface CommonUserRepository {
     suspend fun createUser(user: User) : Resource<User>
     suspend fun deleteUserFromGroup(idUser: Int, idGroup: Int): Resource<Void>
     suspend fun userIsAdmin(idUser: Int, idGroup: Int) : Resource<Int>
+    suspend fun getLastUser(): Resource<User?>
 }

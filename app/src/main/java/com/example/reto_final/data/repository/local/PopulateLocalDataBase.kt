@@ -1,5 +1,6 @@
 package com.example.reto_final.data.repository.local
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,7 @@ import com.example.reto_final.data.model.Role
 import com.example.reto_final.data.model.User
 import com.example.reto_final.data.model.UserRequest
 import com.example.reto_final.data.model.message.Message
+import com.example.reto_final.data.model.message.MessageResponse
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
 import com.example.reto_final.data.repository.local.role.RoomRoleDataSource
@@ -39,7 +41,7 @@ class PopulateLocalDataBase(
 
 ) : ViewModel() {
 
-    private val _allMessage = MutableLiveData<Resource<List<Message>>>()
+    private val _allMessage = MutableLiveData<Resource<List<MessageResponse>>>()
 
     private val _allGroup = MutableLiveData<Resource<List<Group>>>()
 
@@ -47,13 +49,21 @@ class PopulateLocalDataBase(
 
     private val _allRole = MutableLiveData<Resource<List<Role>>>()
 
+    private val _lastMessage = MutableLiveData<Resource<Message?>>()
+
+    private val _lastGroup = MutableLiveData<Resource<Group?>>()
+
+    private val _lastUser = MutableLiveData<Resource<User?>>()
+
     private val _finish = MutableLiveData<Resource<Boolean>>()
     val finish : LiveData<Resource<Boolean>> get() = _finish
 
     private val usersGroups = mutableListOf<Pair<Int, Int>>()
 
     fun toInit() {
+
         viewModelScope.launch {
+            getAllLastData()
             getAllData()
             if (_allMessage.value?.status == Resource.Status.SUCCESS
             && _allUser.value?.status == Resource.Status.SUCCESS
@@ -63,6 +73,30 @@ class PopulateLocalDataBase(
             _finish.value = Resource.success(true)
         }
 
+    }
+
+    private suspend fun getAllLastData() {
+        _lastGroup.value = getLastGroup()
+        _lastUser.value = getLastUser()
+        _lastMessage.value = getLastMessage()
+    }
+
+    private suspend fun getLastMessage(): Resource<Message?> {
+        return withContext(Dispatchers.IO) {
+            messageLocalRepository.getLastMessage()
+        }
+    }
+
+    private suspend fun getLastGroup(): Resource<Group?> {
+        return withContext(Dispatchers.IO) {
+            groupLocalRepository.getLastGroup()
+        }
+    }
+
+    private suspend fun getLastUser(): Resource<User?> {
+        return withContext(Dispatchers.IO) {
+            userLocalRepository.getLastUser()
+        }
     }
 
     private suspend fun getAllData() {
@@ -136,14 +170,21 @@ class PopulateLocalDataBase(
         return withContext(Dispatchers.IO) {
             val allMessage = _allMessage.value?.data
             if (allMessage != null) {
-                for (message in allMessage) {
+                for (messageResponse in allMessage) {
+                    val message = Message(
+                        messageResponse.id,
+                        messageResponse.text,
+                        messageResponse.sent,
+                        messageResponse.saved,
+                        messageResponse.chatId,
+                        messageResponse.userId)
                     messageLocalRepository.createMessage(message)
                 }
             }
         }
     }
 
-    private suspend fun getAllMessages(): Resource<List<Message>> {
+    private suspend fun getAllMessages(): Resource<List<MessageResponse>> {
         return withContext(Dispatchers.IO) {
             remoteMessageRepository.getMessages()
         }

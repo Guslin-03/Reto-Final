@@ -81,9 +81,7 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
                 sendMessage.status = Resource.Status.SUCCESS
                 _createLocalMessage.value = sendMessage
             }
-
         }
-
     }
 
     private suspend fun sendMessage(sendMessage: Message) : Resource<Message> {

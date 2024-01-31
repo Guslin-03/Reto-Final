@@ -8,6 +8,7 @@ import com.example.reto_final.data.model.Role
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.model.User
 import com.example.reto_final.data.model.UserRequest
+import com.example.reto_final.data.model.message.MessageResponse
 import com.example.reto_final.data.repository.ProfileRequest
 import com.example.reto_final.data.repository.RegisterRequest
 import retrofit2.Response
@@ -58,7 +59,7 @@ interface APIInterface {
     @DELETE("chats/throwFromChat/{idChat}/{idUser}")
     suspend fun chatThrowOut(idGroup: Int, idUser: Int): Response<Int>
     @GET("messages")
-    suspend fun getMessages(): Response<List<Message>>
+    suspend fun getMessages(): Response<List<MessageResponse>>
     @GET("messages/chat/{chatId}")
     suspend fun getMessageByChatId(@Path("chatId") idChat:Int) : Response<List<Message>>
     @POST("messages")

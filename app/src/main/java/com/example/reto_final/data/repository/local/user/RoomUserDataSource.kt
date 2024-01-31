@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.model.Role
 import com.example.reto_final.data.model.User
 import com.example.reto_final.data.repository.local.CommonUserRepository
@@ -40,6 +41,12 @@ class RoomUserDataSource: CommonUserRepository {
         return Resource.success(isAdmin)
     }
 
+    override suspend fun getLastUser(): Resource<User?> {
+        val response = userDao.getLastUser()
+        return Resource.success(response)
+    }
+
+
 }
 
 fun DbUser.toUser() = User(id, name, surname, email, phoneNumber, roleId)
@@ -59,6 +66,9 @@ interface UserDao {
     suspend fun deleteUserForGroup(userId: Int, groupId: Int) : Int
     @Query("SELECT COUNT(id) FROM groups WHERE id = :idGroup AND adminId = :idAdmin")
     suspend fun userIsAdmin(idAdmin: Int, idGroup: Int) : Int
+
+    @Query("SELECT * FROM users WHERE id = (SELECT MAX(id) FROM users)")
+    suspend fun getLastUser(): User?
 
 }
 
