@@ -5,7 +5,7 @@ import com.example.reto_final.data.model.message.MessageResponse
 import com.example.reto_final.utils.Resource
 
 interface RemoteMessageRepository {
-    suspend fun getMessages() : Resource<List<MessageResponse>>
+    suspend fun getMessages(messageId: Int?): Resource<List<MessageResponse>>
     suspend fun getMessagesFromGroup(idGroup: Int) : Resource<List<Message>>
     suspend fun createMessage(message: Message) : Resource<Message>
 }

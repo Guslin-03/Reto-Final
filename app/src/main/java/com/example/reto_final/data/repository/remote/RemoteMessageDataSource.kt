@@ -3,8 +3,8 @@ package com.example.reto_final.data.repository.remote
 import com.example.reto_final.data.model.message.Message
 
 class RemoteMessageDataSource : BaseDataSource(), RemoteMessageRepository {
-    override suspend fun getMessages() = getResult{
-        RetrofitClient.apiInterface.getMessages()
+    override suspend fun getMessages(messageId: Int?) = getResult{
+        RetrofitClient.apiInterface.getMessages(messageId)
     }
 
     override suspend fun getMessagesFromGroup(idGroup: Int) = getResult {

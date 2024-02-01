@@ -6,6 +6,6 @@ import com.example.reto_final.utils.Resource
 
 interface RemoteUserRepository {
 
-    suspend fun findUsers() : Resource<List<UserRequest>>
+    suspend fun findUsers(user: Int?): Resource<List<UserRequest>>
     suspend fun getUserByChatId(idChat:Int) : Resource<List<User>>
 }

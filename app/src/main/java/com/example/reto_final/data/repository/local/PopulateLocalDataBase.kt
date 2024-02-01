@@ -49,35 +49,46 @@ class PopulateLocalDataBase(
 
     private val _allRole = MutableLiveData<Resource<List<Role>>>()
 
-    private val _lastMessage = MutableLiveData<Resource<Message?>>()
+    private val _lastUser = MutableLiveData<Resource<User?>>()
 
     private val _lastGroup = MutableLiveData<Resource<Group?>>()
 
-    private val _lastUser = MutableLiveData<Resource<User?>>()
+    private val _lastMessage = MutableLiveData<Resource<Message?>>()
 
     private val _finish = MutableLiveData<Resource<Boolean>>()
     val finish : LiveData<Resource<Boolean>> get() = _finish
 
     private val usersGroups = mutableListOf<Pair<Int, Int>>()
 
+    //////////////////////////////////////////////////////////////////////
+    // FUNCION DE INICIO
     fun toInit() {
 
         viewModelScope.launch {
             getAllLastData()
-            getAllData()
-            if (_allMessage.value?.status == Resource.Status.SUCCESS
-            && _allUser.value?.status == Resource.Status.SUCCESS
-            && _allGroup.value?.status == Resource.Status.SUCCESS) {
-                setAllData()
+            if (_lastUser.value?.status == Resource.Status.SUCCESS
+                && _lastGroup.value?.status == Resource.Status.SUCCESS
+                && _lastMessage.value?.status == Resource.Status.SUCCESS) {
+                Log.d("p1", "GetAllLastData")
+                getAllData()
+                if (_allMessage.value?.status == Resource.Status.SUCCESS
+                    && _allUser.value?.status == Resource.Status.SUCCESS
+                    && _allGroup.value?.status == Resource.Status.SUCCESS) {
+                    Log.d("p1", "getAllData")
+                    setAllData()
+                }
+                _finish.value = Resource.success(true)
             }
-            _finish.value = Resource.success(true)
+
         }
 
     }
 
+    ///////////////////////////////////////////////////////////////////////
+    // RECOGIDA DE LOS ULTIMOS DATOS DE ROOM
     private suspend fun getAllLastData() {
-        _lastGroup.value = getLastGroup()
         _lastUser.value = getLastUser()
+        _lastGroup.value = getLastGroup()
         _lastMessage.value = getLastMessage()
     }
 
@@ -99,21 +110,6 @@ class PopulateLocalDataBase(
         }
     }
 
-    private suspend fun getAllData() {
-//        _allRole.value = getAllRoles()
-        _allUser.value = getAllUsers()
-        _allGroup.value = getAllGroups()
-        _allMessage.value = getAllMessages()
-    }
-
-    private suspend fun setAllData() {
-        setAllRoles()
-        setAllUsers()
-        setAllGroups()
-        setAllUsersToGroups()
-        setAllMessages()
-    }
-
     private suspend fun setAllRoles() {
         return withContext(Dispatchers.IO) {
 //            val allRole = _allRole.value?.data
@@ -127,6 +123,62 @@ class PopulateLocalDataBase(
             }
 //            }
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+    // LLAMADAS A BBDD REMOTA PARA POBLAR ROOM
+    private suspend fun getAllData() {
+//        _allRole.value = getAllRoles()
+        _allUser.value = getAllUsers(_lastUser.value?.data)
+        _allGroup.value = getAllGroups(_lastGroup.value?.data)
+        _allMessage.value = getAllMessages(_lastMessage.value?.data)
+    }
+
+    private suspend fun getAllMessages(message: Message?): Resource<List<MessageResponse>> {
+        return withContext(Dispatchers.IO) {
+            if (message != null) {
+                remoteMessageRepository.getMessages(message.id)
+            } else {
+                remoteMessageRepository.getMessages(null)
+            }
+        }
+    }
+
+    private suspend fun getAllUsers(user: User?): Resource<List<UserRequest>> {
+        return withContext(Dispatchers.IO) {
+            if (user != null) {
+                remoteUserRepository.findUsers(user.id)
+            } else {
+                remoteUserRepository.findUsers(null)
+            }
+        }
+    }
+
+    private suspend fun getAllGroups(group: Group?): Resource<List<Group>> {
+        return withContext(Dispatchers.IO) {
+            if (group != null) {
+                remoteGroupRepository.getGroups(group.id)
+            } else {
+                remoteGroupRepository.getGroups(null)
+            }
+
+        }
+    }
+
+    private suspend fun getAllRoles(): Resource<List<Role>> {
+        return withContext(Dispatchers.IO) {
+            remoteRoleRepository.getRoles()
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // INSERTS EN ROOM DE LA INFORMACION RECOGIDA EN REMOTO
+    private suspend fun setAllData() {
+        setAllRoles()
+        setAllUsers()
+        setAllGroups()
+        setAllUsersToGroups()
+        setAllMessages()
     }
 
     private suspend fun setAllUsers() {
@@ -165,7 +217,6 @@ class PopulateLocalDataBase(
         }
     }
 
-
     private suspend fun setAllMessages() {
         return withContext(Dispatchers.IO) {
             val allMessage = _allMessage.value?.data
@@ -181,30 +232,6 @@ class PopulateLocalDataBase(
                     messageLocalRepository.createMessage(message)
                 }
             }
-        }
-    }
-
-    private suspend fun getAllMessages(): Resource<List<MessageResponse>> {
-        return withContext(Dispatchers.IO) {
-            remoteMessageRepository.getMessages()
-        }
-    }
-
-    private suspend fun getAllUsers(): Resource<List<UserRequest>> {
-        return withContext(Dispatchers.IO) {
-            remoteUserRepository.findUsers()
-        }
-    }
-
-    private suspend fun getAllGroups(): Resource<List<Group>> {
-        return withContext(Dispatchers.IO) {
-            remoteGroupRepository.getGroups()
-        }
-    }
-
-    private suspend fun getAllRoles(): Resource<List<Role>> {
-        return withContext(Dispatchers.IO) {
-            remoteRoleRepository.getRoles()
         }
     }
 

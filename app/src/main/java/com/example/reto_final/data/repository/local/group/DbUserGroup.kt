@@ -3,9 +3,10 @@ package com.example.reto_final.data.repository.local.group
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import com.example.reto_final.data.repository.local.user.DbUser
+import java.util.Date
 
 @Entity(tableName = "group_user",
-    primaryKeys = ["groupId", "userId",],
+    primaryKeys = ["groupId", "userId"],
     foreignKeys = [
         ForeignKey(
             entity = DbGroup::class,
@@ -21,5 +22,7 @@ import com.example.reto_final.data.repository.local.user.DbUser
     ])
 data class DbUserGroup (
     val groupId: Int,
-    val userId: Int
+    val userId: Int,
+    val joined: Date?,
+    val deleted: Date?
 )

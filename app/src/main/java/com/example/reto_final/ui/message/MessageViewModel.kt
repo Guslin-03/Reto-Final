@@ -1,7 +1,6 @@
 package com.example.reto_final.ui.message
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,15 +12,10 @@ import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
 import com.example.reto_final.data.repository.remote.RemoteMessageRepository
-import com.example.reto_final.data.socket.SocketEvents
-import com.example.reto_final.data.socket.SocketMessageReq
-import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
 import java.util.Date
 
 class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource,
