@@ -8,12 +8,14 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.reto_final.R
 import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.databinding.ItemMessageBinding
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.MyApp.Companion.context
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -44,9 +46,21 @@ class MessageAdapter(
 
             binding.text.text = message.text
 
+            if (message.text.startsWith(context.getExternalFilesDir(null).toString()+ "/RetoFinalImage")){
+                Glide.with(context)
+                    .load(File(message.text))
+                    .into(binding.image)
+                binding.text.visibility = View.GONE
+                binding.image.visibility = View.VISIBLE
+            }else if (message.text.startsWith(context.getExternalFilesDir(null).toString()+ "/RetoFinalPdf")){
+                binding.text.text="Descargar PDF"
+            }
+
             if (MyApp.userPreferences.getUser()?.id == message.userId) {
                 binding.name.visibility = View.GONE
-                binding.sentHour.text = parseDate(message.sent)
+                if(message.saved!==null){
+                    binding.sentHour.text = parseDate(message.sent)
+                }
 
                 val drawable = ContextCompat.getDrawable(context, R.drawable.background_sent)
                 binding.linearLayout1.background = drawable

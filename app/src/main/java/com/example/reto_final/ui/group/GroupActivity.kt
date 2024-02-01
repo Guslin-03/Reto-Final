@@ -45,6 +45,7 @@ import com.example.reto_final.ui.user.RoomUserViewModelFactory
 import com.example.reto_final.ui.user.UserViewModel
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
+import java.io.File
 
 class GroupActivity: AppCompatActivity() {
 
@@ -401,10 +402,19 @@ class GroupActivity: AppCompatActivity() {
 
     private fun backToLogIn() {
         checkBd()
+        deleteFolder()
         MyApp.userPreferences.removeData()
         val intent = Intent(this, LogInActivity::class.java)
         startActivity(intent)
         finish()
+    }
+    private fun deleteFolder(){
+        val folder = File(getExternalFilesDir(null), "RetoFinal")
+        try {
+            folder.deleteRecursively()
+        } catch (e: SecurityException) {
+            false
+        }
     }
 
     private fun showProfile() {

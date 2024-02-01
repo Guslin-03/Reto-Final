@@ -38,6 +38,9 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
     private val _createLocalMessage = MutableLiveData<Resource<Message>>()
     val createLocalMessage : LiveData<Resource<Message>> get() = _createLocalMessage
 
+    private val _createLocalFile = MutableLiveData<Resource<Message>>()
+    val createLocalFile : LiveData<Resource<Message>> get() = _createLocalFile
+
     fun updateMessageList(groupId: Int) {
         viewModelScope.launch {
             _message.value  = if (InternetChecker.isNetworkAvailable(context)) {
@@ -90,6 +93,24 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
         }
     }
 
+    fun onSendFile(message: String, sent: Date, groupId: Int, authorId: Int) {
+        viewModelScope.launch {
+            val sendMessage = sendFile(Message(message, sent.time, groupId, authorId))
+            val localId = sendMessage.data?.id!!
+            if (localId != 0) {
+                sendMessage.status = Resource.Status.SUCCESS
+                _createLocalFile.value = sendMessage
+            }
+
+        }
+
+    }
+
+    private suspend fun sendFile(sendMessage: Message) : Resource<Message> {
+        return withContext(IO) {
+            messageLocalRepository.createMessage(sendMessage)
+        }
+    }
 }
 
 class RoomMessageViewModelFactory(

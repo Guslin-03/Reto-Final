@@ -3,11 +3,14 @@ package com.example.reto_final.ui.message
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DownloadManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
@@ -54,6 +57,10 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONObject
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 import java.util.Date
 import kotlin.random.Random
 
@@ -73,6 +80,7 @@ class MessageActivity : AppCompatActivity(){
     private val CAMERA_REQUEST_CODE = 1
     private val IMAGE_REQUEST_CODE = 2
     private val FILE_REQUEST_CODE = 3
+    private lateinit var fileLocation:String
     private val fileConverter = FileConverter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,6 +136,33 @@ class MessageActivity : AppCompatActivity(){
                 Resource.Status.SUCCESS -> {
                     val newList = ArrayList(messageAdapter.currentList)
                     val newMessage = it.data
+                    newList.add(newMessage)
+
+                    messageAdapter.submitList(newList)
+
+                    if (InternetChecker.isNetworkAvailable(this)) {
+                        if (newMessage != null && group.id != null && newMessage.id != null) {
+                            Log.d("p1", "Id del mensaje en ROOM ${newMessage.id}")
+                            val socketMessage = SocketMessageReq(group.id!!,
+                                newMessage.id!!, newMessage.text, newMessage.sent)
+                            val jsonObject = JSONObject(Gson().toJson(socketMessage))
+                            MyApp.userPreferences.mSocket.emit(SocketEvents.ON_SEND_MESSAGE.value, jsonObject)
+                        }
+
+                    }
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+                }
+            }
+        }
+        messageViewModel.createLocalFile.observe(this) {
+            when(it.status) {
+                Resource.Status.SUCCESS -> {
+                    val newList = ArrayList(messageAdapter.currentList)
+                   val newMessage = it.data
                     newList.add(newMessage)
 
                     messageAdapter.submitList(newList)
@@ -231,6 +266,8 @@ class MessageActivity : AppCompatActivity(){
         if (messageClick.startsWith("https://www.google.com/maps?q=")) {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(messageClick))
             startActivity(intent)
+        }else if(messageClick.startsWith(getExternalFilesDir(null).toString()+ "/RetoFinalPdf")){
+            descargarPDF(message)
         }
     }
     private fun setDefaultData() {
@@ -399,24 +436,77 @@ class MessageActivity : AppCompatActivity(){
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        var base64String=""
+       // var base64String=""
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
-            base64String = fileConverter.convertBitmapToBase64(imageBitmap)
+            fileLocation=saveImageToFolder(imageBitmap)
+          //  base64String = fileConverter.convertBitmapToBase64(imageBitmap)
 
         }else if(requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK){
             if (data?.data != null) {
                 val imageUri: Uri = data.data!!
                 val imageBitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
-                base64String = fileConverter.convertBitmapToBase64(imageBitmap)
+                fileLocation=saveImageToFolder(imageBitmap)
+             //   base64String = fileConverter.convertBitmapToBase64(imageBitmap)
             }
         }else if(requestCode == FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (data?.data != null) {
                 val fileUri: Uri = data.data!!
-                base64String = fileConverter.convertFileToBase64(fileUri)
+                fileLocation=saveFileToFolder(fileUri)
+                //base64String = fileConverter.convertFileToBase64(fileUri)
             }
         }
-        user?.let { messageViewModel.onSendMessage(base64String, Date(), group.id!!, it.id) }
+        user?.let { messageViewModel.onSendFile(fileLocation, Date(), group.id!!, it.id) }
+    }
+
+    private fun saveImageToFolder(bitmap: Bitmap): String {
+        val folder = File(getExternalFilesDir(null), "RetoFinalImage")
+
+        if (!folder.exists()) {
+            folder.mkdirs()
+        }
+
+        val fileName = "imagen_${System.currentTimeMillis()}.png"
+        val filePath = File(folder, fileName).absolutePath
+
+        try {
+            FileOutputStream(filePath).use { fos ->
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+                fos.flush()
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return filePath
+    }
+
+    private fun saveFileToFolder(fileUri: Uri): String {
+        val folder = File(getExternalFilesDir(null), "RetoFinalPdf")
+
+        if (!folder.exists()) {
+            folder.mkdirs()
+        }
+
+        val fileName = "archivo_${System.currentTimeMillis()}.pdf" // Asegúrate de tener la extensión .pdf
+        val filePath = File(folder, fileName).absolutePath
+
+        try {
+            contentResolver.openInputStream(fileUri)?.use { input ->
+                FileOutputStream(filePath).use { output ->
+                    val buffer = ByteArray(8192)
+                    var bytesRead: Int
+                    while (input.read(buffer).also { bytesRead = it } != -1) {
+                        output.write(buffer, 0, bytesRead)
+                    }
+                    output.flush()
+                }
+            }
+
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        return filePath
     }
 
 
@@ -463,6 +553,32 @@ class MessageActivity : AppCompatActivity(){
                 }
 
             }).check()
+    }
+    fun descargarPDF(message:Message) {
+        var path=message.text
+        if (path.isNotEmpty()) {
+            val pdfFile = File(path)
+
+            // Guarda el PDF en la carpeta de Downloads
+            val destinationFile = File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                pdfFile.name
+            )
+            try {
+                FileInputStream(pdfFile).use { input ->
+                    FileOutputStream(destinationFile).use { output ->
+                        input.copyTo(output)
+                    }
+                }
+
+                Toast.makeText(this, "PDF descargado correctamente", Toast.LENGTH_SHORT).show()
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Toast.makeText(this, "Error al descargar el PDF", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(this, "Error al obtener la ruta del PDF", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun getRandomCoordinate(min: Double, max: Double): String {
