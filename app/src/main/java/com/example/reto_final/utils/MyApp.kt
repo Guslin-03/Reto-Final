@@ -45,6 +45,8 @@ class MyApp : Application() {
 
         if(!dbFile.exists()) {
             userPreferences.saveDataBaseIsCreated(false)
+        }else{
+            userPreferences.saveDataBaseIsCreated(true)
         }
 
     }
