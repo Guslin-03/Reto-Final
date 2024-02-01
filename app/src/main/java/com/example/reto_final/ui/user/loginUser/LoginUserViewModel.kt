@@ -2,7 +2,6 @@ package com.example.reto_final.ui.user.loginUser
 
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,16 +10,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto_final.data.model.AuthRequest
 import com.example.reto_final.data.model.ChangePasswordRequest
-import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.LoginUser
-import com.example.reto_final.data.model.Role
-import com.example.reto_final.data.model.User
 import com.example.reto_final.data.repository.CommonLoginUserRepository
-import com.example.reto_final.data.repository.ProfileRequest
-import com.example.reto_final.data.repository.RegisterRequest
-import com.example.reto_final.data.repository.local.CommonRoleRepository
-import com.example.reto_final.data.repository.local.CommonUserRepository
-import com.example.reto_final.data.repository.local.role.RoomRoleDataSource
+import com.example.reto_final.data.model.ProfileRequest
+import com.example.reto_final.data.model.RegisterRequest
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
 import kotlinx.coroutines.Dispatchers

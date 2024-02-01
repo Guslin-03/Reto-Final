@@ -9,8 +9,8 @@ import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.model.User
 import com.example.reto_final.data.model.UserRequest
 import com.example.reto_final.data.model.message.MessageResponse
-import com.example.reto_final.data.repository.ProfileRequest
-import com.example.reto_final.data.repository.RegisterRequest
+import com.example.reto_final.data.model.ProfileRequest
+import com.example.reto_final.data.model.RegisterRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE

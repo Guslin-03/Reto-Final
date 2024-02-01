@@ -555,7 +555,7 @@ class MessageActivity : AppCompatActivity(){
             }).check()
     }
     fun descargarPDF(message:Message) {
-        var path=message.text
+        val path=message.text
         if (path.isNotEmpty()) {
             val pdfFile = File(path)
 

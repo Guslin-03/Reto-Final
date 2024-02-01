@@ -89,7 +89,7 @@ fun Group.toDbGroup() = DbGroup(id, name, type, created?.let { Date(it) }, delet
 
 @Dao
 interface GroupDao {
-    @Query("SELECT * FROM groups order by id")
+    @Query("SELECT * FROM groups WHERE deleted IS NULL order by id")
     suspend fun getGroups(): List<DbGroup>
     @Insert
     suspend fun createGroup(group: DbGroup) : Long

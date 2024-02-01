@@ -145,7 +145,7 @@ class PopulateLocalDataBase(
             if (message != null) {
                 remoteMessageRepository.getMessages(message.id)
             } else {
-                remoteMessageRepository.getMessages(null)
+                remoteMessageRepository.getMessages(0)
             }
         }
     }
@@ -155,7 +155,7 @@ class PopulateLocalDataBase(
             if (user != null) {
                 remoteUserRepository.findUsers(user.id)
             } else {
-                remoteUserRepository.findUsers(null)
+                remoteUserRepository.findUsers(0)
             }
         }
     }
@@ -165,9 +165,8 @@ class PopulateLocalDataBase(
             if (group != null) {
                 remoteGroupRepository.getGroups(group.id)
             } else {
-                remoteGroupRepository.getGroups(null)
+                remoteGroupRepository.getGroups(0)
             }
-
         }
     }
 

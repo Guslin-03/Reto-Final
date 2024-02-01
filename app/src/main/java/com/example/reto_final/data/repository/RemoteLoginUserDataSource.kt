@@ -2,11 +2,11 @@ package com.example.reto_final.data.repository
 
 import com.example.reto_final.data.model.AuthRequest
 import com.example.reto_final.data.model.ChangePasswordRequest
-import com.example.reto_final.data.model.LoginUser
+import com.example.reto_final.data.model.ProfileRequest
+import com.example.reto_final.data.model.RegisterRequest
 import com.example.reto_final.data.repository.remote.BaseDataSource
 import com.example.reto_final.data.repository.remote.RetrofitClient
 import com.example.reto_final.data.repository.remote.RetrofitClientLaravel
-import com.example.reto_final.utils.Resource
 
 class RemoteLoginUserDataSource: BaseDataSource(), CommonLoginUserRepository {
 
