@@ -3,8 +3,8 @@ package com.example.reto_final.data.repository.remote
 import com.example.reto_final.data.model.Group
 
 class RemoteGroupDataSource : BaseDataSource(), RemoteGroupRepository{
-    override suspend fun getGroups()= getResult {
-        RetrofitClient.apiInterface.getGroups()
+    override suspend fun getGroups(group: Int?)= getResult {
+        RetrofitClient.apiInterface.getGroups(group)
     }
 
     override suspend fun createGroup(group: Group) = getResult {

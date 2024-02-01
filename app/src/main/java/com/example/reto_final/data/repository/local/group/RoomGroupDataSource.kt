@@ -10,6 +10,7 @@ import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.repository.local.CommonGroupRepository
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
+import java.util.Date
 
 class RoomGroupDataSource : CommonGroupRepository {
 
@@ -25,7 +26,7 @@ class RoomGroupDataSource : CommonGroupRepository {
             val dbGroup = groupDao.createGroup(group.toDbGroup())
             val user = MyApp.userPreferences.getUser()
             Log.d("p1", "Entra")
-            if (user != null) groupDao.addUserToGroup(DbUserGroup(dbGroup.toInt(), user.id))
+            if (user != null) groupDao.addUserToGroup(DbUserGroup(dbGroup.toInt(), user.id, null, null))
             Resource.success()
         } catch (exception: SQLiteConstraintException) {
             Resource.error("El nombre del grupo ya esta en uso")
@@ -33,12 +34,14 @@ class RoomGroupDataSource : CommonGroupRepository {
 
     }
 
-    override suspend fun createGroup(group: Group): Resource<Void> {
+    override suspend fun createGroup(group: Group): Resource<Group> {
         return try {
-            groupDao.createGroup(group.toDbGroup())
-            Resource.success()
+            val idGroupCreated = groupDao.createGroup(group.toDbGroup())
+            group.id = idGroupCreated.toInt()
+            Resource.success(group)
         } catch (exception: SQLiteConstraintException) {
-            Resource.error("El nombre del grupo ya esta en uso")
+            Resource.success(group)
+//            Resource.error("El nombre del grupo ya esta en uso")
         }
 
     }
@@ -65,7 +68,7 @@ class RoomGroupDataSource : CommonGroupRepository {
 
     override suspend fun addUserToGroup(idGroup: Int, idUser: Int): Resource<Int> {
         Log.d("p1", "Entra")
-        val response = groupDao.addUserToGroup(DbUserGroup(idGroup, idUser))
+        val response = groupDao.addUserToGroup(DbUserGroup(idGroup, idUser, null, null))
         return Resource.success(response.toInt())
     }
 
@@ -81,8 +84,8 @@ class RoomGroupDataSource : CommonGroupRepository {
 
 }
 
-fun DbGroup.toGroup() = Group(id, name, chatEnumType, adminId)
-fun Group.toDbGroup() = DbGroup(id, name, type, adminId)
+fun DbGroup.toGroup() = Group(id, name, chatEnumType, created?.time, deleted?.time, adminId)
+fun Group.toDbGroup() = DbGroup(id, name, type, created?.let { Date(it) }, deleted?.let { Date(it) }, adminId)
 
 @Dao
 interface GroupDao {

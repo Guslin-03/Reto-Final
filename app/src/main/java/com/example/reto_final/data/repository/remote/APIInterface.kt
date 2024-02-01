@@ -38,10 +38,10 @@ interface APIInterface {
     /*API HIBERNATE */
     @POST("auth/login")
     suspend fun loginHibernate(@Body authRequest: AuthRequest): Response<LoginUser>
-    @GET("chats")
-    suspend fun getGroups(): Response<List<Group>>
+    @GET("chats/findAll/{id}")
+    suspend fun getGroups(@Path("id") groupId: Int?): Response<List<Group>>
     @POST("chats")
-    suspend fun createGroup(@Body group: Group): Response<Void>
+    suspend fun createGroup(@Body group: Group): Response<Group>
     @DELETE("chats/{id}")
     suspend fun deleteGroup(@Path("id") id: Int): Response<Void>
     @GET("chats/entryPermission/{idChat}")
@@ -58,8 +58,8 @@ interface APIInterface {
     suspend fun leaveChat(@Path("idChat") idGroup: Int): Response<Int>
     @DELETE("chats/throwFromChat/{idChat}/{idUser}")
     suspend fun chatThrowOut(idGroup: Int, idUser: Int): Response<Int>
-    @GET("messages")
-    suspend fun getMessages(): Response<List<MessageResponse>>
+    @GET("messages/findAll/{id}")
+    suspend fun getMessages(@Path("id") messageId: Int?): Response<List<MessageResponse>>
     @GET("messages/chat/{chatId}")
     suspend fun getMessageByChatId(@Path("chatId") idChat:Int) : Response<List<Message>>
     @POST("messages")
@@ -70,8 +70,8 @@ interface APIInterface {
     suspend fun getUserByEmail(@Path("email") email:String): Response<Int>
     @POST("users/reset/{email}")
     suspend fun resetPassword(@Path("email") email:String): Response<Int>
-    @GET("users")
-    suspend fun findUsers(): Response<List<UserRequest>>
+    @GET("users/findAll/{id}")
+    suspend fun findUsers(@Path("id") userId: Int?): Response<List<UserRequest>>
     @GET("roles")
     suspend fun getRoles(): Response<List<Role>>
 

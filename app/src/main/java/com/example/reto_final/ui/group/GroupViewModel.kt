@@ -26,8 +26,8 @@ class GroupViewModel(
      private val _group = MutableLiveData<Resource<List<Group>>>()
     val group : LiveData<Resource<List<Group>>> get() = _group
 
-    private val _create = MutableLiveData<Resource<Void>>()
-    val create : LiveData<Resource<Void>> get() = _create
+    private val _create = MutableLiveData<Resource<Group>>()
+    val create : LiveData<Resource<Group>> get() = _create
 
     private val _delete = MutableLiveData<Resource<Void>>()
     val delete : LiveData<Resource<Void>> get() = _delete
@@ -66,9 +66,9 @@ class GroupViewModel(
     fun onCreate(name:String, chatEnumType: String, idAdmin: Int) {
         viewModelScope.launch {
              if (InternetChecker.isNetworkAvailable(context)) {
-                 _create.value = createRemote(name, chatEnumType, idAdmin)
-                 if (_create.value!!.status == Resource.Status.SUCCESS) {
-                    createLocal(name, chatEnumType, idAdmin)
+                 val createdGroup = createRemote(name, chatEnumType, idAdmin)
+                 if (createdGroup.status == Resource.Status.SUCCESS) {
+                     _create.value = createdGroup.data?.let { createLocal(it) }
                  } else {
                      _create.value = Resource.error("Ha ocurrido un error, el grupo no se ha creado")
                  }
@@ -78,16 +78,15 @@ class GroupViewModel(
         }
     }
 
-    private suspend fun createRemote(name:String, chatEnumType:String, idAdmin: Int) : Resource<Void> {
+    private suspend fun createRemote(name:String, chatEnumType:String, idAdmin: Int) : Resource<Group> {
         return withContext(Dispatchers.IO) {
-            val group = Group(null, name, chatEnumType, idAdmin)
+            val group = Group(null, name, chatEnumType, null, null, idAdmin)
             remoteGroupRepository.createGroup(group)
         }
     }
 
-    private suspend fun createLocal(name:String, chatEnumType:String, idAdmin: Int) : Resource<Void> {
+    private suspend fun createLocal(group : Group) : Resource<Group> {
         return withContext(Dispatchers.IO) {
-            val group = Group(null, name, chatEnumType, idAdmin)
             localGroupRepository.createGroup(group)
         }
     }
