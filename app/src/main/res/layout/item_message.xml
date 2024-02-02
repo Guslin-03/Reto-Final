@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/messageList"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -55,7 +56,7 @@
                     android:maxWidth="300dp"
                     android:layout_marginBottom="6dp"
                     android:textColor="@color/white"
-                    android:textSize="14sp"/>
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/sentHour"
@@ -67,7 +68,22 @@
                     android:layout_marginEnd="10dp"
                     android:text="16:05"
                     android:textColor="#81FFFFFF"
-                    android:textSize="11sp" />
+                    android:textSize="14sp"/>
+
+                <ImageView
+                    android:id="@+id/clock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/sentHour"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_toEndOf="@id/sentHour"
+                    android:adjustViewBounds="true"
+                    android:maxWidth="12dp"
+                    android:maxHeight="12dp"
+                    android:minWidth="10dp"
+                    app:srcCompat="@drawable/clock"
+                    android:visibility="gone"/>
 
             </RelativeLayout>
 

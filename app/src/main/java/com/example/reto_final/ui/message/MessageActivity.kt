@@ -3,8 +3,6 @@ package com.example.reto_final.ui.message
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.DownloadManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -267,7 +265,7 @@ class MessageActivity : AppCompatActivity(){
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(messageClick))
             startActivity(intent)
         }else if(messageClick.startsWith(getExternalFilesDir(null).toString()+ "/RetoFinalPdf")){
-            descargarPDF(message)
+            downloadPDF(message)
         }
     }
     private fun setDefaultData() {
@@ -554,7 +552,7 @@ class MessageActivity : AppCompatActivity(){
 
             }).check()
     }
-    fun descargarPDF(message:Message) {
+    private fun downloadPDF(message:Message) {
         val path=message.text
         if (path.isNotEmpty()) {
             val pdfFile = File(path)

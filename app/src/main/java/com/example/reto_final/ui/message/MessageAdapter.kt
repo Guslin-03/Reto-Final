@@ -60,6 +60,9 @@ class MessageAdapter(
                 binding.name.visibility = View.GONE
                 if(message.saved!==null){
                     binding.sentHour.text = parseDate(message.sent)
+                }else{
+                    binding.sentHour.text = parseDate(message.sent)
+                    binding.clock.visibility=View.VISIBLE
                 }
 
                 val drawable = ContextCompat.getDrawable(context, R.drawable.background_sent)
