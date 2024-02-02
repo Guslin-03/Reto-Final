@@ -43,7 +43,7 @@ interface APIInterface {
     @POST("chats")
     suspend fun createGroup(@Body group: Group): Response<Group>
     @DELETE("chats/{id}")
-    suspend fun deleteGroup(@Path("id") id: Int): Response<Void>
+    suspend fun softDeleteGroup(@Path("id") id: Int): Response<Void>
     @GET("chats/entryPermission/{idChat}")
     suspend fun canEnterUserChat(@Path("idChat") idGroup: Int) : Response<Int>
     @GET("chats/deletePermission/{idChat}")

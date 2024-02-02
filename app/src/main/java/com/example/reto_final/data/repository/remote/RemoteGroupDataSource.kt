@@ -11,8 +11,8 @@ class RemoteGroupDataSource : BaseDataSource(), RemoteGroupRepository{
        RetrofitClient.apiInterface.createGroup(group)
     }
 
-    override suspend fun deleteGroup(idGroup: Int) = getResult {
-        RetrofitClient.apiInterface.deleteGroup(idGroup)
+    override suspend fun softDeleteGroup(idGroup: Int) = getResult {
+        RetrofitClient.apiInterface.softDeleteGroup(idGroup)
     }
 
     override suspend fun canEnterUserChat(idGroup: Int) = getResult {

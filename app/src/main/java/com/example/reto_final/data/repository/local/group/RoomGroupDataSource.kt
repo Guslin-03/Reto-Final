@@ -3,7 +3,6 @@ package com.example.reto_final.data.repository.local.group
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.reto_final.data.model.Group
@@ -43,11 +42,10 @@ class RoomGroupDataSource : CommonGroupRepository {
             Resource.success(group)
 //            Resource.error("El nombre del grupo ya esta en uso")
         }
-
     }
 
-    override suspend fun deleteGroup(group: Group): Resource<Void> {
-        groupDao.deleteGroup(group.toDbGroup())
+    override suspend fun softDeleteGroup(group: Group): Resource<Void> {
+        groupDao.softDeleteGroup(group.id, group.deleted)
         return Resource.success()
     }
 
@@ -93,8 +91,8 @@ interface GroupDao {
     suspend fun getGroups(): List<DbGroup>
     @Insert
     suspend fun createGroup(group: DbGroup) : Long
-    @Delete
-    suspend fun deleteGroup(group: DbGroup) : Int
+    @Query("UPDATE groups SET deleted = :deleted WHERE id = :idGroup")
+    suspend fun softDeleteGroup(idGroup: Int?, deleted: Long?) : Int
     @Query("SELECT COUNT(groupId) FROM group_user WHERE groupId = :idGroup AND userId = :idUser")
     suspend fun userHasPermission(idGroup: Int?, idUser: Int): Int
     @Query("SELECT COUNT(id) FROM groups WHERE id = :idGroup AND adminId = :idUser")

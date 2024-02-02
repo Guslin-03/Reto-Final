@@ -98,7 +98,7 @@ class GroupViewModel(
     fun onDelete(group: Group) {
         viewModelScope.launch {
             if (InternetChecker.isNetworkAvailable(context)) {
-                _delete.value = deleteRemote(group)
+                _delete.value = softDeleteRemote(group)
                 if (_delete.value!!.status == Resource.Status.SUCCESS) {
                     deleteLocal(group)
                 } else {
@@ -111,15 +111,15 @@ class GroupViewModel(
         }
     }
 
-    private suspend fun deleteRemote(group: Group) : Resource<Void> {
+    private suspend fun softDeleteRemote(group: Group) : Resource<Void> {
         return withContext(Dispatchers.IO) {
-            remoteGroupRepository.deleteGroup(group.id!!)
+            remoteGroupRepository.softDeleteGroup(group.id!!)
         }
     }
 
     private suspend fun deleteLocal(group: Group) : Resource<Void> {
         return withContext(Dispatchers.IO) {
-            localGroupRepository.deleteGroup(group)
+            localGroupRepository.softDeleteGroup(group)
         }
     }
 
