@@ -39,6 +39,11 @@ class RoomMessageDataSource : CommonMessageRepository {
         }
     }
 
+    override suspend fun getPendingMessages(): Resource<List<Message>> {
+        val listPendingMessage = messageDao.getPendingMessages().map { it.toMessage() }
+        return Resource.success(listPendingMessage)
+    }
+
 }
 
 fun DbMessage.toMessage() = Message(id, idServer, text, sentDate.time, saveDate?.time, groupId, userId, type)
@@ -51,6 +56,10 @@ interface MessageDao {
 
     @Query("SELECT * FROM messages WHERE idServer = (SELECT MAX(idServer) FROM messages)")
     suspend fun getLastMessage(): DbMessage?
+
+    @Query("SELECT * FROM messages WHERE saved IS NULL")
+    suspend fun getPendingMessages(): List<DbMessage>
+
     @Insert
     suspend fun createMessage(message: DbMessage) : Long
 

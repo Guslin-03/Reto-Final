@@ -6,6 +6,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.reto_final.data.model.Group
+import com.example.reto_final.data.model.UserChatInfo
 import com.example.reto_final.data.repository.local.CommonGroupRepository
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
@@ -65,9 +66,12 @@ class RoomGroupDataSource : CommonGroupRepository {
         return Resource.success(values)
     }
 
-    override suspend fun addUserToGroup(idGroup: Int, idUser: Int): Resource<Int> {
-        Log.d("p1", "Entra")
-        val response = groupDao.addUserToGroup(DbUserGroup(idGroup, idUser, null, null))
+    override suspend fun addUserToGroup(userChatInfo: UserChatInfo): Resource<Int> {
+        val dbUserChatInfo = DbUserGroup(userChatInfo.chatId,
+            userChatInfo.userId,
+            Date(userChatInfo.joined),
+            userChatInfo.deleted?.let { Date(it) })
+        val response = groupDao.addUserToGroup(dbUserChatInfo)
         return Resource.success(response.toInt())
     }
 

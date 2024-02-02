@@ -8,4 +8,5 @@ interface RemoteMessageRepository {
     suspend fun getMessages(messageId: Int?): Resource<List<MessageResponse>>
     suspend fun getMessagesFromGroup(idGroup: Int) : Resource<List<Message>>
     suspend fun createMessage(message: Message) : Resource<Message>
+    suspend fun setPendingMessages(listPendingMessages: List<Message>) : Resource<List<MessageResponse>>
 }

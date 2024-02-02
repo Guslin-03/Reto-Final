@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.model.InternetChecker
+import com.example.reto_final.data.model.UserChatInfo
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
 import com.example.reto_final.data.repository.remote.RemoteGroupRepository
@@ -17,6 +18,7 @@ import com.example.reto_final.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Date
 
 class GroupViewModel(
     private val localGroupRepository: RoomGroupDataSource,
@@ -198,7 +200,7 @@ class GroupViewModel(
             if (InternetChecker.isNetworkAvailable(context)) {
                 _addUserToGroup.value = addUserToGroupRemote(idGroup, idUser)
                 if (_addUserToGroup.value!!.status == Resource.Status.SUCCESS) {
-                    addUserToGroupLocal(idGroup, idUser)
+                    addUserToGroupLocal(idGroup, idUser, Date().time, null)
                 } else {
                     _addUserToGroup.value = Resource.error("Ha ocurrido un error, no has unir al usuario al grupo")
                 }
@@ -214,9 +216,10 @@ class GroupViewModel(
         }
     }
 
-    private suspend fun addUserToGroupLocal(idGroup: Int, idUser: Int) : Resource<Int> {
+    private suspend fun addUserToGroupLocal(idGroup: Int, idUser: Int, joined: Long, deleted: Long?) : Resource<Int> {
         return withContext(Dispatchers.IO) {
-            localGroupRepository.addUserToGroup(idGroup, idUser)
+            val userChatInfo = UserChatInfo(idGroup, idUser, joined, deleted)
+            localGroupRepository.addUserToGroup(userChatInfo)
         }
     }
 

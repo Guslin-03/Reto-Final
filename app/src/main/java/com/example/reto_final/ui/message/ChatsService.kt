@@ -160,7 +160,7 @@ class ChatsService : Service() {
     }
 
     private suspend fun addUserToGroup(userGroupRes: UserGroup) {
-        groupRepository.addUserToGroup(userGroupRes.roomId, userGroupRes.userId)
+//        groupRepository.addUserToGroup(userGroupRes.roomId, userGroupRes.userId)
     }
 
     private fun onChatLeft(): Emitter.Listener {

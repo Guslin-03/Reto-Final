@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.model.Role
 import com.example.reto_final.data.model.User
+import com.example.reto_final.data.model.UserChatInfo
 import com.example.reto_final.data.model.UserRequest
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.model.message.MessageResponse
@@ -56,10 +57,14 @@ class PopulateLocalDataBase(
 
     private val _lastMessage = MutableLiveData<Resource<Message?>>()
 
+    private val _allPendingMessages = MutableLiveData<Resource<List<MessageResponse>>>()
+
+    private val _pendingMessage = MutableLiveData<Resource<List<Message>>>()
+
     private val _finish = MutableLiveData<Resource<Boolean>>()
     val finish : LiveData<Resource<Boolean>> get() = _finish
 
-    private val usersGroups = mutableListOf<Pair<Int, Int>>()
+    private val userChatInfo = mutableListOf<UserChatInfo>()
 
     //////////////////////////////////////////////////////////////////////
     // FUNCION DE INICIO
@@ -70,17 +75,23 @@ class PopulateLocalDataBase(
             Log.d("p1", "${_lastGroup.value?.status}")
             Log.d("p1", "${_lastMessage.value?.data}")
             Log.d("p1", "${_lastUser.value?.status}")
+            Log.d("p1", "${_pendingMessage.value?.status}")
             if (_lastUser.value?.status == Resource.Status.SUCCESS
                 && _lastGroup.value?.status == Resource.Status.SUCCESS
-                && _lastMessage.value?.status == Resource.Status.SUCCESS) {
+                && _lastMessage.value?.status == Resource.Status.SUCCESS
+//                && _pendingMessage.value?.status == Resource.Status.SUCCESS
+                ) {
 //                Log.d("p1", "GetAllLastData")
                 getAllData()
                 Log.d("p1", "${_allMessage.value?.data}")
                 Log.d("p1", "${_allUser.value?.status}")
                 Log.d("p1", "${_allGroup.value?.status}")
+                Log.d("p1", "${_allPendingMessages.value?.status}")
                 if (_allMessage.value?.status == Resource.Status.SUCCESS
                     && _allUser.value?.status == Resource.Status.SUCCESS
-                    && _allGroup.value?.status == Resource.Status.SUCCESS) {
+                    && _allGroup.value?.status == Resource.Status.SUCCESS
+//                    && _allPendingMessages.value?.status == Resource.Status.SUCCESS
+                    ) {
 //                    Log.d("p1", "getAllData")
                     setAllData()
                 }
@@ -97,11 +108,18 @@ class PopulateLocalDataBase(
         _lastUser.value = getLastUser()
         _lastGroup.value = getLastGroup()
         _lastMessage.value = getLastMessage()
+//        _pendingMessage.value = getPendingMessages()
     }
 
     private suspend fun getLastMessage(): Resource<Message?> {
         return withContext(Dispatchers.IO) {
             messageLocalRepository.getLastMessage()
+        }
+    }
+
+    private suspend fun getPendingMessages(): Resource<List<Message>> {
+        return withContext(Dispatchers.IO) {
+            messageLocalRepository.getPendingMessages()
         }
     }
 
@@ -139,6 +157,7 @@ class PopulateLocalDataBase(
         _allUser.value = getAllUsers(_lastUser.value?.data)
         _allGroup.value = getAllGroups(_lastGroup.value?.data)
         _allMessage.value = getAllMessages(_lastMessage.value?.data)
+//        _allPendingMessages.value = setPendingMessages(_pendingMessage.value?.data)
     }
 
     private suspend fun getAllMessages(message: Message?): Resource<List<MessageResponse>> {
@@ -147,6 +166,16 @@ class PopulateLocalDataBase(
                 remoteMessageRepository.getMessages(message.id)
             } else {
                 remoteMessageRepository.getMessages(0)
+            }
+        }
+    }
+
+    private suspend fun setPendingMessages(listPendingMessages: List<Message>?) : Resource<List<MessageResponse>> {
+        return withContext(Dispatchers.IO) {
+            if (listPendingMessages != null) {
+                remoteMessageRepository.setPendingMessages(listPendingMessages)
+            } else {
+                Resource.success()
             }
         }
     }
@@ -185,6 +214,7 @@ class PopulateLocalDataBase(
         setAllGroups()
         setAllUsersToGroups()
         setAllMessages()
+//        updateAllPendingMessages()
     }
 
     private suspend fun setAllUsers() {
@@ -194,11 +224,7 @@ class PopulateLocalDataBase(
                 for (userRequest in allUser) {
                     val user = User(userRequest.id, userRequest.name, userRequest.surname, userRequest.email, userRequest.phoneNumber, userRequest.roleId)
                     userLocalRepository.createUser(user)
-                    for (int in userRequest.chatId) {
-                        if (user.id != null) {
-                            usersGroups.add(Pair(int, user.id!!))
-                        }
-                    }
+                    userChatInfo.addAll(userRequest.chatInfo)
                 }
             }
         }
@@ -217,8 +243,8 @@ class PopulateLocalDataBase(
 
     private suspend fun setAllUsersToGroups() {
         return withContext(Dispatchers.IO) {
-            for (pares in usersGroups) {
-                groupLocalRepository.addUserToGroup(pares.first, pares.second)
+            for (userChatInfo in userChatInfo) {
+                groupLocalRepository.addUserToGroup(userChatInfo)
             }
         }
     }
@@ -239,6 +265,26 @@ class PopulateLocalDataBase(
                     messageLocalRepository.createMessage(message)
                 }
             }
+        }
+    }
+
+    private suspend fun updateAllPendingMessages() {
+        return withContext(Dispatchers.IO) {
+            val allPendingMessagesResponse = _allPendingMessages.value?.data
+            if (allPendingMessagesResponse != null) {
+                for (pendingMessageResponse in allPendingMessagesResponse) {
+                    val pendingMessage = Message(
+                        pendingMessageResponse.id,
+                        pendingMessageResponse.text,
+                        pendingMessageResponse.sent,
+                        pendingMessageResponse.saved,
+                        pendingMessageResponse.type,
+                        pendingMessageResponse.chatId,
+                        pendingMessageResponse.userId)
+                    messageLocalRepository.updateMessage(pendingMessage)
+                }
+            }
+
         }
     }
 

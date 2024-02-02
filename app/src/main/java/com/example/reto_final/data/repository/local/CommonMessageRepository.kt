@@ -8,4 +8,5 @@ interface CommonMessageRepository {
     suspend fun createMessage(message: Message) : Resource<Message>
     suspend fun updateMessage(message: Message) : Resource<Message>
     suspend fun getLastMessage() : Resource<Message?>
+    suspend fun getPendingMessages() : Resource<List<Message>>
 }

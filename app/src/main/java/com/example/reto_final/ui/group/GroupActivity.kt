@@ -77,13 +77,6 @@ class GroupActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = GroupActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        if (MyApp.userPreferences.getSaveDataBaseIsCreated()) {
-            populateLocalDataBase.toInit()
-            MyApp.userPreferences.saveDataBaseIsCreated(true)
-        }
-
-        groupViewModel.updateGroupList()
         radioButtonPrivate = findViewById(R.id.radioButtonFilterPrivate)
         radioButtonPublic = findViewById(R.id.radioButtonFilterPublic)
         setSupportActionBar(binding.toolbarPersonalConfiguration)
