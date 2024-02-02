@@ -44,7 +44,7 @@ class FileManager(private val context: Context) {
         return ""
     }
     fun saveBase64ToFile(base64String: String): String {
-        val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
+        val decodedBytes = Base64.decode(base64String, Base64.NO_WRAP)
 
         // Intentar interpretar como imagen
         try {

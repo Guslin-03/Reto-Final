@@ -1,5 +1,6 @@
 package com.example.reto_final.ui.message
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,7 +46,7 @@ class MessageAdapter(
         fun bind(message: Message) {
 
             binding.text.text = message.text
-
+            Log.d("Mensaje", ""+message.text)
             if (message.text.startsWith(context.getExternalFilesDir(null).toString()+ "/RetoFinalImage")){
                 Glide.with(context)
                     .load(File(message.text))
