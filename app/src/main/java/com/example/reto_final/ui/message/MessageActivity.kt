@@ -151,8 +151,9 @@ class MessageActivity : AppCompatActivity() {
 
                     if (InternetChecker.isNetworkAvailable(this)) {
                         if (newMessage != null && group.id != null && newMessage.id != null) {
-                            Log.d("p1", "Id del mensaje en ROOM ${newMessage.id}")
-                           if(newMessage.type==MessageEnumClass.FILE.toString()){
+                            //SI ES IMAGEN, ENVIA EN BASE64
+
+                            if(newMessage.type==MessageEnumClass.FILE.toString()){
                                val file=fileManager.convertFileToBase64(newMessage.text)
                                val socketMessage = SocketMessageReq(
                                    group.id!!,
@@ -398,7 +399,10 @@ class MessageActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onSocketIncomingMessage(message: Message) {
-        Log.d("Prueba", "" + message)
+        if (message.type == MessageEnumClass.FILE.toString()){
+        var location=fileManager.saveBase64ToFile(message.text)
+            message.text=location
+        }
         messageViewModel.onSaveIncomingMessage(message, group)
     }
 
@@ -449,7 +453,6 @@ class MessageActivity : AppCompatActivity() {
     private fun showMyLocation() {
         val latitude = String.format("%.6f", Random.nextDouble(-90.0, 90.0))
         val longitude = String.format("%.6f", Random.nextDouble(-180.0, 180.0))
-
         val mapLink = "https://www.google.com/maps?q=$latitude,$longitude"
 
         if (group.id != null && user != null) {

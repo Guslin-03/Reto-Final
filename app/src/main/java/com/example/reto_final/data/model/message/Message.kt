@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 data class Message(
     var id: Int?,
     val idServer: Int?,
-    val text: String,
+    var text: String,
     val sent: Long,
     val saved: Long?,
     var chatId: Int,

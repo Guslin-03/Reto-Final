@@ -17,12 +17,6 @@ import java.io.InputStream
 
 class FileManager(private val context: Context) {
 
-    fun convertBitmapToBase64(bitmap: Bitmap): String {
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-        val b = baos.toByteArray()
-        return Base64.encodeToString(b, Base64.DEFAULT)
-    }
     fun convertFileToBase64(filePath: String): String {
         val file = File(filePath)
         if (!file.exists()) {
@@ -41,7 +35,7 @@ class FileManager(private val context: Context) {
             }
 
             val byteArray = output.toByteArray()
-            return Base64.encodeToString(byteArray, Base64.DEFAULT)
+            return Base64.encodeToString(byteArray, Base64.NO_WRAP)
         } catch (e: IOException) {
             e.printStackTrace()
             Toast.makeText(context, "No se ha podido convertir el archivo", Toast.LENGTH_SHORT).show()
@@ -49,63 +43,52 @@ class FileManager(private val context: Context) {
 
         return ""
     }
-    fun detectFileType(base64String: String): File {
+    fun saveBase64ToFile(base64String: String): String {
         val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
 
-        // Verificar la firma del archivo
-        val signatureBytes = decodedBytes.copyOfRange(0, 8)
-        val signatureHex = bytesToHex(signatureBytes)
-
-        return when {
-            signatureHex.startsWith("25504446") -> convertBase64ToPdf(base64String)
-            signatureHex.startsWith("89504E470D0A1A0A") || signatureHex.startsWith("FFD8FF") -> convertBase64ToImage(base64String)
-            else -> {
-                Toast.makeText(context, "No se reconoce el formato del archivo", Toast.LENGTH_SHORT).show()
-                File("")
-            }
-        }
-    }
-
-    private fun bytesToHex(bytes: ByteArray): String {
-        val hexChars = CharArray(bytes.size * 2)
-        for (i in bytes.indices) {
-            val v = bytes[i].toInt() and 0xFF
-            hexChars[i * 2] = "0123456789ABCDEF"[v ushr 4]
-            hexChars[i * 2 + 1] = "0123456789ABCDEF"[v and 0x0F]
-        }
-        return String(hexChars)
-    }
-
-    private fun convertBase64ToImage(base64String: String): File {
-        val outputfile = File(Environment.getExternalStorageDirectory(), "resultado")
+        // Intentar interpretar como imagen
         try {
-            val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
             val bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+            val folder = File(context.getExternalFilesDir(null), "RetoFinalImage")
 
-            FileOutputStream(outputfile).use { fos ->
+            if (!folder.exists()) {
+                folder.mkdirs()
+            }
+            val fileName = "imagen_${System.currentTimeMillis()}.png"
+            val filePath = File(folder, fileName).absolutePath
+
+            FileOutputStream(filePath).use { fos ->
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
                 fos.flush()
             }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return outputfile
-    }
 
-    private fun convertBase64ToPdf(base64String: String): File {
-        val outputfile = File(Environment.getExternalStorageDirectory(), "resultado")
-        try {
-            val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
+            return filePath
+        } catch (e: Exception) {
+            // Si hay una excepción, es un archivo PDF
+            val folder = File(context.getExternalFilesDir(null), "RetoFinalPdf")
 
-            FileOutputStream(outputfile).use { fos ->
-                fos.write(decodedBytes)
-                fos.flush()
+            if (!folder.exists()) {
+                folder.mkdirs()
             }
-        } catch (e: IOException) {
-            e.printStackTrace()
+            val fileName = "archivo_${System.currentTimeMillis()}.pdf"
+            val filePath = File(folder, fileName).absolutePath
+
+            try {
+                FileOutputStream(filePath).use { fos ->
+                    fos.write(decodedBytes)
+                    fos.flush()
+                }
+
+                return filePath
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Toast.makeText(context, "Error al guardar el archivo", Toast.LENGTH_SHORT).show()
+            }
         }
-        return outputfile
+
+        return ""
     }
+
     fun downloadPDF(message: Message) {
         val path=message.text
         if (path.isNotEmpty()) {
