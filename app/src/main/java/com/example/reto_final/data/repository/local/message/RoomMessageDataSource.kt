@@ -41,8 +41,8 @@ class RoomMessageDataSource : CommonMessageRepository {
 
 }
 
-fun DbMessage.toMessage() = Message(id, idServer, text, sentDate.time, saveDate?.time, groupId, userId)
-fun Message.toDbMessage() = DbMessage(id, idServer, text, Date(sent), saved?.let { Date(it) }, chatId, userId)
+fun DbMessage.toMessage() = Message(id, idServer, text, sentDate.time, saveDate?.time, groupId, userId, type)
+fun Message.toDbMessage() = DbMessage(id, idServer, text, Date(sent), saved?.let { Date(it) }, type, chatId, userId)
 
 @Dao
 interface MessageDao {

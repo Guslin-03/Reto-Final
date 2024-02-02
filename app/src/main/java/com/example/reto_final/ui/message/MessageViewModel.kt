@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.message.Message
+import com.example.reto_final.data.repository.local.message.MessageEnumClass
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
 import com.example.reto_final.data.repository.remote.RemoteMessageRepository
 import com.example.reto_final.utils.Resource
@@ -70,9 +71,9 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
         }
     }
 
-    fun onSendMessage(message: String, sent: Date, groupId: Int, authorId: Int) {
+    fun onSendMessage(message: String, sent: Date, type:String,groupId: Int, authorId: Int) {
         viewModelScope.launch {
-            val sendMessage = sendMessage(Message(message, sent.time, groupId, authorId))
+            val sendMessage = sendMessage(Message(message, sent.time, type, groupId, authorId))
             val localId = sendMessage.data?.id!!
             if (localId != 0) {
                 sendMessage.status = Resource.Status.SUCCESS
@@ -87,9 +88,9 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
         }
     }
 
-    fun onSendFile(message: String, sent: Date, groupId: Int, authorId: Int) {
+    fun onSendFile(message: String, sent: Date, type: String, groupId: Int, authorId: Int) {
         viewModelScope.launch {
-            val sendMessage = sendFile(Message(message, sent.time, groupId, authorId))
+            val sendMessage = sendFile(Message(message, sent.time, type, groupId, authorId))
             val localId = sendMessage.data?.id!!
             if (localId != 0) {
                 sendMessage.status = Resource.Status.SUCCESS

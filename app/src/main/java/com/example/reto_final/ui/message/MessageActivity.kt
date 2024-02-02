@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
@@ -31,6 +30,7 @@ import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.repository.local.group.ChatEnumType
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
+import com.example.reto_final.data.repository.local.message.MessageEnumClass
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
 import com.example.reto_final.data.repository.local.user.UserRoleType
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
@@ -55,31 +55,39 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONObject
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
 import java.util.Date
 import kotlin.random.Random
 
 @Suppress("DEPRECATION")
-class MessageActivity : AppCompatActivity(){
+class MessageActivity : AppCompatActivity() {
 
     private lateinit var binding: MessageActivityBinding
     private lateinit var messageAdapter: MessageAdapter
     private val messageRepository = RoomMessageDataSource()
-    private val messageViewModel: MessageViewModel by viewModels { RoomMessageViewModelFactory(messageRepository, remoteMessageRepository, applicationContext) }
+    private val messageViewModel: MessageViewModel by viewModels {
+        RoomMessageViewModelFactory(
+            messageRepository,
+            remoteMessageRepository,
+            applicationContext
+        )
+    }
     private val groupRepository = RoomGroupDataSource()
     private val remoteGroupRepository = RemoteGroupDataSource()
     private val remoteMessageRepository = RemoteMessageDataSource()
-    private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository, applicationContext) }
+    private val groupViewModel: GroupViewModel by viewModels {
+        RoomGroupViewModelFactory(
+            groupRepository,
+            remoteGroupRepository,
+            applicationContext
+        )
+    }
     private lateinit var group: Group
     private val user = MyApp.userPreferences.getUser()
     private val CAMERA_REQUEST_CODE = 1
     private val IMAGE_REQUEST_CODE = 2
     private val FILE_REQUEST_CODE = 3
-    private lateinit var fileLocation:String
-    private val fileConverter = FileConverter(this)
+    private lateinit var fileLocation: String
+    private val fileManager = FileManager(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,37 +108,41 @@ class MessageActivity : AppCompatActivity(){
         }, 200)
 
         messageViewModel.message.observe(this) {
-            when(it.status) {
+            when (it.status) {
                 Resource.Status.SUCCESS -> {
                     messageAdapter.submitList(it.data)
                 }
+
                 Resource.Status.ERROR -> {
-                    Log.d("Prueba", ""+it.message)
+                    Log.d("Prueba", "" + it.message)
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
+
                 Resource.Status.LOADING -> {
                 }
             }
         }
 
         messageViewModel.incomingMessage.observe(this) {
-            when(it.status) {
+            when (it.status) {
                 Resource.Status.SUCCESS -> {
                     if (group.id != null) {
                         messageViewModel.updateMessageList(group.id!!)
                     }
 
                 }
+
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
+
                 Resource.Status.LOADING -> {
                 }
             }
         }
 
         messageViewModel.createLocalMessage.observe(this) {
-            when(it.status) {
+            when (it.status) {
                 Resource.Status.SUCCESS -> {
                     val newList = ArrayList(messageAdapter.currentList)
                     val newMessage = it.data
@@ -141,26 +153,33 @@ class MessageActivity : AppCompatActivity(){
                     if (InternetChecker.isNetworkAvailable(this)) {
                         if (newMessage != null && group.id != null && newMessage.id != null) {
                             Log.d("p1", "Id del mensaje en ROOM ${newMessage.id}")
-                            val socketMessage = SocketMessageReq(group.id!!,
-                                newMessage.id!!, newMessage.text, newMessage.sent)
+                            val socketMessage = SocketMessageReq(
+                                group.id!!,
+                                newMessage.id!!, newMessage.text, newMessage.sent
+                            )
                             val jsonObject = JSONObject(Gson().toJson(socketMessage))
-                            MyApp.userPreferences.mSocket.emit(SocketEvents.ON_SEND_MESSAGE.value, jsonObject)
+                            MyApp.userPreferences.mSocket.emit(
+                                SocketEvents.ON_SEND_MESSAGE.value,
+                                jsonObject
+                            )
                         }
 
                     }
                 }
+
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
+
                 Resource.Status.LOADING -> {
                 }
             }
         }
         messageViewModel.createLocalFile.observe(this) {
-            when(it.status) {
+            when (it.status) {
                 Resource.Status.SUCCESS -> {
                     val newList = ArrayList(messageAdapter.currentList)
-                   val newMessage = it.data
+                    val newMessage = it.data
                     newList.add(newMessage)
 
                     messageAdapter.submitList(newList)
@@ -168,24 +187,31 @@ class MessageActivity : AppCompatActivity(){
                     if (InternetChecker.isNetworkAvailable(this)) {
                         if (newMessage != null && group.id != null && newMessage.id != null) {
                             Log.d("p1", "Id del mensaje en ROOM ${newMessage.id}")
-                            val socketMessage = SocketMessageReq(group.id!!,
-                                newMessage.id!!, newMessage.text, newMessage.sent)
+                            val socketMessage = SocketMessageReq(
+                                group.id!!,
+                                newMessage.id!!, newMessage.text, newMessage.sent
+                            )
                             val jsonObject = JSONObject(Gson().toJson(socketMessage))
-                            MyApp.userPreferences.mSocket.emit(SocketEvents.ON_SEND_MESSAGE.value, jsonObject)
+                            MyApp.userPreferences.mSocket.emit(
+                                SocketEvents.ON_SEND_MESSAGE.value,
+                                jsonObject
+                            )
                         }
 
                     }
                 }
+
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
+
                 Resource.Status.LOADING -> {
                 }
             }
         }
 
         groupViewModel.groupPermissionToDelete.observe(this) {
-            when(it.status) {
+            when (it.status) {
                 Resource.Status.SUCCESS -> {
                     val groupPermission = it.data
                     if (groupPermission == 1) {
@@ -194,38 +220,46 @@ class MessageActivity : AppCompatActivity(){
                         Toast.makeText(this, "No tienes permiso para eliminar el grupo", Toast.LENGTH_LONG).show()
                     }
                 }
+
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
+
                 Resource.Status.LOADING -> {
                 }
             }
         }
 
         groupViewModel.delete.observe(this) {
-            when(it.status) {
+            when (it.status) {
                 Resource.Status.SUCCESS -> {
-                    Toast.makeText(this, "El grupo ha sido eliminado con éxito.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "El grupo ha sido eliminado con éxito.", Toast.LENGTH_LONG)
+                        .show()
                     goToGroups()
                 }
+
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
+
                 Resource.Status.LOADING -> {
                 }
             }
         }
 
         groupViewModel.leaveGroup.observe(this) {
-            when(it.status) {
+            when (it.status) {
                 Resource.Status.SUCCESS -> {
                     Log.d("MensajeGrupo", "Entra en success")
-                    Toast.makeText(this, "Has abandonado el grupo con éxito.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Has abandonado el grupo con éxito.", Toast.LENGTH_LONG)
+                        .show()
                     goToGroups()
                 }
+
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
+
                 Resource.Status.LOADING -> {
                 }
             }
@@ -237,14 +271,17 @@ class MessageActivity : AppCompatActivity(){
                     showGroupInfo()
                     true
                 }
+
                 R.id.leaveGroup -> {
                     userCanLeaveGroup()
                     true
                 }
+
                 R.id.deleteGroup -> {
                     userHasPermissionToDelete()
                     true
                 }
+
                 else -> false // Manejo predeterminado para otros elementos
             }
         }
@@ -254,30 +291,38 @@ class MessageActivity : AppCompatActivity(){
             if (message.isNotBlank()) {
                 binding.include.inputMessage.setText("")
                 if (group.id != null && user != null) {
-                    messageViewModel.onSendMessage(message, Date(), group.id!!, user.id)
+                    messageViewModel.onSendMessage(
+                        message,
+                        Date(),
+                        MessageEnumClass.TEXT.toString(),
+                        group.id!!,
+                        user.id
+                    )
                 }
             }
         }
-        binding.include.attatch.setOnClickListener{
+        binding.include.attatch.setOnClickListener {
             showAttachmentOptions(it)
         }
 
     }
+
     private fun onMapClickItem(message: Message) {
 
-        val messageClick=message.text
+        val messageClick = message.text
         if (messageClick.startsWith("https://www.google.com/maps?q=")) {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(messageClick))
             startActivity(intent)
-        }else if(messageClick.startsWith(getExternalFilesDir(null).toString()+ "/RetoFinalPdf")){
-            downloadPDF(message)
+        } else if (messageClick.startsWith(getExternalFilesDir(null).toString() + "/RetoFinalPdf")) {
+            fileManager.downloadPDF(message)
         }
     }
+
     private fun setDefaultData() {
         val receivedGroup: Group? = intent.getParcelableExtra("grupo_seleccionado")
         // Verificar si se recibió el objeto Group
         if (receivedGroup != null) {
-            Log.d("Prueba", ""+receivedGroup.id)
+            Log.d("Prueba", "" + receivedGroup.id)
             this.group = receivedGroup
             receivedGroup.id?.let { messageViewModel.updateMessageList(it) }
             binding.configurationTitle.text = this.group.name
@@ -287,18 +332,18 @@ class MessageActivity : AppCompatActivity(){
     }
 
     private fun userCanLeaveGroup() {
-        if (!InternetChecker.isNetworkAvailable(applicationContext)){
-            Toast.makeText(this, "No se puede abandonar un grupo sin internet", Toast.LENGTH_LONG).show()
+        if (!InternetChecker.isNetworkAvailable(applicationContext)) {
+            Toast.makeText(this, "No se puede abandonar un grupo sin internet", Toast.LENGTH_LONG)
+                .show()
         } else if (group.type == ChatEnumType.PUBLIC.toString()) {
             if (user != null) {
                 if (group.id != null) {
                     groupViewModel.onLeaveGroup(group.id!!, user.id)
                 }
             }
-        }else {
+        } else {
             Toast.makeText(this, "No puedes abandonar un grupo privado.", Toast.LENGTH_LONG).show()
         }
-
     }
 
     private fun showGroupInfo() {
@@ -318,7 +363,7 @@ class MessageActivity : AppCompatActivity(){
         if (InternetChecker.isNetworkAvailable(applicationContext)){
             if (group.type == ChatEnumType.PRIVATE.toString() && userIsTeacher()) {
                 popToDeleteGroup()
-            }else if(group.type == ChatEnumType.PUBLIC.toString()){
+            } else if (group.type == ChatEnumType.PUBLIC.toString()) {
                 popToDeleteGroup()
             }
         } else {
@@ -342,14 +387,15 @@ class MessageActivity : AppCompatActivity(){
         }
     }
 
-    private fun userIsTeacher() : Boolean {
+    private fun userIsTeacher(): Boolean {
         if (user != null) {
             return user.roles.any { it.name == UserRoleType.Profesor.toString() }
         }
         return false
     }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.chat_configuration_top_menu,menu)
+        menuInflater.inflate(R.menu.chat_configuration_top_menu, menu)
 
         binding.toolbarChatConfiguration.overflowIcon?.let {
             val color = ContextCompat.getColor(this, R.color.white)
@@ -374,7 +420,7 @@ class MessageActivity : AppCompatActivity(){
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onSocketIncomingMessage(message: Message) {
-        Log.d("Prueba", ""+message)
+        Log.d("Prueba", "" + message)
         messageViewModel.onSaveIncomingMessage(message, group)
     }
 
@@ -400,34 +446,45 @@ class MessageActivity : AppCompatActivity(){
                     openCamera()
                     true
                 }
+
                 R.id.action_file -> {
                     attachFile()
                     true
                 }
+
                 R.id.action_image -> {
                     attachImage()
                     true
                 }
+
                 R.id.action_location -> {
                     showMyLocation()
                     true
                 }
+
                 else -> false
             }
         }
 
     }
 
-    private fun showMyLocation(){
-        val latitude =  getRandomCoordinate(-90.0, 90.0)
-        val longitude =  getRandomCoordinate(-180.0, 180.0)
+    private fun showMyLocation() {
+        val latitude = String.format("%.6f", Random.nextDouble(-90.0, 90.0))
+        val longitude = String.format("%.6f", Random.nextDouble(-180.0, 180.0))
 
         val mapLink = "https://www.google.com/maps?q=$latitude,$longitude"
 
         if (group.id != null && user != null) {
-            messageViewModel.onSendMessage(mapLink, Date(), group.id!!, user.id)
+            messageViewModel.onSendMessage(
+                mapLink,
+                Date(),
+                MessageEnumClass.TEXT.toString(),
+                group.id!!,
+                user.id
+            )
         }
     }
+
     private fun openCamera() {
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -436,84 +493,42 @@ class MessageActivity : AppCompatActivity(){
             Toast.makeText(this, "Este dispositivo no tiene una cámara", Toast.LENGTH_SHORT).show()
         }
     }
+
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-       // var base64String=""
+        // var base64String=""
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
-            fileLocation=saveImageToFolder(imageBitmap)
-          //  base64String = fileConverter.convertBitmapToBase64(imageBitmap)
+            fileLocation = fileManager.saveImageToFolder(imageBitmap)
+            //  base64String = fileConverter.convertBitmapToBase64(imageBitmap)
 
-        }else if(requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+        } else if (requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (data?.data != null) {
                 val imageUri: Uri = data.data!!
                 val imageBitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
-                fileLocation=saveImageToFolder(imageBitmap)
-             //   base64String = fileConverter.convertBitmapToBase64(imageBitmap)
+                fileLocation = fileManager.saveImageToFolder(imageBitmap)
+                //   base64String = fileConverter.convertBitmapToBase64(imageBitmap)
             }
-        }else if(requestCode == FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (data?.data != null) {
                 val fileUri: Uri = data.data!!
-                fileLocation=saveFileToFolder(fileUri)
+                fileLocation = fileManager.saveFileToFolder(fileUri)
                 //base64String = fileConverter.convertFileToBase64(fileUri)
             }
         }
-        user?.let { messageViewModel.onSendFile(fileLocation, Date(), group.id!!, it.id) }
+        user?.let {
+            messageViewModel.onSendFile(
+                fileLocation,
+                Date(),
+                MessageEnumClass.MULTIMEDIA.toString(),
+                group.id!!,
+                it.id
+            )
+        }
     }
 
-    private fun saveImageToFolder(bitmap: Bitmap): String {
-        val folder = File(getExternalFilesDir(null), "RetoFinalImage")
-
-        if (!folder.exists()) {
-            folder.mkdirs()
-        }
-
-        val fileName = "imagen_${System.currentTimeMillis()}.png"
-        val filePath = File(folder, fileName).absolutePath
-
-        try {
-            FileOutputStream(filePath).use { fos ->
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
-                fos.flush()
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return filePath
-    }
-
-    private fun saveFileToFolder(fileUri: Uri): String {
-        val folder = File(getExternalFilesDir(null), "RetoFinalPdf")
-
-        if (!folder.exists()) {
-            folder.mkdirs()
-        }
-
-        val fileName = "archivo_${System.currentTimeMillis()}.pdf" // Asegúrate de tener la extensión .pdf
-        val filePath = File(folder, fileName).absolutePath
-
-        try {
-            contentResolver.openInputStream(fileUri)?.use { input ->
-                FileOutputStream(filePath).use { output ->
-                    val buffer = ByteArray(8192)
-                    var bytesRead: Int
-                    while (input.read(buffer).also { bytesRead = it } != -1) {
-                        output.write(buffer, 0, bytesRead)
-                    }
-                    output.flush()
-                }
-            }
-
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
-        return filePath
-    }
-
-
-    private fun attachImage(){
+    private fun attachImage() {
         Dexter.withContext(this).withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
             .withListener(object : PermissionListener {
 
@@ -530,18 +545,22 @@ class MessageActivity : AppCompatActivity(){
                     startActivity(intent)
                 }
 
-                override fun onPermissionRationaleShouldBeShown(p0: PermissionRequest?, p1: PermissionToken?) {
+                override fun onPermissionRationaleShouldBeShown(
+                    p0: PermissionRequest?,
+                    p1: PermissionToken?
+                ) {
                 }
 
             }).check()
     }
-    private fun attachFile(){
+
+    private fun attachFile() {
         Dexter.withContext(this).withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
             .withListener(object : PermissionListener {
 
                 override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
                     val intent = Intent(Intent.ACTION_GET_CONTENT)
-                    intent.type =  "application/pdf"
+                    intent.type = "application/pdf"
                     startActivityForResult(intent, FILE_REQUEST_CODE)
                 }
 
@@ -552,39 +571,11 @@ class MessageActivity : AppCompatActivity(){
                     startActivity(intent)
                 }
 
-                override fun onPermissionRationaleShouldBeShown(p0: PermissionRequest?, p1: PermissionToken?) {
+                override fun onPermissionRationaleShouldBeShown(
+                    p0: PermissionRequest?,
+                    p1: PermissionToken?
+                ) {
                 }
-
             }).check()
-    }
-    private fun downloadPDF(message:Message) {
-        val path=message.text
-        if (path.isNotEmpty()) {
-            val pdfFile = File(path)
-
-            // Guarda el PDF en la carpeta de Downloads
-            val destinationFile = File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                pdfFile.name
-            )
-            try {
-                FileInputStream(pdfFile).use { input ->
-                    FileOutputStream(destinationFile).use { output ->
-                        input.copyTo(output)
-                    }
-                }
-
-                Toast.makeText(this, "PDF descargado correctamente", Toast.LENGTH_SHORT).show()
-            } catch (e: IOException) {
-                e.printStackTrace()
-                Toast.makeText(this, "Error al descargar el PDF", Toast.LENGTH_SHORT).show()
-            }
-        } else {
-            Toast.makeText(this, "Error al obtener la ruta del PDF", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun getRandomCoordinate(min: Double, max: Double): String {
-        return String.format("%.6f", Random.nextDouble(min, max))
     }
 }

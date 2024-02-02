@@ -67,17 +67,17 @@ class PopulateLocalDataBase(
 
         viewModelScope.launch {
             getAllLastData()
-//            Log.d("p1", "${_lastGroup.value?.status}")
-//            Log.d("p1", "${_lastMessage.value?.status}")
-//            Log.d("p1", "${_lastUser.value?.status}")
+            Log.d("p1", "${_lastGroup.value?.status}")
+            Log.d("p1", "${_lastMessage.value?.data}")
+            Log.d("p1", "${_lastUser.value?.status}")
             if (_lastUser.value?.status == Resource.Status.SUCCESS
                 && _lastGroup.value?.status == Resource.Status.SUCCESS
                 && _lastMessage.value?.status == Resource.Status.SUCCESS) {
 //                Log.d("p1", "GetAllLastData")
                 getAllData()
-//                Log.d("p1", "${_allMessage.value?.status}")
-//                Log.d("p1", "${_allUser.value?.status}")
-//                Log.d("p1", "${_allGroup.value?.status}")
+                Log.d("p1", "${_allMessage.value?.data}")
+                Log.d("p1", "${_allUser.value?.status}")
+                Log.d("p1", "${_allGroup.value?.status}")
                 if (_allMessage.value?.status == Resource.Status.SUCCESS
                     && _allUser.value?.status == Resource.Status.SUCCESS
                     && _allGroup.value?.status == Resource.Status.SUCCESS) {
@@ -233,6 +233,7 @@ class PopulateLocalDataBase(
                         messageResponse.text,
                         messageResponse.sent,
                         messageResponse.saved,
+                        messageResponse.type,
                         messageResponse.chatId,
                         messageResponse.userId)
                     messageLocalRepository.createMessage(message)

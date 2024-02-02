@@ -216,6 +216,6 @@ class ChatsService : Service() {
         }
     }
 
-    private fun SocketMessageRes.toMessage() = Message(localId, messageServerId, message, sent, saved, room, authorId)
+    private fun SocketMessageRes.toMessage() = Message(localId, messageServerId, message, sent, saved, room, authorId, type)
 
 }

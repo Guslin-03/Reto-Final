@@ -28,6 +28,7 @@ data class DbMessage(
     @ColumnInfo(name = "text") val text: String,
     @ColumnInfo(name = "sent") val sentDate: Date,
     @ColumnInfo(name = "saved") val saveDate: Date?,
+    @ColumnInfo(name = "type") val type: String,
     @ColumnInfo(name = "groupId") val groupId: Int,
     @ColumnInfo(name = "userId") val userId: Int
 )
