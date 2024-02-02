@@ -86,7 +86,6 @@ class MessageActivity : AppCompatActivity() {
     private val CAMERA_REQUEST_CODE = 1
     private val IMAGE_REQUEST_CODE = 2
     private val FILE_REQUEST_CODE = 3
-    private lateinit var fileLocation: String
     private val fileManager = FileManager(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -153,49 +152,30 @@ class MessageActivity : AppCompatActivity() {
                     if (InternetChecker.isNetworkAvailable(this)) {
                         if (newMessage != null && group.id != null && newMessage.id != null) {
                             Log.d("p1", "Id del mensaje en ROOM ${newMessage.id}")
-                            val socketMessage = SocketMessageReq(
-                                group.id!!,
-                                newMessage.id!!, newMessage.text, newMessage.sent
-                            )
-                            val jsonObject = JSONObject(Gson().toJson(socketMessage))
-                            MyApp.userPreferences.mSocket.emit(
-                                SocketEvents.ON_SEND_MESSAGE.value,
-                                jsonObject
-                            )
-                        }
+                           if(newMessage.type==MessageEnumClass.FILE.toString()){
+                               val file=fileManager.convertFileToBase64(newMessage.text)
+                               val socketMessage = SocketMessageReq(
+                                   group.id!!,
+                                   newMessage.id!!, file, newMessage.sent, newMessage.type
+                               )
 
-                    }
-                }
+                               val jsonObject = JSONObject(Gson().toJson(socketMessage))
+                               MyApp.userPreferences.mSocket.emit(
+                                   SocketEvents.ON_SEND_MESSAGE.value,
+                                   jsonObject
+                               )
+                           }else{
+                               val socketMessage = SocketMessageReq(
+                                   group.id!!,
+                                   newMessage.id!!, newMessage.text, newMessage.sent, newMessage.type
+                               )
+                               val jsonObject = JSONObject(Gson().toJson(socketMessage))
+                               MyApp.userPreferences.mSocket.emit(
+                                   SocketEvents.ON_SEND_MESSAGE.value,
+                                   jsonObject
+                               )
+                           }
 
-                Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
-                }
-
-                Resource.Status.LOADING -> {
-                }
-            }
-        }
-        messageViewModel.createLocalFile.observe(this) {
-            when (it.status) {
-                Resource.Status.SUCCESS -> {
-                    val newList = ArrayList(messageAdapter.currentList)
-                    val newMessage = it.data
-                    newList.add(newMessage)
-
-                    messageAdapter.submitList(newList)
-
-                    if (InternetChecker.isNetworkAvailable(this)) {
-                        if (newMessage != null && group.id != null && newMessage.id != null) {
-                            Log.d("p1", "Id del mensaje en ROOM ${newMessage.id}")
-                            val socketMessage = SocketMessageReq(
-                                group.id!!,
-                                newMessage.id!!, newMessage.text, newMessage.sent
-                            )
-                            val jsonObject = JSONObject(Gson().toJson(socketMessage))
-                            MyApp.userPreferences.mSocket.emit(
-                                SocketEvents.ON_SEND_MESSAGE.value,
-                                jsonObject
-                            )
                         }
 
                     }
@@ -304,11 +284,9 @@ class MessageActivity : AppCompatActivity() {
         binding.include.attatch.setOnClickListener {
             showAttachmentOptions(it)
         }
-
     }
 
     private fun onMapClickItem(message: Message) {
-
         val messageClick = message.text
         if (messageClick.startsWith("https://www.google.com/maps?q=")) {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(messageClick))
@@ -497,33 +475,29 @@ class MessageActivity : AppCompatActivity() {
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        // var base64String=""
+        var fileLocation=""
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
             fileLocation = fileManager.saveImageToFolder(imageBitmap)
-            //  base64String = fileConverter.convertBitmapToBase64(imageBitmap)
-
         } else if (requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (data?.data != null) {
                 val imageUri: Uri = data.data!!
                 val imageBitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
                 fileLocation = fileManager.saveImageToFolder(imageBitmap)
-                //   base64String = fileConverter.convertBitmapToBase64(imageBitmap)
             }
         } else if (requestCode == FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (data?.data != null) {
                 val fileUri: Uri = data.data!!
                 fileLocation = fileManager.saveFileToFolder(fileUri)
-                //base64String = fileConverter.convertFileToBase64(fileUri)
             }
         }
-        user?.let {
-            messageViewModel.onSendFile(
+        if (user!=null && resultCode==Activity.RESULT_OK){
+            messageViewModel.onSendMessage(
                 fileLocation,
                 Date(),
-                MessageEnumClass.MULTIMEDIA.toString(),
+                MessageEnumClass.FILE.toString(),
                 group.id!!,
-                it.id
+                user.id
             )
         }
     }

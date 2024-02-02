@@ -23,20 +23,30 @@ class FileManager(private val context: Context) {
         val b = baos.toByteArray()
         return Base64.encodeToString(b, Base64.DEFAULT)
     }
-    fun convertFileToBase64(fileUri: Uri): String {
-        val inputStream: InputStream? = context.contentResolver.openInputStream(fileUri)
-        inputStream?.use { input ->
+    fun convertFileToBase64(filePath: String): String {
+        val file = File(filePath)
+        if (!file.exists()) {
+            Toast.makeText(context, "No existe el archivo en local", Toast.LENGTH_SHORT).show()
+            return ""
+        }
+
+        try {
+            val inputStream: InputStream = FileInputStream(file)
             val buffer = ByteArray(8192)
             val output = ByteArrayOutputStream()
 
             var bytesRead: Int
-            while (input.read(buffer).also { bytesRead = it } != -1) {
+            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
                 output.write(buffer, 0, bytesRead)
             }
 
             val byteArray = output.toByteArray()
             return Base64.encodeToString(byteArray, Base64.DEFAULT)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Toast.makeText(context, "No se ha podido convertir el archivo", Toast.LENGTH_SHORT).show()
         }
+
         return ""
     }
     fun detectFileType(base64String: String): File {
@@ -51,7 +61,7 @@ class FileManager(private val context: Context) {
             signatureHex.startsWith("89504E470D0A1A0A") || signatureHex.startsWith("FFD8FF") -> convertBase64ToImage(base64String)
             else -> {
                 Toast.makeText(context, "No se reconoce el formato del archivo", Toast.LENGTH_SHORT).show()
-                File("") // Puedes devolver un objeto File vacío o nulo según tu lógica
+                File("")
             }
         }
     }

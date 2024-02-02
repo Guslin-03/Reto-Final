@@ -4,8 +4,11 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.Patterns
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -37,10 +40,17 @@ class LogInActivity : AppCompatActivity(){
     private val viewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(userRepository,applicationContext) }
     private lateinit var rememberMeCheckBox: AppCompatCheckBox
     private lateinit var email:String
+    private lateinit var loginButton: Button
+    private val handler = Handler(Looper.getMainLooper())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = LoginActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        loginButton = binding.login
+        loginButton.isEnabled=false
+        handler.postDelayed({
+            loginButton.isEnabled=true
+        }, 2000)
 
         previousLoginState()
 
@@ -48,6 +58,7 @@ class LogInActivity : AppCompatActivity(){
             popUpCreate()
         }
         binding.login.setOnClickListener {
+
             var email = binding.email.text.toString()
             email = lowerCaseEmail(email)
             val password = binding.password.text.toString()
@@ -63,6 +74,7 @@ class LogInActivity : AppCompatActivity(){
         }
 
         viewModel.loginUser.observe(this) {
+            loginButton.isEnabled=false
             when (it.status) {
                 Resource.Status.SUCCESS -> {
                     val userResource = viewModel.loginUser.value
@@ -81,6 +93,7 @@ class LogInActivity : AppCompatActivity(){
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, "Los datos introducidos no pertenecen a un usuario del centro", Toast.LENGTH_LONG).show()
+                    loginButton.isEnabled=true
                 }
                 Resource.Status.LOADING -> {
                 }
@@ -95,11 +108,13 @@ class LogInActivity : AppCompatActivity(){
                         val user = userResource.data
                         if (user != null) {
                             MyApp.userPreferences.saveHibernateToken(user.accessToken)
+                            loginButton.isEnabled=true
                         }
                     }
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    loginButton.isEnabled=true
                 }
                 Resource.Status.LOADING -> {
 

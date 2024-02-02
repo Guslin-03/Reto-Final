@@ -4,5 +4,6 @@ data class SocketMessageReq(
     val room: Int,
     val localId: Int,
     val message: String,
-    val sent: Long
+    val sent: Long,
+    val type: String
 )
