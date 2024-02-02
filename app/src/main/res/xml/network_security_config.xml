@@ -4,7 +4,6 @@
         <!-- mi localhost -->
 <!--        <domain includeSubdomains="true">192.168.1.210</domain>-->
 <!--        <domain includeSubdomains="true">192.168.1.133</domain>-->
-        <domain includeSubdomains="true">10.5.7.44</domain>
-        <domain includeSubdomains="true">10.5.7.210</domain>
+        <domain includeSubdomains="true">10.5.7</domain>
     </domain-config>
 </network-security-config>

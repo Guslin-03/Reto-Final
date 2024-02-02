@@ -100,7 +100,7 @@ class GroupViewModel(
             if (InternetChecker.isNetworkAvailable(context)) {
                 _delete.value = softDeleteRemote(group)
                 if (_delete.value!!.status == Resource.Status.SUCCESS) {
-                    deleteLocal(group)
+                    softDeleteLocal(group)
                 } else {
                     _delete.value = Resource.error("Ha ocurrido un error, el grupo no se ha eliminado")
                 }
@@ -117,7 +117,7 @@ class GroupViewModel(
         }
     }
 
-    private suspend fun deleteLocal(group: Group) : Resource<Void> {
+    private suspend fun softDeleteLocal(group: Group) : Resource<Void> {
         return withContext(Dispatchers.IO) {
             localGroupRepository.softDeleteGroup(group)
         }
@@ -127,18 +127,25 @@ class GroupViewModel(
 
 
     // FUNCIONES PERMISOS ENTRAR AL GRUPO
-    fun onUserHasPermission(idGroup: Int) {
+    fun onUserHasPermission(idGroup: Int, idLoginUser: Int) {
         viewModelScope.launch {
             if (InternetChecker.isNetworkAvailable(context)) {
                 _groupPermission.value = userHasPermissionRemote(idGroup)
             } else {
-                _delete.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
+                _groupPermission.value = userHasPermissionLocal(idGroup, idLoginUser)
             }
         }
     }
+
     private suspend fun userHasPermissionRemote(idGroup: Int) : Resource<Int> {
         return withContext(Dispatchers.IO) {
             remoteGroupRepository.canEnterUserChat(idGroup)
+        }
+    }
+
+    private suspend fun userHasPermissionLocal(idGroup: Int, idLoginUser: Int) : Resource<Int> {
+        return withContext(Dispatchers.IO) {
+            localGroupRepository.userHasPermission(idGroup, idLoginUser)
         }
     }
 
@@ -165,10 +172,10 @@ class GroupViewModel(
     // FUNCIONES VALIDACION USUARIO YA ESTA EN EL GRUPO
     fun onUserHasAlreadyInGroup(idGroup: Int, idUser: Int) {
         viewModelScope.launch {
-            _userHasAlreadyInGroup.value = if (InternetChecker.isNetworkAvailable(context)) {
-                userHasAlreadyInGroupRemote(idGroup)
+            if (InternetChecker.isNetworkAvailable(context)) {
+                _userHasAlreadyInGroup.value = userHasAlreadyInGroupRemote(idGroup)
             } else{
-                userHasAlreadyInGroup(idGroup, idUser)
+                _userHasAlreadyInGroup.value = userHasAlreadyInGroup(idGroup, idUser)
             }
         }
     }

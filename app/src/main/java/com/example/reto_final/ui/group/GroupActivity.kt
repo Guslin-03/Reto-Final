@@ -151,20 +151,12 @@ class GroupActivity: AppCompatActivity() {
         groupViewModel.groupPermission.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
-                    group.id?.let { it1 -> userViewModel.onUsersGroup(it1) }
-                }
-                Resource.Status.ERROR -> {
-                    Toast.makeText(this, "No tienes permiso para acceder al grupo", Toast.LENGTH_LONG).show()
-                }
-                Resource.Status.LOADING -> {
-                }
-            }
-        }
-
-        userViewModel.usersGroup.observe(this) {
-            when(it.status) {
-                Resource.Status.SUCCESS -> {
-                    goToChat()
+                    val groupPermission = it.data
+                    if (groupPermission == 1) {
+                        goToChat()
+                    } else {
+                        Toast.makeText(this, "No tienes permiso para acceder al grupo", Toast.LENGTH_LONG).show()
+                    }
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
@@ -177,10 +169,15 @@ class GroupActivity: AppCompatActivity() {
         groupViewModel.userHasAlreadyInGroup.observe(this) {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
-                    goToChat()
+                    val groupPermission = it.data
+                    if (groupPermission == 1) {
+                        goToChat()
+                    } else {
+                        joinGroup()
+                    }
                 }
                 Resource.Status.ERROR -> {
-                    joinGroup()
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }
@@ -316,13 +313,11 @@ class GroupActivity: AppCompatActivity() {
 
     private fun onGroupListClickItem(group: Group) {
         this.group = group
-        if (loginUser != null) {
+        if (loginUser != null && group.id != null) {
             if (group.type == ChatEnumType.PRIVATE.name) {
-                group.id?.let {
-                    groupViewModel.onUserHasPermission(it)
-                }
+                groupViewModel.onUserHasPermission(group.id!!, loginUser.id)
             } else {
-                group.id?.let { groupViewModel.onUserHasAlreadyInGroup(it, loginUser.id) }
+                groupViewModel.onUserHasAlreadyInGroup(group.id!!, loginUser.id)
             }
         }
 
