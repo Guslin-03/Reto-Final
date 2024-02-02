@@ -45,6 +45,7 @@ class RoomGroupDataSource : CommonGroupRepository {
     }
 
     override suspend fun softDeleteGroup(group: Group): Resource<Void> {
+        Log.i("p1", "$group")
         groupDao.softDeleteGroup(group.id, group.deleted)
         return Resource.success()
     }

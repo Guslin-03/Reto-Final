@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import com.example.reto_final.data.model.Role
 import com.example.reto_final.data.repository.local.CommonRoleRepository
+import com.example.reto_final.data.repository.local.user.UserRoleType
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
 
@@ -28,7 +29,7 @@ class RoomRoleDataSource : CommonRoleRepository {
 }
 
 fun DbRole.toRole() = Role(id, type)
-fun Role.toDbRole() = DbRole(id, type)
+fun Role.toDbRole() = DbRole(id, name)
 
 @Dao
 interface RoleDao {

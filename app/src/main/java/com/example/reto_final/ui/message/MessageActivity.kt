@@ -187,7 +187,12 @@ class MessageActivity : AppCompatActivity(){
         groupViewModel.groupPermissionToDelete.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
-                    groupViewModel.onDelete(group)
+                    val groupPermission = it.data
+                    if (groupPermission == 1) {
+                        groupViewModel.onDelete(group)
+                    } else {
+                        Toast.makeText(this, "No tienes permiso para eliminar el grupo", Toast.LENGTH_LONG).show()
+                    }
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
@@ -310,16 +315,16 @@ class MessageActivity : AppCompatActivity(){
     }
 
     private fun userHasPermissionToDelete() {
-        if (!InternetChecker.isNetworkAvailable(applicationContext)){
-            Toast.makeText(this, "No se puede eliminar un grupo sin internet", Toast.LENGTH_LONG).show()
-        }
-        else if (user != null) {
+        if (InternetChecker.isNetworkAvailable(applicationContext)){
             if (group.type == ChatEnumType.PRIVATE.toString() && userIsTeacher()) {
                 popToDeleteGroup()
             }else if(group.type == ChatEnumType.PUBLIC.toString()){
                 popToDeleteGroup()
             }
+        } else {
+            Toast.makeText(this, "No se puede eliminar un grupo sin internet", Toast.LENGTH_LONG).show()
         }
+
     }
 
     private fun popToDeleteGroup() {
@@ -339,7 +344,7 @@ class MessageActivity : AppCompatActivity(){
 
     private fun userIsTeacher() : Boolean {
         if (user != null) {
-            return user.roles.any { it.type == UserRoleType.PROFESOR.toString() }
+            return user.roles.any { it.name == UserRoleType.Profesor.toString() }
         }
         return false
     }

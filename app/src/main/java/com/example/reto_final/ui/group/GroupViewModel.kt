@@ -98,9 +98,9 @@ class GroupViewModel(
     fun onDelete(group: Group) {
         viewModelScope.launch {
             if (InternetChecker.isNetworkAvailable(context)) {
-                _delete.value = softDeleteRemote(group)
-                if (_delete.value!!.status == Resource.Status.SUCCESS) {
-                    softDeleteLocal(group)
+                val deleted = softDeleteRemote(group)
+                if (deleted.status == Resource.Status.SUCCESS) {
+                    _delete.value = softDeleteLocal(group)
                 } else {
                     _delete.value = Resource.error("Ha ocurrido un error, el grupo no se ha eliminado")
                 }

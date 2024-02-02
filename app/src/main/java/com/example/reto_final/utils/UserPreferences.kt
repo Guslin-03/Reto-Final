@@ -2,6 +2,7 @@ package com.example.reto_final.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.example.reto_final.data.model.LoginUser
 import com.google.gson.Gson
 import io.socket.client.Socket
@@ -62,7 +63,8 @@ class UserPreferences {
         val userJson = sharedPreferences.getString(USER_INFO, null)
         if (userJson != null) {
             val gson = Gson()
-            return gson.fromJson(userJson, LoginUser::class.java)
+            val loginUser = gson.fromJson(userJson, LoginUser::class.java)
+            return loginUser
         }
         return null
     }

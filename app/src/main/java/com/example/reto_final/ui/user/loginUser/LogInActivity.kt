@@ -185,7 +185,7 @@ class LogInActivity : AppCompatActivity(){
     }
     private fun mockData() {
 
-        val listRoles = arrayOf(Role(1, UserRoleType.PROFESOR.toString()))
+        val listRoles = arrayOf(Role(1, UserRoleType.Profesor.toString()))
         val loginUser = LoginUser(
             1,
             "78771912V",

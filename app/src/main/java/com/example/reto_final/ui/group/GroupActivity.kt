@@ -77,7 +77,6 @@ class GroupActivity: AppCompatActivity() {
         binding = GroupActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         if (MyApp.userPreferences.getSaveDataBaseIsCreated()) {
-            Log.d("p1", "Entra")
             populateLocalDataBase.toInit()
             MyApp.userPreferences.saveDataBaseIsCreated(true)
         }
@@ -96,7 +95,6 @@ class GroupActivity: AppCompatActivity() {
         populateLocalDataBase.finish.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
-                    Log.d("p1", "hola")
                     groupViewModel.updateGroupList()
                 }
                 Resource.Status.ERROR -> {
@@ -382,7 +380,7 @@ class GroupActivity: AppCompatActivity() {
 
     private fun userIsTeacher() : Boolean {
         if (loginUser != null) {
-            return loginUser.roles.any { it.type == UserRoleType.PROFESOR.toString() }
+            return loginUser.roles.any { it.name == UserRoleType.Profesor.toString() }
         }
         return false
     }

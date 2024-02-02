@@ -17,6 +17,7 @@ import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
 import com.example.reto_final.data.repository.local.role.RoomRoleDataSource
 import com.example.reto_final.data.repository.local.user.RoomUserDataSource
+import com.example.reto_final.data.repository.local.user.UserRoleType
 import com.example.reto_final.data.repository.remote.RemoteGroupRepository
 import com.example.reto_final.data.repository.remote.RemoteMessageRepository
 import com.example.reto_final.data.repository.remote.RemoteRoleRepository
@@ -66,21 +67,21 @@ class PopulateLocalDataBase(
 
         viewModelScope.launch {
             getAllLastData()
-            Log.d("p1", "${_lastGroup.value?.status}")
-            Log.d("p1", "${_lastMessage.value?.status}")
-            Log.d("p1", "${_lastUser.value?.status}")
+//            Log.d("p1", "${_lastGroup.value?.status}")
+//            Log.d("p1", "${_lastMessage.value?.status}")
+//            Log.d("p1", "${_lastUser.value?.status}")
             if (_lastUser.value?.status == Resource.Status.SUCCESS
                 && _lastGroup.value?.status == Resource.Status.SUCCESS
                 && _lastMessage.value?.status == Resource.Status.SUCCESS) {
-                Log.d("p1", "GetAllLastData")
+//                Log.d("p1", "GetAllLastData")
                 getAllData()
-                Log.d("p1", "${_allMessage.value?.status}")
-                Log.d("p1", "${_allUser.value?.status}")
-                Log.d("p1", "${_allGroup.value?.status}")
+//                Log.d("p1", "${_allMessage.value?.status}")
+//                Log.d("p1", "${_allUser.value?.status}")
+//                Log.d("p1", "${_allGroup.value?.status}")
                 if (_allMessage.value?.status == Resource.Status.SUCCESS
                     && _allUser.value?.status == Resource.Status.SUCCESS
                     && _allGroup.value?.status == Resource.Status.SUCCESS) {
-                    Log.d("p1", "getAllData")
+//                    Log.d("p1", "getAllData")
                     setAllData()
                 }
                 _finish.value = Resource.success(true)
@@ -121,8 +122,8 @@ class PopulateLocalDataBase(
 //            val allRole = _allRole.value?.data
 //            if (allRole != null) {
             val roles = listOf(
-                Role(2, "PROFESOR"),
-                Role(3, "ALUMNO")
+                Role(2, UserRoleType.Profesor.toString()),
+                Role(3, UserRoleType.Alumno.toString())
             )
             for (role in roles) {
                 localRoleRepository.createRole(role)
