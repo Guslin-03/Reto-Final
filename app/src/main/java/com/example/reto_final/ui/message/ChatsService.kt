@@ -35,6 +35,7 @@ import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 
 class ChatsService : Service() {
+
     private val channelId = "download_channel"
     private val notificationId = 1
     private lateinit var serviceScope: CoroutineScope
@@ -91,7 +92,6 @@ class ChatsService : Service() {
         if (MyApp.userPreferences.mSocket.connected()) {
             MyApp.userPreferences.mSocket.disconnect()
         }
-
         super.onDestroy()
     }
 
@@ -118,6 +118,7 @@ class ChatsService : Service() {
 
     private fun onConnect(): Emitter.Listener {
         return Emitter.Listener {
+            EventBus.getDefault().post("connect")
             updateNotification("conectado")
         }
     }

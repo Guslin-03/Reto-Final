@@ -20,6 +20,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
 import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.model.InternetChecker
+import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
 import com.example.reto_final.data.repository.local.PopulateLocalDataBase
 import com.example.reto_final.data.repository.local.PopulateLocalDataBaseFactory
@@ -41,10 +42,11 @@ import com.example.reto_final.ui.configuration.PersonalConfigurationActivity
 import com.example.reto_final.ui.message.ChatsService
 import com.example.reto_final.ui.user.loginUser.LoginUserViewModel
 import com.example.reto_final.ui.user.loginUser.LoginUserViewModelFactory
-import com.example.reto_final.ui.user.RoomUserViewModelFactory
-import com.example.reto_final.ui.user.UserViewModel
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 
 class GroupActivity: AppCompatActivity() {
@@ -55,7 +57,6 @@ class GroupActivity: AppCompatActivity() {
     private val loginUserViewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(loginUserRepository,applicationContext) }
     private val userRepository = RoomUserDataSource()
     private val remoteUserRepository = RemoteUserDataSource()
-    private val userViewModel: UserViewModel by viewModels { RoomUserViewModelFactory(userRepository,remoteUserRepository,applicationContext) }
     private val groupRepository = RoomGroupDataSource()
     private val remoteGroupRepository = RemoteGroupDataSource()
     private lateinit var group: Group
@@ -76,6 +77,7 @@ class GroupActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = GroupActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         if (MyApp.userPreferences.getSaveDataBaseIsCreated()) {
             populateLocalDataBase.toInit()
             MyApp.userPreferences.saveDataBaseIsCreated(true)
@@ -456,6 +458,22 @@ class GroupActivity: AppCompatActivity() {
     private fun startChatService(context: Context) {
         val intent = Intent(context, ChatsService::class.java)
         ContextCompat.startForegroundService(context, intent)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d("Prueba", "Se registra")
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(message: String) {
+        populateLocalDataBase.toInit()
     }
 
 }
