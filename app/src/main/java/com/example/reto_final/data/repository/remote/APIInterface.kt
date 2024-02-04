@@ -11,6 +11,7 @@ import com.example.reto_final.data.model.UserRequest
 import com.example.reto_final.data.model.message.MessageResponse
 import com.example.reto_final.data.model.ProfileRequest
 import com.example.reto_final.data.model.RegisterRequest
+import com.example.reto_final.data.model.UserChatInfo
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -50,14 +51,14 @@ interface APIInterface {
     suspend fun countByIdAndAdminId(@Path("idChat") idGroup: Int) : Response<Int>
     @GET("chats/existsOnChat/{idChat}")
     suspend fun existsByIdAndUsersId(@Path("idChat") idGroup: Int) : Response<Int>
-    @POST("chats/addToGroup/{idChat}/{idUser}")
-    suspend fun addUserToChat(@Path("idChat") idGroup: Int, @Path("idUser") idUser: Int) : Response<Int>
-    @POST("chats/addToGroup/{idChat}")
-    suspend fun joinToChat(@Path("idChat") idGroup: Int) : Response<Int>
+    @POST("chats/addUserToChat/{idChat}/{idUser}")
+    suspend fun addUserToChat(@Path("idChat") idGroup: Int, @Path("idUser") idUser: Int) : Response<UserChatInfo>
+    @POST("chats/joinToChat/{idChat}")
+    suspend fun joinToChat(@Path("idChat") idGroup: Int) : Response<UserChatInfo>
     @DELETE("chats/leaveChat/{idChat}")
-    suspend fun leaveChat(@Path("idChat") idGroup: Int) : Response<Int>
+    suspend fun leaveChat(@Path("idChat") idGroup: Int) : Response<UserChatInfo>
     @DELETE("chats/throwFromChat/{idChat}/{idUser}")
-    suspend fun chatThrowOut(idGroup: Int, idUser: Int) : Response<Int>
+    suspend fun chatThrowOut(@Path("idChat")idGroup: Int, @Path("idUser")idUser: Int) : Response<UserChatInfo>
     @GET("messages/findAll/{id}")
     suspend fun getMessages(@Path("id") messageId: Int?) : Response<List<MessageResponse>>
     @GET("messages/chat/{chatId}")

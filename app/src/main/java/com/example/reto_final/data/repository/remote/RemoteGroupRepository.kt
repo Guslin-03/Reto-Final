@@ -1,6 +1,7 @@
 package com.example.reto_final.data.repository.remote
 
 import com.example.reto_final.data.model.Group
+import com.example.reto_final.data.model.UserChatInfo
 import com.example.reto_final.utils.Resource
 
 interface RemoteGroupRepository {
@@ -17,12 +18,12 @@ interface RemoteGroupRepository {
 
     suspend fun existsByIdAndUsersId(idGroup:Int) : Resource<Int>
 
-    suspend fun addUserToChat(idGroup: Int, idUser: Int) : Resource<Int>
+    suspend fun addUserToChat(idGroup: Int, idUser: Int) : Resource<UserChatInfo>
 
-    suspend fun joinGroup(idGroup: Int) : Resource<Int>
+    suspend fun joinToChat(idGroup: Int) : Resource<UserChatInfo>
 
-    suspend fun leaveChat(idGroup: Int) : Resource<Int>
+    suspend fun leaveChat(idGroup: Int) : Resource<UserChatInfo>
 
-    suspend fun chatThrowOut(idGroup: Int, idUser: Int) : Resource<Int>
+    suspend fun chatThrowOut(idGroup: Int, idUser: Int) : Resource<UserChatInfo>
 
 }

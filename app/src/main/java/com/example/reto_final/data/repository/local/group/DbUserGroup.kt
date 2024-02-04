@@ -20,6 +20,7 @@ import java.util.Date
             childColumns = ["userId"]
         )
     ])
+
 data class DbUserGroup (
     val groupId: Int,
     val userId: Int,

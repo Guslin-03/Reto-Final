@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.model.UserChatInfo
 import com.example.reto_final.data.repository.local.CommonGroupRepository
@@ -71,13 +72,28 @@ class RoomGroupDataSource : CommonGroupRepository {
             userChatInfo.userId,
             Date(userChatInfo.joined),
             userChatInfo.deleted?.let { Date(it) })
-        val response = groupDao.addUserToGroup(dbUserChatInfo)
-        return Resource.success(response.toInt())
+        //logica de solo crear el nuevo en la base de datos si es la primera carga o el usuario aun no existia en la n:m
+        //Significa que ya existia esa relacion asi que solo tenemos que quitar el deleted
+        if(groupDao.getCountByUserIdAndChatId(userChatInfo.chatId, userChatInfo.userId)  > 0 ){
+            return try {
+                val affectedRowCount = groupDao.updateJoinDateInGroupUser(userChatInfo.userId, userChatInfo.chatId, userChatInfo.joined)
+                return Resource.success(affectedRowCount)
+            } catch (exception: Exception) {
+                Resource.error("Failed to update join date in group user")
+            }
+        }else{
+            val response = groupDao.addUserToGroup(dbUserChatInfo)
+            return Resource.success(response.toInt())
+        }
     }
 
     override suspend fun leaveGroup(idGroup: Int, idUser: Int): Resource<Int> {
-        groupDao.leaveGroup(idGroup, idUser)
-        return Resource.success()
+        return try {
+            val affectedRowCount = groupDao.leaveGroup(idGroup, idUser, System.currentTimeMillis())
+            return Resource.success(affectedRowCount)
+        } catch (exception: Exception) {
+            Resource.error("Failed to update join date in group user")
+        }
     }
 
     override suspend fun getLastGroup(): Resource<Group?> {
@@ -98,18 +114,25 @@ interface GroupDao {
     suspend fun createGroup(group: DbGroup) : Long
     @Query("UPDATE groups SET deleted = :deleted WHERE id = :idGroup")
     suspend fun softDeleteGroup(idGroup: Int?, deleted: Long?) : Int
-    @Query("SELECT COUNT(groupId) FROM group_user WHERE groupId = :idGroup AND userId = :idUser")
+    @Query("SELECT COUNT(groupId) FROM group_user WHERE groupId = :idGroup AND userId = :idUser AND deleted IS NULL")
     suspend fun userHasPermission(idGroup: Int?, idUser: Int): Int
     @Query("SELECT COUNT(id) FROM groups WHERE id = :idGroup AND adminId = :idUser")
     suspend fun userHasPermissionToDelete(idGroup: Int?, idUser: Int): Int
     @Insert
     suspend fun addUserToGroup(userGroup: DbUserGroup) : Long
-    @Query("DELETE FROM group_user WHERE groupId = :idGroup AND userId = :idUser")
-    suspend fun leaveGroup(idGroup: Int, idUser: Int) : Int
+//  @Query("DELETE FROM group_user WHERE groupId = :idGroup AND userId = :idUser")
+//  suspend fun leaveGroup(idGroup: Int, idUser: Int) : Int
     @Query("SELECT COUNT(groupId) FROM group_user WHERE groupId = :idGroup AND userId = :idUser")
     suspend fun userHasAlreadyInGroup(idGroup: Int?, idUser: Int): Int
-
+    @Query("SELECT COUNT(userId) FROM group_user WHERE groupId = :idGroup AND userId = :idUser")
+    suspend fun getCountByUserIdAndChatId(idGroup: Int, idUser: Int): Int
     @Query("SELECT * FROM groups WHERE id = (SELECT MAX(id) FROM groups)")
     suspend fun getLastGroup(): Group?
+    @Transaction
+    @Query("UPDATE group_user SET joined = :joined, deleted = null WHERE groupId = :idGroup AND userId = :idUser")
+    suspend fun updateJoinDateInGroupUser(idUser: Int, idGroup: Int, joined: Long): Int
+    @Transaction
+    @Query("UPDATE group_user SET deleted = :deleted WHERE groupId = :idGroup AND userId = :idUser")
+    suspend fun leaveGroup(idGroup: Int, idUser: Int, deleted: Long): Int
 
 }
