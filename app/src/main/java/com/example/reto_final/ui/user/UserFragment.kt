@@ -12,8 +12,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.example.reto_final.R
-import com.example.reto_final.data.model.Group
-import com.example.reto_final.data.model.User
+import com.example.reto_final.data.model.group.Group
+import com.example.reto_final.data.model.user.User
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.user.RoomUserDataSource
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource

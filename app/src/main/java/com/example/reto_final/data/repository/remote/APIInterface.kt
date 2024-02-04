@@ -1,17 +1,19 @@
 package com.example.reto_final.data.repository.remote
 
-import com.example.reto_final.data.model.AuthRequest
-import com.example.reto_final.data.model.ChangePasswordRequest
-import com.example.reto_final.data.model.Group
-import com.example.reto_final.data.model.LoginUser
+import com.example.reto_final.data.model.user.AuthRequest
+import com.example.reto_final.data.model.user.ChangePasswordRequest
+import com.example.reto_final.data.model.group.Group
+import com.example.reto_final.data.model.user.LoginUser
 import com.example.reto_final.data.model.Role
 import com.example.reto_final.data.model.message.Message
-import com.example.reto_final.data.model.User
-import com.example.reto_final.data.model.UserRequest
+import com.example.reto_final.data.model.user.User
+import com.example.reto_final.data.model.user.UserRequest
 import com.example.reto_final.data.model.message.MessageResponse
 import com.example.reto_final.data.model.ProfileRequest
 import com.example.reto_final.data.model.RegisterRequest
-import com.example.reto_final.data.model.UserChatInfo
+import com.example.reto_final.data.model.message.PendingMessageRequest
+import com.example.reto_final.data.model.userGroup.UserChatInfo
+import com.example.reto_final.data.socket.SocketMessageReq
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -76,6 +78,6 @@ interface APIInterface {
     @GET("roles")
     suspend fun getRoles() : Response<List<Role>>
     @POST("pendingMessages")
-    suspend fun setPendingMessages(listPendingMessage: List<Message>) : Response<List<MessageResponse>>
+    suspend fun setPendingMessages(@Body listPendingMessage: List<PendingMessageRequest>) : Response<List<MessageResponse>>
 
 }

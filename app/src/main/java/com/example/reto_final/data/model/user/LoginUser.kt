@@ -1,6 +1,8 @@
-package com.example.reto_final.data.model
+package com.example.reto_final.data.model.user
 
 import android.os.Parcelable
+import com.example.reto_final.data.model.Degree
+import com.example.reto_final.data.model.Role
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

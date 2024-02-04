@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
@@ -18,18 +17,15 @@ import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.content.ContextCompat
 import com.example.reto_final.R
 import com.example.reto_final.data.model.InternetChecker
-import com.example.reto_final.data.model.LoginUser
+import com.example.reto_final.data.model.user.LoginUser
 import com.example.reto_final.data.model.Role
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
-import com.example.reto_final.data.repository.local.role.RoomRoleDataSource
-import com.example.reto_final.data.repository.local.user.RoomUserDataSource
 import com.example.reto_final.data.repository.local.user.UserRoleType
 import com.example.reto_final.databinding.LoginActivityBinding
 import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.ui.register.RegisterPersonalConfigurationActivity
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
-import java.text.DateFormat
 import java.util.Locale
 import java.util.regex.Pattern
 

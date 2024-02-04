@@ -7,13 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.example.reto_final.data.model.Group
+import com.example.reto_final.data.model.group.Group
 import com.example.reto_final.data.model.Role
-import com.example.reto_final.data.model.User
-import com.example.reto_final.data.model.UserChatInfo
-import com.example.reto_final.data.model.UserRequest
+import com.example.reto_final.data.model.user.User
+import com.example.reto_final.data.model.userGroup.UserChatInfo
+import com.example.reto_final.data.model.user.UserRequest
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.model.message.MessageResponse
+import com.example.reto_final.data.model.message.PendingMessageRequest
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
 import com.example.reto_final.data.repository.local.role.RoomRoleDataSource
@@ -23,6 +24,7 @@ import com.example.reto_final.data.repository.remote.RemoteGroupRepository
 import com.example.reto_final.data.repository.remote.RemoteMessageRepository
 import com.example.reto_final.data.repository.remote.RemoteRoleRepository
 import com.example.reto_final.data.repository.remote.RemoteUserRepository
+import com.example.reto_final.data.socket.SocketMessageReq
 import com.example.reto_final.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -170,7 +172,7 @@ class PopulateLocalDataBase(
         }
     }
 
-    private suspend fun setPendingMessages(listPendingMessages: List<Message>?) : Resource<List<MessageResponse>> {
+    private suspend fun setPendingMessages(listPendingMessages: List<PendingMessageRequest>?) : Resource<List<MessageResponse>> {
         return withContext(Dispatchers.IO) {
             if (listPendingMessages != null) {
                 remoteMessageRepository.setPendingMessages(listPendingMessages)

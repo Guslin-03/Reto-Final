@@ -25,7 +25,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.example.reto_final.R
-import com.example.reto_final.data.model.Group
+import com.example.reto_final.data.model.group.Group
 import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.repository.local.group.ChatEnumType

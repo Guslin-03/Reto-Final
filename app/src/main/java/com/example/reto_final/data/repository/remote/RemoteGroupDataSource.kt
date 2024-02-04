@@ -1,6 +1,6 @@
 package com.example.reto_final.data.repository.remote
 
-import com.example.reto_final.data.model.Group
+import com.example.reto_final.data.model.group.Group
 
 class RemoteGroupDataSource : BaseDataSource(), RemoteGroupRepository{
     override suspend fun getGroups(group: Int?)= getResult {

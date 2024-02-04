@@ -6,9 +6,9 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.example.reto_final.data.model.Group
+import com.example.reto_final.data.model.group.Group
 import com.example.reto_final.data.model.InternetChecker
-import com.example.reto_final.data.model.User
+import com.example.reto_final.data.model.user.User
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.user.RoomUserDataSource
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
@@ -87,6 +87,21 @@ class GroupInfo: AppCompatActivity() {
             }
         }
         groupViewModel.throwOutFromChat.observe(this) {
+            when(it.status) {
+                Resource.Status.SUCCESS -> {
+                    if (it.data?.chatId != null && it.data?.userId != null) {
+                        userViewModel.onDelete(it.data.userId, it.data.chatId)
+                    }
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+                }
+
+            }
+        }
+        groupViewModel.leaveGroup.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
                     if (it.data?.chatId != null && it.data?.userId != null) {

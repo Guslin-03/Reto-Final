@@ -14,7 +14,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import com.example.reto_final.R
-import com.example.reto_final.data.model.UserGroup
+import com.example.reto_final.data.model.userGroup.UserGroup
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.socket.SocketEvents

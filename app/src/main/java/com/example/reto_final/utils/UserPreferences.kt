@@ -2,8 +2,7 @@ package com.example.reto_final.utils
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
-import com.example.reto_final.data.model.LoginUser
+import com.example.reto_final.data.model.user.LoginUser
 import com.google.gson.Gson
 import io.socket.client.Socket
 import org.greenrobot.eventbus.EventBus

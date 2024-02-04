@@ -8,9 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.example.reto_final.data.model.AuthRequest
-import com.example.reto_final.data.model.ChangePasswordRequest
-import com.example.reto_final.data.model.LoginUser
+import com.example.reto_final.data.model.user.AuthRequest
+import com.example.reto_final.data.model.user.ChangePasswordRequest
+import com.example.reto_final.data.model.user.LoginUser
 import com.example.reto_final.data.repository.CommonLoginUserRepository
 import com.example.reto_final.data.model.ProfileRequest
 import com.example.reto_final.data.model.RegisterRequest

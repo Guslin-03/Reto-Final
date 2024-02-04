@@ -1,6 +1,7 @@
-package com.example.reto_final.data.model
+package com.example.reto_final.data.model.user
 
 import android.os.Parcelable
+import com.example.reto_final.data.model.userGroup.UserChatInfo
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

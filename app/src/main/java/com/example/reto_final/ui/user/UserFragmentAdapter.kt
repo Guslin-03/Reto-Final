@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.reto_final.data.model.User
+import com.example.reto_final.data.model.user.User
 import com.example.reto_final.databinding.ItemUserFragmentBinding
 
 class UserFragmentAdapter(
