@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto_final.data.model.InternetChecker
-import com.example.reto_final.data.model.User
+import com.example.reto_final.data.model.user.User
 import com.example.reto_final.data.repository.local.CommonUserRepository
 import com.example.reto_final.data.repository.remote.RemoteUserRepository
 import com.example.reto_final.utils.Resource

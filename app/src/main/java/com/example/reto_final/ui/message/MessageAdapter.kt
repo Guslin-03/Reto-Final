@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.reto_final.R
-import com.example.reto_final.data.model.Group
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.databinding.ItemMessageBinding
 import com.example.reto_final.utils.MyApp

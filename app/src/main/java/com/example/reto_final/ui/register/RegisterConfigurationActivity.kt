@@ -6,7 +6,7 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.example.reto_final.R
 import com.example.reto_final.data.model.Module
-import com.example.reto_final.data.model.LoginUser
+import com.example.reto_final.data.model.user.LoginUser
 import com.example.reto_final.databinding.ConfigurationActvityBinding
 import com.example.reto_final.ui.module.ModuleAdapter
 import com.example.reto_final.utils.MyApp

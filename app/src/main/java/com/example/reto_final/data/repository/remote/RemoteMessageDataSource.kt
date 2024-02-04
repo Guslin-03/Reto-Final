@@ -1,6 +1,7 @@
 package com.example.reto_final.data.repository.remote
 
 import com.example.reto_final.data.model.message.Message
+import com.example.reto_final.data.model.message.PendingMessageRequest
 
 class RemoteMessageDataSource : BaseDataSource(), RemoteMessageRepository {
     override suspend fun getMessages(messageId: Int?) = getResult{
@@ -15,7 +16,7 @@ class RemoteMessageDataSource : BaseDataSource(), RemoteMessageRepository {
        RetrofitClient.apiInterface.createMessage(message)
     }
 
-    override suspend fun setPendingMessages(listPendingMessages: List<Message>) = getResult {
+    override suspend fun setPendingMessages(listPendingMessages: List<PendingMessageRequest>) = getResult {
         RetrofitClient.apiInterface.setPendingMessages(listPendingMessages)
     }
 

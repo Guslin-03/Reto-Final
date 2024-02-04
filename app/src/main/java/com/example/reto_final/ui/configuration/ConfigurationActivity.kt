@@ -2,7 +2,6 @@ package com.example.reto_final.ui.configuration
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -10,10 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.reto_final.R
 import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.Module
-import com.example.reto_final.data.model.LoginUser
+import com.example.reto_final.data.model.user.LoginUser
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
-import com.example.reto_final.data.repository.local.role.RoomRoleDataSource
-import com.example.reto_final.data.repository.local.user.RoomUserDataSource
 import com.example.reto_final.databinding.ConfigurationActvityBinding
 import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.ui.module.ModuleAdapter

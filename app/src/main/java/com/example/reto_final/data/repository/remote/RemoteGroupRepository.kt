@@ -1,7 +1,7 @@
 package com.example.reto_final.data.repository.remote
 
-import com.example.reto_final.data.model.Group
-import com.example.reto_final.data.model.UserChatInfo
+import com.example.reto_final.data.model.group.Group
+import com.example.reto_final.data.model.userGroup.UserChatInfo
 import com.example.reto_final.utils.Resource
 
 interface RemoteGroupRepository {
