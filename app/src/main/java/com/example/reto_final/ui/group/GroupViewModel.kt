@@ -1,6 +1,7 @@
 package com.example.reto_final.ui.group
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,7 +19,6 @@ import com.example.reto_final.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Date
 
 class GroupViewModel(
     private val localGroupRepository: RoomGroupDataSource,
@@ -43,14 +43,17 @@ class GroupViewModel(
     private val _userHasAlreadyInGroup = MutableLiveData<Resource<Int>>()
     val userHasAlreadyInGroup : LiveData<Resource<Int>> get() = _userHasAlreadyInGroup
 
-    private val _joinGroup = MutableLiveData<Resource<Boolean>>()
-    val joinGroup : LiveData<Resource<Boolean>> get() = _joinGroup
+    private val _joinGroup = MutableLiveData<Resource<UserChatInfo>>()
+    val joinGroup : LiveData<Resource<UserChatInfo>> get() = _joinGroup
 
-    private val _addUserToGroup = MutableLiveData<Resource<Int>>()
-    val addUserToGroup : LiveData<Resource<Int>> get() = _addUserToGroup
+    private val _addUserToGroup = MutableLiveData<Resource<UserChatInfo>>()
+    val addUserToGroup : LiveData<Resource<UserChatInfo>> get() = _addUserToGroup
 
-    private val _leaveGroup = MutableLiveData<Resource<Int>>()
-    val leaveGroup : LiveData<Resource<Int>> get() = _leaveGroup
+    private val _leaveGroup = MutableLiveData<Resource<UserChatInfo>>()
+    val leaveGroup : LiveData<Resource<UserChatInfo>> get() = _leaveGroup
+
+    private val _throwOutFromChat = MutableLiveData<Resource<UserChatInfo>>()
+    val throwOutFromChat : LiveData<Resource<UserChatInfo>> get() = _throwOutFromChat
 
     fun updateGroupList() {
         viewModelScope.launch {
@@ -200,7 +203,7 @@ class GroupViewModel(
             if (InternetChecker.isNetworkAvailable(context)) {
                 _addUserToGroup.value = addUserToGroupRemote(idGroup, idUser)
                 if (_addUserToGroup.value!!.status == Resource.Status.SUCCESS) {
-                    addUserToGroupLocal(idGroup, idUser, Date().time, null)
+                    _addUserToGroup.value!!.data?.let { addUserToGroupLocal(it.chatId, it.userId , it.joined, null) }
                 } else {
                     _addUserToGroup.value = Resource.error("Ha ocurrido un error, no has unir al usuario al grupo")
                 }
@@ -210,7 +213,7 @@ class GroupViewModel(
         }
     }
 
-    private suspend fun addUserToGroupRemote(idGroup: Int, idUser: Int) : Resource<Int> {
+    private suspend fun addUserToGroupRemote(idGroup: Int, idUser: Int) : Resource<UserChatInfo> {
         return withContext(Dispatchers.IO) {
             remoteGroupRepository.addUserToChat(idGroup, idUser)
         }
@@ -230,10 +233,10 @@ class GroupViewModel(
     fun onJoinGroup(idGroup: Int) {
         viewModelScope.launch {
             if (InternetChecker.isNetworkAvailable(context)) {
-                val result = joinGroup(idGroup)
-                if (result.data != 0 && MyApp.userPreferences.getUser()?.id != null) {
-                    _joinGroup.value = Resource.success(true)
-//                    joinGroupLocal(idGroup, MyApp.userPreferences.getUser()!!.id)
+                _joinGroup.value = joinToChat(idGroup)
+                if (_joinGroup.value!!.status == Resource.Status.SUCCESS && MyApp.userPreferences.getUser()?.id != null) {
+                    //pasamos el userchatinfo
+                    _joinGroup.value!!.data?.let { joinGroupLocal(it) }
                 } else {
                     _joinGroup.value = Resource.error("Ha ocurrido un error, no has podido unirte al grupo")
                 }
@@ -242,16 +245,16 @@ class GroupViewModel(
             }
         }
     }
-    private suspend fun joinGroup(idGroup: Int) : Resource<Int> {
+    private suspend fun joinToChat(idGroup: Int) : Resource<UserChatInfo> {
         return withContext(Dispatchers.IO) {
-            remoteGroupRepository.joinGroup(idGroup)
+            remoteGroupRepository.joinToChat(idGroup)
         }
     }
-//    private suspend fun joinGroupLocal(idGroup: Int, idUser: Int) : Resource<Int> {
-//        return withContext(Dispatchers.IO) {
-//            localGroupRepository.addUserToGroup(idGroup, idUser)
-//        }
-//    }
+    private suspend fun joinGroupLocal(userChatInfo: UserChatInfo) : Resource<Int> {
+        return withContext(Dispatchers.IO) {
+            localGroupRepository.addUserToGroup(userChatInfo)
+        }
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////
 
@@ -264,6 +267,7 @@ class GroupViewModel(
 
             if (InternetChecker.isNetworkAvailable(context) && leaveGroup.data == 1) {
                 _leaveGroup.value = leaveGroupRemote(idGroup)
+                Log.d("LLEGGGGGO", "holahola")
             }
         }
     }
@@ -272,7 +276,7 @@ class GroupViewModel(
             localGroupRepository.leaveGroup(idGroup, idUser)
         }
     }
-    private suspend fun leaveGroupRemote(idGroup: Int) : Resource<Int> {
+    private suspend fun leaveGroupRemote(idGroup: Int) : Resource<UserChatInfo> {
         return withContext(Dispatchers.IO) {
             remoteGroupRepository.leaveChat(idGroup)
         }
@@ -285,15 +289,16 @@ class GroupViewModel(
     fun onChatThrowOut(idGroup: Int, idUser: Int) {
         viewModelScope.launch {
             if (InternetChecker.isNetworkAvailable(context)) {
-                chatThrowOut(idGroup, idUser)
+                _throwOutFromChat.value = chatThrowOut(idGroup, idUser)
             } else {
                 _joinGroup.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
             }
         }
     }
-    private suspend fun chatThrowOut(idGroup: Int, idUser: Int) : Resource<Int> {
+    private suspend fun chatThrowOut(idGroup: Int, idUser: Int) : Resource<UserChatInfo> {
         return withContext(Dispatchers.IO) {
-            remoteGroupRepository.leaveChat(idGroup)
+            Log.d("LOLO", idGroup.toString() + idUser.toString())
+            remoteGroupRepository.chatThrowOut(idGroup, idUser)
         }
     }
 

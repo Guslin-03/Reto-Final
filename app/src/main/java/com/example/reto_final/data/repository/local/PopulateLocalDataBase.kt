@@ -224,7 +224,7 @@ class PopulateLocalDataBase(
                 for (userRequest in allUser) {
                     val user = User(userRequest.id, userRequest.name, userRequest.surname, userRequest.email, userRequest.phoneNumber, userRequest.roleId)
                     userLocalRepository.createUser(user)
-                    userChatInfo.addAll(userRequest.chatInfo)
+                    userChatInfo.addAll(userRequest.userChatInfo)
                 }
             }
         }

@@ -86,9 +86,22 @@ class GroupInfo: AppCompatActivity() {
 
             }
         }
+        groupViewModel.throwOutFromChat.observe(this) {
+            when(it.status) {
+                Resource.Status.SUCCESS -> {
+                    if (it.data?.chatId != null && it.data?.userId != null) {
+                        userViewModel.onDelete(it.data.userId, it.data.chatId)
+                    }
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
+                Resource.Status.LOADING -> {
+                }
 
+            }
+        }
     }
-
     private fun onIsAdmin(user: User) {
         selectedUser = user
         if (loginUser != null && selectedGroup.id != null) {

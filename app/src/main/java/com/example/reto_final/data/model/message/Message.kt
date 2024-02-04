@@ -15,6 +15,7 @@ data class Message(
     var chatId: Int,
     val userId: Int,
     val type: String
+
 ) : Parcelable {
     constructor(
         text: String,

@@ -31,7 +31,7 @@ class RemoteGroupDataSource : BaseDataSource(), RemoteGroupRepository{
         RetrofitClient.apiInterface.addUserToChat(idGroup, idUser)
     }
 
-    override suspend fun joinGroup(idGroup: Int) = getResult {
+    override suspend fun joinToChat(idGroup: Int) = getResult {
         RetrofitClient.apiInterface.joinToChat(idGroup)
     }
 

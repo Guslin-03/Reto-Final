@@ -190,7 +190,6 @@ class GroupActivity: AppCompatActivity() {
             }
         }
 
-
         binding.toolbarPersonalConfiguration.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.createGroup -> {
@@ -315,7 +314,6 @@ class GroupActivity: AppCompatActivity() {
         }
 
     }
-
     private fun joinGroup() {
         if (loginUser != null) {
             if (group.id != null) {
