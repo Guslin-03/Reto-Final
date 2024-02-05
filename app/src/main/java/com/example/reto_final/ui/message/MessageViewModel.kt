@@ -34,21 +34,12 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
 
     fun updateMessageList(groupId: Int) {
         viewModelScope.launch {
-            _message.value  = if (InternetChecker.isNetworkAvailable(context)) {
-                getMessagesFromGroupRemote(groupId)
-            } else {
-                getMessagesFromGroup(groupId)
-            }
+            _message.value  = getMessagesFromGroup(groupId)
         }
     }
     private suspend fun getMessagesFromGroup(groupId: Int) : Resource<List<Message>> {
         return withContext(IO) {
             messageLocalRepository.getMessagesFromGroup(groupId)
-        }
-    }
-    private suspend fun getMessagesFromGroupRemote(groupId: Int) : Resource<List<Message>> {
-        return withContext(IO) {
-            remoteMessageRepository.getMessagesFromGroup(groupId)
         }
     }
     private suspend fun saveIncomingMessage(message: Message) : Resource<Message> {

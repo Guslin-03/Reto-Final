@@ -399,11 +399,17 @@ class MessageActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onSocketIncomingMessage(message: Message) {
+
         if (message.type == MessageEnumClass.FILE.toString()){
         var location=fileManager.saveBase64ToFile(message.text)
             message.text=location
+            var newMessage=Message(message.id,message.idServer, location, message.sent, message.saved, message.chatId, message.userId, message.type)
+            Log.d("MensajePrueba", ""+newMessage.text)
+            messageViewModel.onSaveIncomingMessage(newMessage, group)
+        }else{
+            messageViewModel.onSaveIncomingMessage(message, group)
         }
-        messageViewModel.onSaveIncomingMessage(message, group)
+
     }
 
     @SuppressLint("RestrictedApi")

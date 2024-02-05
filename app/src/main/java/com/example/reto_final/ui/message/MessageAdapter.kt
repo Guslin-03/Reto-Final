@@ -50,7 +50,7 @@ class MessageAdapter(
                 Glide.with(context)
                     .load(File(message.text))
                     .into(binding.image)
-                binding.text.visibility = View.GONE
+                binding.text.text=""
                 binding.image.visibility = View.VISIBLE
             }else if (message.text.startsWith(context.getExternalFilesDir(null).toString()+ "/RetoFinalPdf")){
                 binding.text.text="Descargar PDF"
