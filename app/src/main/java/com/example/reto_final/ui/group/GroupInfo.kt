@@ -89,22 +89,22 @@ class GroupInfo: AppCompatActivity() {
         groupViewModel.throwOutFromChat.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
-                    if (it.data?.chatId != null && it.data?.userId != null) {
-                        userViewModel.onDelete(it.data.userId, it.data.chatId)
+                    if (selectedGroup.id != null) {
+                        userViewModel.onUsersGroup(selectedGroup.id!!)
                     }
+
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }
-
             }
         }
         groupViewModel.leaveGroup.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
-                    if (it.data?.chatId != null && it.data?.userId != null) {
+                    if (it.data?.chatId != null) {
                         userViewModel.onDelete(it.data.userId, it.data.chatId)
                     }
                 }

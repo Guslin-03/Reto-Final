@@ -14,6 +14,7 @@ interface CommonGroupRepository {
     suspend fun userHasPermissionToDelete(idGroup: Int?, idUser: Int): Resource<Int>
     suspend fun addUserToGroup(userChatInfo: UserChatInfo): Resource<Int>
     suspend fun leaveGroup(idGroup: Int, idUser: Int): Resource<Int>
+    suspend fun chatThrowOutLocal(userChatInfo: UserChatInfo): Resource<Int>
     suspend fun userHasAlreadyInGroup(idGroup: Int?, idUser: Int): Resource<Int>
     suspend fun getLastGroup(): Resource<Group?>
 

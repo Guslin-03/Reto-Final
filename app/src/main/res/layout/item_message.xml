@@ -56,7 +56,7 @@
                     android:maxWidth="300dp"
                     android:layout_marginBottom="6dp"
                     android:textColor="@color/white"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/sentHour"
