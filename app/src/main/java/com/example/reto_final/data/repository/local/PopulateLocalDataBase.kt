@@ -9,13 +9,17 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto_final.data.model.group.Group
 import com.example.reto_final.data.model.Role
+import com.example.reto_final.data.model.group.GroupResponse
+import com.example.reto_final.data.model.group.PendingGroupRequest
 import com.example.reto_final.data.model.user.User
 import com.example.reto_final.data.model.userGroup.UserChatInfo
 import com.example.reto_final.data.model.user.UserRequest
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.model.message.MessageResponse
 import com.example.reto_final.data.model.message.PendingMessageRequest
+import com.example.reto_final.data.repository.local.group.DbGroup
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
+import com.example.reto_final.data.repository.local.group.toGroup
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
 import com.example.reto_final.data.repository.local.role.RoomRoleDataSource
 import com.example.reto_final.data.repository.local.user.RoomUserDataSource
@@ -63,6 +67,10 @@ class PopulateLocalDataBase(
 
     private val _pendingMessage = MutableLiveData<Resource<List<Message>>>()
 
+    private val _allPendingGroups = MutableLiveData<Resource<List<GroupResponse>>>()
+
+    private val _pendingGroup = MutableLiveData<Resource<List<Group>>>()
+
     private val _finish = MutableLiveData<Resource<Boolean>>()
     val finish : LiveData<Resource<Boolean>> get() = _finish
 
@@ -85,9 +93,9 @@ class PopulateLocalDataBase(
                 ) {
 //                Log.d("p1", "GetAllLastData")
                 getAllData()
-//                Log.d("p1", "${_allMessage.value?.data}")
-//                Log.d("p1", "${_allUser.value?.status}")
-//                Log.d("p1", "${_allGroup.value?.status}")
+////                Log.d("p1", "${_allMessage.value?.data}")
+//                Log.d("p1", "${_allUser.value?.data}")
+//                Log.d("p1", "${_allGroup.value?.data}")
 //                Log.d("p1", "${_allPendingMessages.value?.status}")
                 if (_allMessage.value?.status == Resource.Status.SUCCESS
                     && _allUser.value?.status == Resource.Status.SUCCESS
@@ -111,11 +119,18 @@ class PopulateLocalDataBase(
         _lastGroup.value = getLastGroup()
         _lastMessage.value = getLastMessage()
 //        _pendingMessage.value = getPendingMessages()
+//        _pendingGroup.value = getPendingGroups()
     }
 
     private suspend fun getLastMessage(): Resource<Message?> {
         return withContext(Dispatchers.IO) {
             messageLocalRepository.getLastMessage()
+        }
+    }
+
+    private suspend fun getPendingGroups(): Resource<List<Group>> {
+        return withContext(Dispatchers.IO) {
+            groupLocalRepository.getPendingGroups()
         }
     }
 
@@ -159,7 +174,12 @@ class PopulateLocalDataBase(
         _allUser.value = getAllUsers(_lastUser.value?.data)
         _allGroup.value = getAllGroups(_lastGroup.value?.data)
         _allMessage.value = getAllMessages(_lastMessage.value?.data)
-//        _allPendingMessages.value = setPendingMessages(_pendingMessage.value?.data)
+//        val pendingMessage = _pendingMessage.value?.data
+//        val pendingMessageRequest = pendingMessage?.map { it.toPendingMessageRequest()}
+//        _allPendingMessages.value = setPendingMessages(pendingMessageRequest)
+//        val pendingGroup = _pendingGroup.value?.data
+//        val pendingGroupRequest = pendingGroup?.map { it.toPendingGroupRequest()}
+//        _allPendingGroups.value = setPendingGroups(pendingGroupRequest)
     }
 
     private suspend fun getAllMessages(message: Message?): Resource<List<MessageResponse>> {
@@ -172,10 +192,20 @@ class PopulateLocalDataBase(
         }
     }
 
-    private suspend fun setPendingMessages(listPendingMessages: List<PendingMessageRequest>?) : Resource<List<MessageResponse>> {
+    private suspend fun setPendingMessages(listPendingMessages: List<PendingMessageRequest?>?) : Resource<List<MessageResponse>> {
         return withContext(Dispatchers.IO) {
             if (listPendingMessages != null) {
                 remoteMessageRepository.setPendingMessages(listPendingMessages)
+            } else {
+                Resource.success()
+            }
+        }
+    }
+
+    private suspend fun setPendingGroups(listPendingGroups: List<PendingGroupRequest?>?) : Resource<List<GroupResponse>> {
+        return withContext(Dispatchers.IO) {
+            if (listPendingGroups != null) {
+                remoteGroupRepository.setPendingGroups(listPendingGroups)
             } else {
                 Resource.success()
             }
@@ -217,6 +247,7 @@ class PopulateLocalDataBase(
         setAllUsersToGroups()
         setAllMessages()
 //        updateAllPendingMessages()
+        updateAllPendingGroups()
     }
 
     private suspend fun setAllUsers() {
@@ -289,6 +320,43 @@ class PopulateLocalDataBase(
 
         }
     }
+
+    private suspend fun updateAllPendingGroups() {
+        return withContext(Dispatchers.IO) {
+            val allPendingGroupsResponse = _allPendingGroups.value?.data
+            if (allPendingGroupsResponse != null) {
+                for (pendingGroupResponse in allPendingGroupsResponse) {
+                    val pendingGroup = Group(
+                        pendingGroupResponse.id,
+                        pendingGroupResponse.name,
+                        pendingGroupResponse.type,
+                        pendingGroupResponse.created,
+                        pendingGroupResponse.deleted,
+                        pendingGroupResponse.localDeleted,
+                        pendingGroupResponse.adminId)
+                    groupLocalRepository.updateGroup(pendingGroup)
+                }
+            }
+
+        }
+    }
+
+    private fun Group.toPendingGroupRequest() =
+        PendingGroupRequest(
+            id,
+            name,
+            type,
+            created,
+            deleted,
+            adminId)
+    private fun Message.toPendingMessageRequest() =
+        id?.let { PendingMessageRequest(
+            chatId,
+            userId,
+            it,
+            text,
+            sent,
+            type) }
 
 }
 

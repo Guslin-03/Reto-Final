@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import com.example.reto_final.data.model.group.Group
+import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.model.userGroup.UserChatInfo
 import com.example.reto_final.data.repository.local.CommonGroupRepository
 import com.example.reto_final.utils.MyApp
@@ -114,10 +115,22 @@ class RoomGroupDataSource : CommonGroupRepository {
         return Resource.success(response)
     }
 
+    override suspend fun getPendingGroups(): Resource<List<Group>> {
+        val pendingGroups = groupDao.getPendingGroups().map { it.toGroup() }
+        return Resource.success(pendingGroups)
+    }
+
+    //TESTEAR
+    override suspend fun updateGroup(group: Group): Resource<Group> {
+        val dbGroup = groupDao.updateGroup(group.id ,group.deleted)
+        group.id = dbGroup
+        return Resource.success(group)
+    }
+
 }
 
-fun DbGroup.toGroup() = Group(id, name, chatEnumType, created?.time, deleted?.time, adminId)
-fun Group.toDbGroup() = DbGroup(id, name, type, created?.let { Date(it) }, deleted?.let { Date(it) }, adminId)
+fun DbGroup.toGroup() = Group(id, name, chatEnumType, created?.time, deleted?.time, localDeleted?.time, adminId)
+fun Group.toDbGroup() = DbGroup(id, name, type, created?.let { Date(it) }, deleted?.let { Date(it) }, localDeleted?.let { Date(it) }, adminId)
 
 @Dao
 interface GroupDao {
@@ -139,10 +152,14 @@ interface GroupDao {
     suspend fun getCountByUserIdAndChatId(idGroup: Int, idUser: Int): Int
     @Query("SELECT * FROM groups WHERE id = (SELECT MAX(id) FROM groups)")
     suspend fun getLastGroup(): Group?
-
+    @Query("SELECT * FROM groups WHERE id = (SELECT MAX(id) FROM groups)")
+    suspend fun getPendingGroups(): List<DbGroup>
     @Query("UPDATE group_user SET joined = :joined, deleted = null WHERE groupId = :idGroup AND userId = :idUser")
     suspend fun updateJoinDateInGroupUser(idGroup: Int, idUser: Int, joined: Long): Int
     @Query("UPDATE group_user SET deleted = :deleted WHERE groupId = :idGroup AND userId = :idUser")
     suspend fun updateDeleteDateInGroup(idGroup: Int, idUser: Int, deleted: Long?): Int
+
+    @Query("UPDATE groups SET deleted = :deleted WHERE id = :groupId")
+    suspend fun updateGroup(groupId: Int?, deleted: Long?) : Int
 
 }

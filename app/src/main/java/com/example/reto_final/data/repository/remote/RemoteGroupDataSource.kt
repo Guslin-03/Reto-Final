@@ -1,6 +1,7 @@
 package com.example.reto_final.data.repository.remote
 
 import com.example.reto_final.data.model.group.Group
+import com.example.reto_final.data.model.group.PendingGroupRequest
 
 class RemoteGroupDataSource : BaseDataSource(), RemoteGroupRepository{
     override suspend fun getGroups(group: Int?)= getResult {
@@ -41,6 +42,10 @@ class RemoteGroupDataSource : BaseDataSource(), RemoteGroupRepository{
 
     override suspend fun chatThrowOut(idGroup: Int, idUser: Int) = getResult {
         RetrofitClient.apiInterface.chatThrowOut(idGroup, idUser)
+    }
+
+    override suspend fun setPendingGroups(listPendingGroupRequest: List<PendingGroupRequest?>) = getResult {
+        RetrofitClient.apiInterface.setPendingGroups(listPendingGroupRequest)
     }
 
 }

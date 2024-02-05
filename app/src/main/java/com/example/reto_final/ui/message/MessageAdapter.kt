@@ -87,12 +87,10 @@ class MessageAdapter(
         }
 
         private fun parseDate(hour: Long): String {
-
             val hora = Date(hour)
             val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
 
             return formatter.format(hora)
-
         }
     }
 

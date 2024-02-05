@@ -1,6 +1,8 @@
 package com.example.reto_final.data.repository.remote
 
 import com.example.reto_final.data.model.group.Group
+import com.example.reto_final.data.model.group.GroupResponse
+import com.example.reto_final.data.model.group.PendingGroupRequest
 import com.example.reto_final.data.model.userGroup.UserChatInfo
 import com.example.reto_final.utils.Resource
 
@@ -25,5 +27,6 @@ interface RemoteGroupRepository {
     suspend fun leaveChat(idGroup: Int) : Resource<UserChatInfo>
 
     suspend fun chatThrowOut(idGroup: Int, idUser: Int) : Resource<UserChatInfo>
+    suspend fun setPendingGroups(listPendingGroupRequest : List<PendingGroupRequest?>) : Resource<List<GroupResponse>>
 
 }

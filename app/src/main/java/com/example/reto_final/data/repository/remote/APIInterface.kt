@@ -11,6 +11,8 @@ import com.example.reto_final.data.model.user.UserRequest
 import com.example.reto_final.data.model.message.MessageResponse
 import com.example.reto_final.data.model.ProfileRequest
 import com.example.reto_final.data.model.RegisterRequest
+import com.example.reto_final.data.model.group.GroupResponse
+import com.example.reto_final.data.model.group.PendingGroupRequest
 import com.example.reto_final.data.model.message.PendingMessageRequest
 import com.example.reto_final.data.model.userGroup.UserChatInfo
 import com.example.reto_final.data.socket.SocketMessageReq
@@ -78,6 +80,8 @@ interface APIInterface {
     @GET("roles")
     suspend fun getRoles() : Response<List<Role>>
     @POST("pendingMessages")
-    suspend fun setPendingMessages(@Body listPendingMessage: List<PendingMessageRequest>) : Response<List<MessageResponse>>
+    suspend fun setPendingMessages(@Body listPendingMessage: List<PendingMessageRequest?>) : Response<List<MessageResponse>>
+    @POST("pendingGroups")
+    suspend fun setPendingGroups(@Body listPendingGroup: List<PendingGroupRequest?>) : Response<List<GroupResponse>>
 
 }

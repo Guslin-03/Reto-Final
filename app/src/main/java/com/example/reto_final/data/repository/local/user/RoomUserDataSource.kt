@@ -65,7 +65,6 @@ interface UserDao {
     suspend fun deleteUserForGroup(userId: Int, groupId: Int) : Int
     @Query("SELECT COUNT(id) FROM groups WHERE id = :idGroup AND adminId = :idAdmin")
     suspend fun userIsAdmin(idAdmin: Int, idGroup: Int) : Int
-
     @Query("SELECT * FROM users WHERE id = (SELECT MAX(id) FROM users)")
     suspend fun getLastUser(): User?
 

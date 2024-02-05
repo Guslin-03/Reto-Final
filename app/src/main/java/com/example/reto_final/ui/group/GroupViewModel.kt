@@ -88,7 +88,7 @@ class GroupViewModel(
 
     private suspend fun createRemote(name:String, chatEnumType:String, idAdmin: Int) : Resource<Group> {
         return withContext(Dispatchers.IO) {
-            val group = Group(null, name, chatEnumType, null, null, idAdmin)
+            val group = Group(null, name, chatEnumType, null, null, null, idAdmin)
             remoteGroupRepository.createGroup(group)
         }
     }

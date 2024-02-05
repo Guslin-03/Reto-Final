@@ -16,7 +16,7 @@ class RemoteMessageDataSource : BaseDataSource(), RemoteMessageRepository {
        RetrofitClient.apiInterface.createMessage(message)
     }
 
-    override suspend fun setPendingMessages(listPendingMessages: List<PendingMessageRequest>) = getResult {
+    override suspend fun setPendingMessages(listPendingMessages: List<PendingMessageRequest?>) = getResult {
         RetrofitClient.apiInterface.setPendingMessages(listPendingMessages)
     }
 
