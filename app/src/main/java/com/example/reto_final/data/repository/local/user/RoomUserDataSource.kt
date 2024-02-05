@@ -1,5 +1,6 @@
 package com.example.reto_final.data.repository.local.user
 
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -19,6 +20,7 @@ class RoomUserDataSource: CommonUserRepository {
 
     override suspend fun getUsersFromGroup(idGroup: Int?): Resource<List<User>> {
         val response = userDao.getUsersFromGroup(idGroup).map { it.toUser() }
+        Log.d("p1", "$response")
         return Resource.success(response)
     }
 
@@ -55,7 +57,7 @@ interface UserDao {
     suspend fun getUsers() : List<DbUser>
     @Query("SELECT users.id, users.name, users.surname, users.email, users.phoneNumber, users.roleId FROM users \n" +
             "JOIN group_user ON users.id == group_user.userId\n" +
-            "WHERE group_user.groupId == :idGroup")
+            "WHERE group_user.groupId == :idGroup AND group_user.deleted IS NULL")
     suspend fun getUsersFromGroup(idGroup: Int?): List<DbUser>
     @Insert
     suspend fun createUser(dbUser: DbUser) : Long

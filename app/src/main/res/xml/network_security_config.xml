@@ -5,10 +5,10 @@
 <!--        <domain includeSubdomains="true">192.168.1.210</domain>-->
 <!--        <domain includeSubdomains="true">192.168.1.133</domain>-->
 
-     <!--   <domain includeSubdomains="true">192.168.0.210</domain>
-        <domain includeSubdomains="true">192.168.0.20</domain>-->
+<!--        <domain includeSubdomains="true">192.168.0.210</domain>-->
+<!--        <domain includeSubdomains="true">192.168.0.20</domain>-->
 
         <domain includeSubdomains="true">10.5.7.95</domain>
         <domain includeSubdomains="true">10.5.7.210</domain>
-          </domain-config>
-      </network-security-config>
+      </domain-config>
+  </network-security-config>

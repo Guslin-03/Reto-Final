@@ -43,8 +43,8 @@ class GroupViewModel(
     private val _userHasAlreadyInGroup = MutableLiveData<Resource<Int>>()
     val userHasAlreadyInGroup : LiveData<Resource<Int>> get() = _userHasAlreadyInGroup
 
-    private val _joinGroup = MutableLiveData<Resource<UserChatInfo>>()
-    val joinGroup : LiveData<Resource<UserChatInfo>> get() = _joinGroup
+    private val _joinGroup = MutableLiveData<Resource<Int>>()
+    val joinGroup : LiveData<Resource<Int>> get() = _joinGroup
 
     private val _addUserToGroup = MutableLiveData<Resource<UserChatInfo>>()
     val addUserToGroup : LiveData<Resource<UserChatInfo>> get() = _addUserToGroup
@@ -52,8 +52,8 @@ class GroupViewModel(
     private val _leaveGroup = MutableLiveData<Resource<UserChatInfo>>()
     val leaveGroup : LiveData<Resource<UserChatInfo>> get() = _leaveGroup
 
-    private val _throwOutFromChat = MutableLiveData<Resource<UserChatInfo>>()
-    val throwOutFromChat : LiveData<Resource<UserChatInfo>> get() = _throwOutFromChat
+    private val _throwOutFromChat = MutableLiveData<Resource<Int>>()
+    val throwOutFromChat : LiveData<Resource<Int>> get() = _throwOutFromChat
 
     fun updateGroupList() {
         viewModelScope.launch {
@@ -67,6 +67,7 @@ class GroupViewModel(
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////
     // FUNCIONES CREATE GROUP
     fun onCreate(name:String, chatEnumType: String, idAdmin: Int) {
         viewModelScope.launch {
@@ -99,7 +100,6 @@ class GroupViewModel(
     }
 
     ///////////////////////////////////////////////////////////////////////////////
-
     // FUNCIONES DELETE GROUP
 
     fun onDelete(group: Group) {
@@ -131,8 +131,6 @@ class GroupViewModel(
     }
 
     //////////////////////////////////////////////////////////////////////////////
-
-
     // FUNCIONES PERMISOS ENTRAR AL GRUPO
     fun onUserHasPermission(idGroup: Int, idLoginUser: Int) {
         viewModelScope.launch {
@@ -157,7 +155,6 @@ class GroupViewModel(
     }
 
     /////////////////////////////////////////////////////////////////////////////////
-
     // FUNCIONES PERMISOS ELIMINAR GRUPO
     fun onUserHasPermissionToDelete(idGroup: Int) {
         viewModelScope.launch {
@@ -175,7 +172,6 @@ class GroupViewModel(
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
-
     // FUNCIONES VALIDACION USUARIO YA ESTA EN EL GRUPO
     fun onUserHasAlreadyInGroup(idGroup: Int, idUser: Int) {
         viewModelScope.launch {
@@ -198,19 +194,18 @@ class GroupViewModel(
     }
 
     //////////////////////////////////////////////////////////////////////////////////////
-
     // FUNCIONES AÑADIR USUARIO A UN GRUPO
     fun onAddUserToGroup(idGroup: Int, idUser: Int) {
         viewModelScope.launch {
             if (InternetChecker.isNetworkAvailable(context)) {
-                _addUserToGroup.value = addUserToGroupRemote(idGroup, idUser)
-                if (_addUserToGroup.value!!.status == Resource.Status.SUCCESS) {
-                    _addUserToGroup.value!!.data?.let { addUserToGroupLocal(it) }
+                val userAdded = addUserToGroupRemote(idGroup, idUser)
+                if (userAdded.status == Resource.Status.SUCCESS && userAdded.data != null) {
+                    addUserToGroupLocal(userAdded.data)
                 } else {
-                    _addUserToGroup.value = Resource.error("Ha ocurrido un error, no has unir al usuario al grupo")
+//                    _addUserToGroup.value = Resource.error("Ha ocurrido un error, no has unir al usuario al grupo")
                 }
             } else {
-                _addUserToGroup.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
+//                _addUserToGroup.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
             }
         }
     }
@@ -234,10 +229,10 @@ class GroupViewModel(
     fun onJoinGroup(idGroup: Int) {
         viewModelScope.launch {
             if (InternetChecker.isNetworkAvailable(context)) {
-                _joinGroup.value = joinToChat(idGroup)
-                if (_joinGroup.value!!.status == Resource.Status.SUCCESS && MyApp.userPreferences.getUser()?.id != null) {
+                val joinUser = joinToChat(idGroup)
+                if (joinUser.status == Resource.Status.SUCCESS && joinUser.data != null) {
                     //pasamos el userchatinfo
-                    _joinGroup.value!!.data?.let { joinGroupLocal(it) }
+                    _joinGroup.value = joinGroupLocal(joinUser.data)
                 } else {
                     _joinGroup.value = Resource.error("Ha ocurrido un error, no has podido unirte al grupo")
                 }
@@ -258,7 +253,6 @@ class GroupViewModel(
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
-
     // FUNCIONES SALIR DE UN GRUPO
 
     fun onLeaveGroup(idGroup: Int, idUser: Int) {
@@ -283,16 +277,16 @@ class GroupViewModel(
     }
 
     //////////////////////////////////////////////////////////////////////////////////////
-
     // FUNCIONES EXPULSAR USUARIO DE UN GRUPO
 
     fun onChatThrowOut(idGroup: Int, idUser: Int) {
         viewModelScope.launch {
             if (InternetChecker.isNetworkAvailable(context)) {
-                _throwOutFromChat.value = chatThrowOut(idGroup, idUser)
-                if (_throwOutFromChat.value!!.status == Resource.Status.SUCCESS && MyApp.userPreferences.getUser()?.id != null) {
-                    //pasamos el userchatinfo
-                    _throwOutFromChat.value!!.data?.let { chatThrowOutLocal(it.chatId, it.userId) }
+                val throwOutFromChat = chatThrowOut(idGroup, idUser)
+                if (throwOutFromChat.status == Resource.Status.SUCCESS
+                    && throwOutFromChat.data != null
+                    && throwOutFromChat.data.deleted != null) {
+                    _throwOutFromChat.value = chatThrowOutLocal(throwOutFromChat.data)
                 } else {
                     _throwOutFromChat.value = Resource.error("Ha ocurrido un error, no has podido unirte al grupo")
                 }
@@ -306,9 +300,9 @@ class GroupViewModel(
             remoteGroupRepository.chatThrowOut(idGroup, idUser)
         }
     }
-    private suspend fun chatThrowOutLocal(idGroup: Int, idUser: Int) : Resource<Int> {
+    private suspend fun chatThrowOutLocal(userChatInfo: UserChatInfo) : Resource<Int> {
         return withContext(Dispatchers.IO) {
-            localGroupRepository.leaveGroup(idGroup, idUser)
+            localGroupRepository.chatThrowOutLocal(userChatInfo)
         }
     }
 

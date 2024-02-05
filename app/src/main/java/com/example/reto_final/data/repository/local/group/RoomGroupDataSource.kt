@@ -78,33 +78,34 @@ class RoomGroupDataSource : CommonGroupRepository {
             userChatInfo.deleted?.let { Date(it) })
         //logica de solo crear el nuevo en la base de datos si es la primera carga o el usuario aun no existia en la n:m
         //Significa que ya existia esa relacion asi que solo tenemos que quitar el deleted
-        if(groupDao.getCountByUserIdAndChatId(userChatInfo.chatId, userChatInfo.userId)  > 0 ){
-
-            Log.i("lala", "Ya existia en la tabla entro aqui")
-            return try {
+        if(groupDao.getCountByUserIdAndChatId(userChatInfo.chatId, userChatInfo.userId) > 0 ){
+            try {
                 val affectedRowCount = groupDao.updateJoinDateInGroupUser(userChatInfo.chatId, userChatInfo.userId, userChatInfo.joined)
-                Log.i("lala", affectedRowCount.toString())
                 return Resource.success(affectedRowCount)
             } catch (exception: Exception) {
-                Resource.error("Failed to update join date in group user")
+                return Resource.error("Failed to update join date in group user")
             }
         }else{
-            Log.i("lala", "Es nuevo entro aqui")
             val response = groupDao.addUserToGroup(DbUserGroup(userChatInfo.chatId, userChatInfo.userId, Date(userChatInfo.joined), null))
-            Log.i("lala", response.toString())
             return Resource.success(response.toInt())
         }
     }
-    @Transaction
+
     override suspend fun leaveGroup(idGroup: Int, idUser: Int): Resource<Int> {
         return try {
-            Log.i("lala", "Sale del grupo")
-            val currentDate = System.currentTimeMillis()
-            val affectedRowCount = groupDao.updateDeleteDateInGroup(idGroup, idUser, currentDate)
-            Log.i("lala", affectedRowCount.toString())
-            return Resource.success(affectedRowCount)
+            val affectedRowCount = groupDao.updateDeleteDateInGroup(idGroup, idUser, Date().time)
+            Resource.success(affectedRowCount)
         } catch (exception: Exception) {
-            Resource.error("Failed to update join date in group user")
+            Resource.error("Failed leave a group")
+        }
+    }
+
+    override suspend fun chatThrowOutLocal(userChatInfo: UserChatInfo): Resource<Int> {
+        return try {
+            val affectedRowCount = groupDao.updateDeleteDateInGroup(userChatInfo.chatId, userChatInfo.userId, userChatInfo.deleted)
+            Resource.success(affectedRowCount)
+        } catch (exception: Exception) {
+            Resource.error("Failed to throw out a user from group")
         }
     }
 
@@ -132,8 +133,6 @@ interface GroupDao {
     suspend fun userHasPermissionToDelete(idGroup: Int?, idUser: Int): Int
     @Insert
     suspend fun addUserToGroup(userGroup: DbUserGroup) : Long
-//  @Query("DELETE FROM group_user WHERE groupId = :idGroup AND userId = :idUser")
-//  suspend fun leaveGroup(idGroup: Int, idUser: Int) : Int
     @Query("SELECT COUNT(groupId) FROM group_user WHERE groupId = :idGroup AND userId = :idUser")
     suspend fun userHasAlreadyInGroup(idGroup: Int?, idUser: Int): Int
     @Query("SELECT COUNT(userId) FROM group_user WHERE groupId = :idGroup AND userId = :idUser")
@@ -144,6 +143,6 @@ interface GroupDao {
     @Query("UPDATE group_user SET joined = :joined, deleted = null WHERE groupId = :idGroup AND userId = :idUser")
     suspend fun updateJoinDateInGroupUser(idGroup: Int, idUser: Int, joined: Long): Int
     @Query("UPDATE group_user SET deleted = :deleted WHERE groupId = :idGroup AND userId = :idUser")
-    suspend fun updateDeleteDateInGroup(idGroup: Int, idUser: Int, deleted: Long): Int
+    suspend fun updateDeleteDateInGroup(idGroup: Int, idUser: Int, deleted: Long?): Int
 
 }

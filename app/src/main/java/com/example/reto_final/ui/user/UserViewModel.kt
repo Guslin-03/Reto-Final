@@ -1,6 +1,7 @@
 package com.example.reto_final.ui.user
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,7 +17,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class UserViewModel(private val userRepository: CommonUserRepository, private val remoteUserRepository: RemoteUserRepository, private val context:Context) : ViewModel() {
+class UserViewModel(private val userRepository: CommonUserRepository,
+                    private val remoteUserRepository: RemoteUserRepository,
+                    private val context:Context) : ViewModel() {
 
     private val _users = MutableLiveData<Resource<List<User>>>()
     val users : LiveData<Resource<List<User>>> get() = _users
@@ -50,12 +53,9 @@ class UserViewModel(private val userRepository: CommonUserRepository, private va
     }
     fun onUsersGroup(idGroup: Int) {
         viewModelScope.launch {
-            val response = if (InternetChecker.isNetworkAvailable(context)) {
-                usersGroupRemote(idGroup)
-            }else{
-                usersGroup(idGroup)
-            }
-            _usersGroup.value = response
+            val p1 = usersGroup(idGroup)
+            Log.d("p1", "${p1.data}")
+            _usersGroup.value = p1
         }
     }
 

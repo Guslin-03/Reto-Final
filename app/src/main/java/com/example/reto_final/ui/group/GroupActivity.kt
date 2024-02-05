@@ -451,7 +451,6 @@ class GroupActivity: AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        Log.d("Prueba", "Se registra")
         EventBus.getDefault().register(this)
     }
 
