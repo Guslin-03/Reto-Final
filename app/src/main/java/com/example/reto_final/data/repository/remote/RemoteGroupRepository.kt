@@ -12,7 +12,7 @@ interface RemoteGroupRepository {
 
     suspend fun createGroup(group: Group) : Resource<Group>
 
-    suspend fun softDeleteGroup(idGroup:Int) : Resource<Void>
+    suspend fun softDeleteGroup(idGroup:Int) : Resource<Group>
 
     suspend fun canEnterUserChat(idGroup:Int) : Resource<Int>
 

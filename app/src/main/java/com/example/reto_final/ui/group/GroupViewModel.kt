@@ -106,8 +106,9 @@ class GroupViewModel(
         viewModelScope.launch {
             if (InternetChecker.isNetworkAvailable(context)) {
                 val deleted = softDeleteRemote(group)
+                Log.d("DELETE", ""+deleted.data)
                 if (deleted.status == Resource.Status.SUCCESS) {
-                    _delete.value = softDeleteLocal(group)
+                    _delete.value = deleted.data?.let { softDeleteLocal(it) }
                 } else {
                     _delete.value = Resource.error("Ha ocurrido un error, el grupo no se ha eliminado")
                 }
@@ -118,13 +119,13 @@ class GroupViewModel(
         }
     }
 
-    private suspend fun softDeleteRemote(group: Group) : Resource<Void> {
+    private suspend fun softDeleteRemote(group: Group) : Resource<Group> {
         return withContext(Dispatchers.IO) {
             remoteGroupRepository.softDeleteGroup(group.id!!)
         }
     }
 
-    private suspend fun softDeleteLocal(group: Group) : Resource<Void> {
+    private suspend fun softDeleteLocal(group: Group) : Resource<Void>? {
         return withContext(Dispatchers.IO) {
             localGroupRepository.softDeleteGroup(group)
         }
