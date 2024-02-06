@@ -113,7 +113,6 @@ class MessageActivity : AppCompatActivity() {
                 }
 
                 Resource.Status.ERROR -> {
-                    Log.d("Prueba", "" + it.message)
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
 
@@ -401,9 +400,9 @@ class MessageActivity : AppCompatActivity() {
     fun onSocketIncomingMessage(message: Message) {
 
         if (message.type == MessageEnumClass.FILE.toString()){
-        var location=fileManager.saveBase64ToFile(message.text)
+        val location=fileManager.saveBase64ToFile(message.text)
             message.text=location
-            var newMessage=Message(message.id,message.idServer, location, message.sent, message.saved, message.chatId, message.userId, message.type)
+            val newMessage=Message(message.id,message.idServer, location, message.sent, message.saved, message.chatId, message.userId, message.type)
             Log.d("MensajePrueba", ""+newMessage.text)
             messageViewModel.onSaveIncomingMessage(newMessage, group)
         }else{
@@ -501,6 +500,7 @@ class MessageActivity : AppCompatActivity() {
             }
         }
         if (user!=null && resultCode==Activity.RESULT_OK){
+            Log.d("ADIOS", "Acabo de hacer una foto "+fileLocation)
             messageViewModel.onSendMessage(
                 fileLocation,
                 Date(),

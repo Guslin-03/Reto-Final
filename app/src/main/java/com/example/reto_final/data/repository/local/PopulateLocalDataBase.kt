@@ -19,6 +19,7 @@ import com.example.reto_final.data.model.message.MessageResponse
 import com.example.reto_final.data.model.message.PendingMessageRequest
 import com.example.reto_final.data.repository.local.group.DbGroup
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
+import com.example.reto_final.data.repository.local.message.MessageEnumClass
 import com.example.reto_final.data.repository.local.group.toGroup
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
 import com.example.reto_final.data.repository.local.role.RoomRoleDataSource
@@ -29,6 +30,8 @@ import com.example.reto_final.data.repository.remote.RemoteMessageRepository
 import com.example.reto_final.data.repository.remote.RemoteRoleRepository
 import com.example.reto_final.data.repository.remote.RemoteUserRepository
 import com.example.reto_final.data.socket.SocketMessageReq
+import com.example.reto_final.ui.message.FileManager
+import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -75,6 +78,7 @@ class PopulateLocalDataBase(
     val finish : LiveData<Resource<Boolean>> get() = _finish
 
     private val userChatInfo = mutableListOf<UserChatInfo>()
+    private val fileManager: FileManager = FileManager(MyApp.context)
 
     //////////////////////////////////////////////////////////////////////
     // FUNCION DE INICIO
@@ -184,9 +188,12 @@ class PopulateLocalDataBase(
 
     private suspend fun getAllMessages(message: Message?): Resource<List<MessageResponse>> {
         return withContext(Dispatchers.IO) {
+            Log.d("HOLA", "ENTRA EN GET ALL")
             if (message != null) {
+                Log.d("HOLA", "ENTRA IF")
                 remoteMessageRepository.getMessages(message.id)
             } else {
+                Log.d("HOLA", "ENTRA ELSE")
                 remoteMessageRepository.getMessages(0)
             }
         }
@@ -283,19 +290,35 @@ class PopulateLocalDataBase(
     }
 
     private suspend fun setAllMessages() {
+        Log.d("HOLA", "LLEGA AL SET")
         return withContext(Dispatchers.IO) {
             val allMessage = _allMessage.value?.data
             if (allMessage != null) {
+                Log.d("HOLA", "LLEGA AL IF")
                 for (messageResponse in allMessage) {
-                    val message = Message(
-                        messageResponse.id,
-                        messageResponse.text,
-                        messageResponse.sent,
-                        messageResponse.saved,
-                        messageResponse.type,
-                        messageResponse.chatId,
-                        messageResponse.userId)
-                    messageLocalRepository.createMessage(message)
+                    if (messageResponse.type == MessageEnumClass.FILE.toString()) {
+                        val filePath = fileManager.saveBase64ToFile(messageResponse.text) // Use the instance
+
+                        val message = Message(
+                            messageResponse.id,
+                            filePath,
+                            messageResponse.sent,
+                            messageResponse.saved,
+                            messageResponse.type,
+                            messageResponse.chatId,
+                            messageResponse.userId)
+                        messageLocalRepository.createMessage(message)
+                    }else{
+                        val message = Message(
+                            messageResponse.id,
+                            messageResponse.text,
+                            messageResponse.sent,
+                            messageResponse.saved,
+                            messageResponse.type,
+                            messageResponse.chatId,
+                            messageResponse.userId)
+                        messageLocalRepository.createMessage(message)
+                    }
                 }
             }
         }

@@ -44,9 +44,10 @@ class MessageAdapter(
 
         fun bind(message: Message) {
 
-            binding.text.text = message.text
-            Log.d("Mensaje", ""+message.text)
+            binding.image.visibility = View.GONE
             if (message.text.startsWith(context.getExternalFilesDir(null).toString()+ "/RetoFinalImage")){
+                Log.d("ADIOS", ""+message)
+                Log.d("ADIOS", "Encuentra una imagen")
                 Glide.with(context)
                     .load(File(message.text))
                     .into(binding.image)
@@ -54,8 +55,13 @@ class MessageAdapter(
                 binding.image.visibility = View.VISIBLE
             }else if (message.text.startsWith(context.getExternalFilesDir(null).toString()+ "/RetoFinalPdf")){
                 binding.text.text="Descargar PDF"
+            }else{
+                binding.text.text = message.text
             }
 
+            setMessageFormat(message)
+        }
+        private fun setMessageFormat(message:Message){
             if (MyApp.userPreferences.getUser()?.id == message.userId) {
                 binding.name.visibility = View.GONE
                 if(message.saved!==null){

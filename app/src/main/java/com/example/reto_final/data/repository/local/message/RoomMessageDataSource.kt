@@ -25,7 +25,7 @@ class RoomMessageDataSource : CommonMessageRepository {
     }
 
     override suspend fun updateMessage(message: Message): Resource<Message> {
-        val dbMessage = messageDao.updateMessage(message.id ,message.saved)
+        val dbMessage = messageDao.updateMessage(message.id ,message.idServer ,message.saved)
         message.id = dbMessage
         return Resource.success(message)
     }
@@ -63,6 +63,6 @@ interface MessageDao {
     @Insert
     suspend fun createMessage(message: DbMessage) : Long
 
-    @Query("UPDATE messages SET saved = :saved WHERE id = :messageId")
-    suspend fun updateMessage(messageId: Int?, saved: Long?) : Int
+    @Query("UPDATE messages SET saved = :saved, idServer= :idServer WHERE id = :messageId")
+    suspend fun updateMessage(messageId: Int?, idServer: Int?, saved: Long?) : Int
 }
