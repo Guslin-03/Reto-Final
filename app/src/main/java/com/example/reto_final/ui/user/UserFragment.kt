@@ -19,6 +19,7 @@ import com.example.reto_final.data.repository.local.user.RoomUserDataSource
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
 import com.example.reto_final.data.repository.remote.RemoteUserDataSource
 import com.example.reto_final.databinding.UserFragmentBinding
+import com.example.reto_final.ui.group.GroupInfo
 import com.example.reto_final.ui.group.GroupViewModel
 import com.example.reto_final.ui.group.RoomGroupViewModelFactory
 import com.example.reto_final.utils.Resource
@@ -39,7 +40,6 @@ class UserFragment(private val selectedGroup: Group) : DialogFragment() {
             requireContext().applicationContext
         ) }
 
-    private var onDismissListener: (() -> Unit)? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.CustomDialogFragmentStyle)
@@ -120,11 +120,7 @@ class UserFragment(private val selectedGroup: Group) : DialogFragment() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        onDismissListener?.invoke()
-    }
-
-    fun setOnDismissListener(listener: () -> Unit) {
-        onDismissListener = listener
+        (requireActivity() as? GroupInfo)?.onDismissUserFragment()
     }
 
     private fun onUserListClickItem(user : User) {

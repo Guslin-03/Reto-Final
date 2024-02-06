@@ -46,8 +46,8 @@ class GroupViewModel(
     private val _joinGroup = MutableLiveData<Resource<Int>>()
     val joinGroup : LiveData<Resource<Int>> get() = _joinGroup
 
-    private val _addUserToGroup = MutableLiveData<Resource<UserChatInfo>>()
-    val addUserToGroup : LiveData<Resource<UserChatInfo>> get() = _addUserToGroup
+    private val _addUserToGroup = MutableLiveData<Resource<Int>>()
+    val addUserToGroup : LiveData<Resource<Int>> get() = _addUserToGroup
 
     private val _leaveGroup = MutableLiveData<Resource<UserChatInfo>>()
     val leaveGroup : LiveData<Resource<UserChatInfo>> get() = _leaveGroup
@@ -201,12 +201,12 @@ class GroupViewModel(
             if (InternetChecker.isNetworkAvailable(context)) {
                 val userAdded = addUserToGroupRemote(idGroup, idUser)
                 if (userAdded.status == Resource.Status.SUCCESS && userAdded.data != null) {
-                    addUserToGroupLocal(userAdded.data)
+                    _addUserToGroup.value = addUserToGroupLocal(userAdded.data)
                 } else {
-//                    _addUserToGroup.value = Resource.error("Ha ocurrido un error, no has unir al usuario al grupo")
+                    _addUserToGroup.value = Resource.error("Ha ocurrido un error, no has unir al usuario al grupo")
                 }
             } else {
-//                _addUserToGroup.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
+                _addUserToGroup.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
             }
         }
     }

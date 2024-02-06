@@ -1,6 +1,7 @@
 package com.example.reto_final.ui.group
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -32,7 +33,7 @@ class GroupInfo: AppCompatActivity() {
     private val remoteGroupRepository = RemoteGroupDataSource()
     private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository, applicationContext) }
     private val loginUser = MyApp.userPreferences.getUser()
-    private lateinit var userFragment : UserFragment
+    private var userFragment : UserFragment? = null
     private var selectedGroup = Group()
     private lateinit var selectedUser : User
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +43,7 @@ class GroupInfo: AppCompatActivity() {
         setDefaultData()
         setDefaultView()
 
-        userFragment = UserFragment(selectedGroup)
+//        userFragment = UserFragment(selectedGroup)
         userAdapter = UserAdapter(
             ::onIsAdmin
         )
@@ -50,13 +51,17 @@ class GroupInfo: AppCompatActivity() {
 
         binding.addUser.setOnClickListener {
             val fragmentManager = supportFragmentManager
-            userFragment.show(fragmentManager, "user_fragment_dialog")
+            if (userFragment == null) {
+                userFragment = UserFragment(selectedGroup)
+            }
+            userFragment?.show(fragmentManager, "user_fragment_dialog")
         }
 
-        userFragment.setOnDismissListener {
-            userFragment = UserFragment(selectedGroup)
-            if (selectedGroup.id != null) userViewModel.onUsersGroup(selectedGroup.id!!)
-        }
+//        userFragment.setOnDismissListener {
+//            userFragment = UserFragment(selectedGroup)
+//            Log.d("p1", "p1")
+//            if (selectedGroup.id != null) userViewModel.onUsersGroup(selectedGroup.id!!)
+//        }
 
         userViewModel.usersGroup.observe(this) {
             when(it.status) {
@@ -86,6 +91,7 @@ class GroupInfo: AppCompatActivity() {
 
             }
         }
+
         groupViewModel.throwOutFromChat.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
@@ -101,6 +107,7 @@ class GroupInfo: AppCompatActivity() {
                 }
             }
         }
+
         groupViewModel.leaveGroup.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
@@ -117,6 +124,11 @@ class GroupInfo: AppCompatActivity() {
             }
         }
     }
+
+    fun onDismissUserFragment () {
+        userViewModel.onUsersGroup(selectedGroup.id!!)
+    }
+
     private fun onIsAdmin(user: User) {
         selectedUser = user
         if (loginUser != null && selectedGroup.id != null) {

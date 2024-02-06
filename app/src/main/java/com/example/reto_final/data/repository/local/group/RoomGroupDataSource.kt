@@ -52,9 +52,14 @@ class RoomGroupDataSource : CommonGroupRepository {
     }
 
     override suspend fun softDeleteGroup(group: Group): Resource<Void> {
-        Log.i("p1", "$group")
-        groupDao.softDeleteGroup(group.id, group.deleted)
-        return Resource.success()
+        val response = groupDao.softDeleteGroup(group.id, group.deleted)
+        return if (response == 1) {
+            groupDao.softDeleteRelations(group.id, group.deleted)
+            Resource.success()
+        } else {
+            Resource.error("Se ha producido un error al eliminar el grupo")
+        }
+
     }
 
     override suspend fun userHasPermission(idGroup: Int?, idUser: Int): Resource<Int> {
@@ -140,6 +145,8 @@ interface GroupDao {
     suspend fun createGroup(group: DbGroup) : Long
     @Query("UPDATE groups SET deleted = :deleted WHERE id = :idGroup")
     suspend fun softDeleteGroup(idGroup: Int?, deleted: Long?) : Int
+    @Query("UPDATE group_user SET deleted = :deleted WHERE groupId = :groupId")
+    suspend fun softDeleteRelations(groupId: Int?, deleted: Long?) : Int
     @Query("SELECT COUNT(groupId) FROM group_user WHERE groupId = :idGroup AND userId = :idUser AND deleted IS NULL")
     suspend fun userHasPermission(idGroup: Int?, idUser: Int): Int
     @Query("SELECT COUNT(id) FROM groups WHERE id = :idGroup AND adminId = :idUser")
@@ -158,7 +165,6 @@ interface GroupDao {
     suspend fun updateJoinDateInGroupUser(idGroup: Int, idUser: Int, joined: Long): Int
     @Query("UPDATE group_user SET deleted = :deleted WHERE groupId = :idGroup AND userId = :idUser")
     suspend fun updateDeleteDateInGroup(idGroup: Int, idUser: Int, deleted: Long?): Int
-
     @Query("UPDATE groups SET deleted = :deleted WHERE id = :groupId")
     suspend fun updateGroup(groupId: Int?, deleted: Long?) : Int
 
