@@ -30,7 +30,7 @@ class RoomGroupDataSource : CommonGroupRepository {
             val currentDate = System.currentTimeMillis()
 
             Log.d("p1", "Entra")
-            if (user != null) group.id?.let { DbUserGroup(it, user.id, Date(currentDate), null) }
+            if (user != null) group.id?.let { DbUserGroup(group.id!!, user.id, Date(currentDate), null) }
                 ?.let { groupDao.addUserToGroup(it) }
             Resource.success()
         } catch (exception: SQLiteConstraintException) {

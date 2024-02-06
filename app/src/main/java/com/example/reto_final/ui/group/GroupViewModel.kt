@@ -288,7 +288,7 @@ class GroupViewModel(
                     && throwOutFromChat.data.deleted != null) {
                     _throwOutFromChat.value = chatThrowOutLocal(throwOutFromChat.data)
                 } else {
-                    _throwOutFromChat.value = Resource.error("Ha ocurrido un error, no has podido unirte al grupo")
+                    _throwOutFromChat.value = Resource.error("Ha ocurrido un error, no se ha podido realizar la acción solicitada")
                 }
             } else {
                 _throwOutFromChat.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
