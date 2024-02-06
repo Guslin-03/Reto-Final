@@ -9,6 +9,6 @@ data class User (
     val name: String,
     val surname: String,
     val email: String,
-    val phoneNumber: Int,
+    val phone_number1: Int,
     val roleId: Int
 ):Parcelable

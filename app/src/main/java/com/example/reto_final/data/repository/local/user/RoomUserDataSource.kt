@@ -41,7 +41,7 @@ class RoomUserDataSource: CommonUserRepository {
     }
 
     override suspend fun getLastUser(): Resource<User?> {
-        val response = userDao.getLastUser()
+        val response = userDao.getLastUser()?.toUser()
         return Resource.success(response)
     }
 
@@ -49,7 +49,7 @@ class RoomUserDataSource: CommonUserRepository {
 }
 
 fun DbUser.toUser() = User(id, name, surname, email, phoneNumber, roleId)
-fun User.toDbUser() = DbUser(id, name, surname, email, phoneNumber, roleId)
+fun User.toDbUser() = DbUser(id, name, surname, email, phone_number1, roleId)
 
 @Dao
 interface UserDao {
@@ -66,7 +66,7 @@ interface UserDao {
     @Query("SELECT COUNT(id) FROM groups WHERE id = :idGroup AND adminId = :idAdmin")
     suspend fun userIsAdmin(idAdmin: Int, idGroup: Int) : Int
     @Query("SELECT * FROM users WHERE id = (SELECT MAX(id) FROM users)")
-    suspend fun getLastUser(): User?
+    suspend fun getLastUser(): DbUser?
 
 }
 

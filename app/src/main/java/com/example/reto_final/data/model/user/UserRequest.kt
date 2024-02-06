@@ -10,7 +10,7 @@ data class UserRequest (
     val name: String,
     val surname: String,
     val email: String,
-    val phoneNumber: Int,
+    val phoneNumber1: Int,
     val roleId: Int,
     val userChatInfo: List<UserChatInfo>
 ): Parcelable

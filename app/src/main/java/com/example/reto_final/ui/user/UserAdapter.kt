@@ -30,7 +30,7 @@ class UserAdapter(
         fun bind(user: User) {
             val userNameAndSurname = user.name + " " +user.surname
             binding.userName.text = userNameAndSurname
-            binding.userPhoneNumber.text = user.phoneNumber.toString()
+            binding.userPhoneNumber.text = user.phone_number1.toString()
 
             binding.imageViewRemoveUser.setOnClickListener {
                 onIsAdmin(user)
@@ -48,7 +48,7 @@ class UserAdapter(
                     oldItem.name == newItem.name &&
                     oldItem.surname == newItem.surname &&
                     oldItem.email == newItem.email &&
-                    oldItem.phoneNumber == newItem.phoneNumber)
+                    oldItem.phone_number1 == newItem.phone_number1)
         }
 
     }
