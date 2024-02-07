@@ -13,6 +13,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.example.reto_final.R
 import com.example.reto_final.data.model.group.Group
+import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.model.user.User
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.user.RoomUserDataSource
@@ -23,6 +24,9 @@ import com.example.reto_final.ui.group.GroupInfo
 import com.example.reto_final.ui.group.GroupViewModel
 import com.example.reto_final.ui.group.RoomGroupViewModelFactory
 import com.example.reto_final.utils.Resource
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class UserFragment(private val selectedGroup: Group) : DialogFragment() {
 
@@ -110,7 +114,6 @@ class UserFragment(private val selectedGroup: Group) : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-
         // Obtener el 75% del alto y ancho de la pantalla
         val height = (resources.displayMetrics.heightPixels * 0.75).toInt()
         val width  = (resources.displayMetrics.widthPixels * 0.75).toInt()
@@ -143,6 +146,13 @@ class UserFragment(private val selectedGroup: Group) : DialogFragment() {
                 builder.show()
             }
 
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(user: List<User>) {
+        if (selectedGroup.id != null) {
+            userViewModel.onUsersGroup(selectedGroup.id!!)
         }
     }
 

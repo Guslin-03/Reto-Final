@@ -460,8 +460,8 @@ class GroupActivity: AppCompatActivity() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(message: String) {
-        populateLocalDataBase.toInit()
+    fun onMessageEvent(group: List<Group>) {
+        groupViewModel.updateGroupList()
     }
 
 }

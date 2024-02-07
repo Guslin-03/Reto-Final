@@ -15,11 +15,27 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.lifecycle.MutableLiveData
 import com.example.reto_final.R
+import com.example.reto_final.data.model.Role
+import com.example.reto_final.data.model.group.Group
+import com.example.reto_final.data.model.group.GroupResponse
+import com.example.reto_final.data.model.group.PendingGroupRequest
 import com.example.reto_final.data.model.userGroup.UserGroup
 import com.example.reto_final.data.model.message.Message
+import com.example.reto_final.data.model.message.MessageResponse
+import com.example.reto_final.data.model.message.PendingMessageRequest
+import com.example.reto_final.data.model.user.User
+import com.example.reto_final.data.model.user.UserRequest
+import com.example.reto_final.data.model.userGroup.UserChatInfo
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.message.MessageEnumClass
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
+import com.example.reto_final.data.repository.local.role.RoomRoleDataSource
+import com.example.reto_final.data.repository.local.user.RoomUserDataSource
+import com.example.reto_final.data.repository.local.user.UserRoleType
+import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
+import com.example.reto_final.data.repository.remote.RemoteMessageDataSource
+import com.example.reto_final.data.repository.remote.RemoteRoleDataSource
+import com.example.reto_final.data.repository.remote.RemoteUserDataSource
 import com.example.reto_final.data.socket.SocketEvents
 import com.example.reto_final.data.socket.SocketMessageRes
 import com.example.reto_final.utils.MyApp
@@ -45,9 +61,42 @@ class ChatsService : Service() {
     private lateinit var serviceScope: CoroutineScope
 
     private val localGroupRepository = RoomGroupDataSource()
+    private val remoteGroupRepository = RemoteGroupDataSource()
+
     private val localMessageRepository = RoomMessageDataSource()
+    private val remoteMessageRepository = RemoteMessageDataSource()
+
+    private val localUserRepository = RoomUserDataSource()
+    private val remoteUserRepository = RemoteUserDataSource()
+
+    private val localRoleRepository = RoomRoleDataSource()
+    private val remoteRoleRepository = RemoteRoleDataSource()
     private val fileManager = FileManager(this)
     private val _savedMessage = MutableLiveData<Resource<Message>>()
+
+    private val _allMessage = MutableLiveData<Resource<List<MessageResponse>>>()
+
+    private val _allGroup = MutableLiveData<Resource<List<Group>>>()
+
+    private val _allUser = MutableLiveData<Resource<List<UserRequest>>>()
+
+    private val _allRole = MutableLiveData<Resource<List<Role>>>()
+
+    private val _lastUser = MutableLiveData<Resource<User?>>()
+
+    private val _lastGroup = MutableLiveData<Resource<Group?>>()
+
+    private val _lastMessage = MutableLiveData<Resource<Message?>>()
+
+    private val _allPendingMessages = MutableLiveData<Resource<List<MessageResponse>>>()
+
+    private val _pendingMessage = MutableLiveData<Resource<List<Message>>>()
+
+    private val _allPendingGroups = MutableLiveData<Resource<List<GroupResponse>>>()
+
+    private val _pendingGroup = MutableLiveData<Resource<List<Group>>>()
+
+    private val userChatInfo = mutableListOf<UserChatInfo>()
 
     override fun onCreate() {
         super.onCreate()
@@ -125,8 +174,8 @@ class ChatsService : Service() {
 
     private fun onConnect(): Emitter.Listener {
         return Emitter.Listener {
-            EventBus.getDefault().post("connect")
             updateNotification("conectado")
+            toInit()
         }
     }
 
@@ -251,6 +300,310 @@ class ChatsService : Service() {
             null
         }
     }
+
+    private fun toInit() {
+
+        serviceScope.launch {
+            getAllLastData()
+            Log.d("p1", "${_lastGroup.value?.status}")
+            Log.d("p1", "${_lastMessage.value?.status}")
+            Log.d("p1", "${_lastUser.value?.status}")
+//            Log.d("p1", "${_pendingMessage.value?.status}")
+            if (_lastUser.value?.status == Resource.Status.SUCCESS
+                && _lastGroup.value?.status == Resource.Status.SUCCESS
+                && _lastMessage.value?.status == Resource.Status.SUCCESS
+//                && _pendingMessage.value?.status == Resource.Status.SUCCESS
+            ) {
+//                Log.d("p1", "GetAllLastData")
+                getAllData()
+                Log.d("p1", "${_allMessage.value?.data}")
+                Log.d("p1", "${_allUser.value?.data}")
+                Log.d("p1", "${_allGroup.value?.data}")
+//                Log.d("p1", "${_allPendingMessages.value?.status}")
+                if (_allMessage.value?.status == Resource.Status.SUCCESS
+                    && _allUser.value?.status == Resource.Status.SUCCESS
+                    && _allGroup.value?.status == Resource.Status.SUCCESS
+//                    && _allPendingMessages.value?.status == Resource.Status.SUCCESS
+                ) {
+
+                    setAllData()
+
+//                    Log.d("p1", "getAllData")
+                    if (_allGroup.value!!.data?.isNotEmpty() == true) {
+                        EventBus.getDefault().post(_allGroup.value!!.data)
+                    }
+                    if (_allMessage.value!!.data?.isNotEmpty() == true) {
+                        EventBus.getDefault().post(_allMessage.value!!.data)
+                    }
+
+                }
+            }
+        }
+
+    }
+
+    ///////////////////////////////////////////////////////////////////////
+    // RECOGIDA DE LOS ULTIMOS DATOS DE ROOM
+    private suspend fun getAllLastData() {
+        _lastUser.value = getLastUser()
+        _lastGroup.value = getLastGroup()
+        _lastMessage.value = getLastMessage()
+//        _pendingMessage.value = getPendingMessages()
+//        _pendingGroup.value = getPendingGroups()
+    }
+
+    private suspend fun getLastMessage(): Resource<Message?> {
+        return withContext(Dispatchers.IO) {
+            localMessageRepository.getLastMessage()
+        }
+    }
+
+    private suspend fun getPendingGroups(): Resource<List<Group>> {
+        return withContext(Dispatchers.IO) {
+            localGroupRepository.getPendingGroups()
+        }
+    }
+
+    private suspend fun getPendingMessages(): Resource<List<Message>> {
+        return withContext(Dispatchers.IO) {
+            localMessageRepository.getPendingMessages()
+        }
+    }
+
+    private suspend fun getLastGroup(): Resource<Group?> {
+        return withContext(Dispatchers.IO) {
+            localGroupRepository.getLastGroup()
+        }
+    }
+
+    private suspend fun getLastUser(): Resource<User?> {
+        return withContext(Dispatchers.IO) {
+            localUserRepository.getLastUser()
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+    // LLAMADAS A BBDD REMOTA PARA POBLAR ROOM
+    private suspend fun getAllData() {
+//        _allRole.value = getAllRoles()
+        _allUser.value = getAllUsers(_lastUser.value?.data)
+        _allGroup.value = getAllGroups(_lastGroup.value?.data)
+        _allMessage.value = getAllMessages(_lastMessage.value?.data)
+//        val pendingMessage = _pendingMessage.value?.data
+//        val pendingMessageRequest = pendingMessage?.map { it.toPendingMessageRequest()}
+//        _allPendingMessages.value = setPendingMessages(pendingMessageRequest)
+//        val pendingGroup = _pendingGroup.value?.data
+//        val pendingGroupRequest = pendingGroup?.map { it.toPendingGroupRequest()}
+//        _allPendingGroups.value = setPendingGroups(pendingGroupRequest)
+    }
+
+    private suspend fun getAllMessages(message: Message?): Resource<List<MessageResponse>> {
+        return withContext(Dispatchers.IO) {
+            if (message != null) {
+                remoteMessageRepository.getMessages(message.id)
+            } else {
+                remoteMessageRepository.getMessages(0)
+            }
+        }
+    }
+
+    private suspend fun setPendingMessages(listPendingMessages: List<PendingMessageRequest?>?) : Resource<List<MessageResponse>> {
+        return withContext(Dispatchers.IO) {
+            if (listPendingMessages != null) {
+                remoteMessageRepository.setPendingMessages(listPendingMessages)
+            } else {
+                Resource.success()
+            }
+        }
+    }
+
+    private suspend fun setPendingGroups(listPendingGroups: List<PendingGroupRequest?>?) : Resource<List<GroupResponse>> {
+        return withContext(Dispatchers.IO) {
+            if (listPendingGroups != null) {
+                remoteGroupRepository.setPendingGroups(listPendingGroups)
+            } else {
+                Resource.success()
+            }
+        }
+    }
+
+    private suspend fun getAllUsers(user: User?): Resource<List<UserRequest>> {
+        return withContext(Dispatchers.IO) {
+            if (user != null) {
+                remoteUserRepository.findUsers(user.id)
+            } else {
+                remoteUserRepository.findUsers(0)
+            }
+        }
+    }
+
+    private suspend fun getAllGroups(group: Group?): Resource<List<Group>> {
+        return withContext(Dispatchers.IO) {
+            if (group != null) {
+                remoteGroupRepository.getGroups(group.id)
+            } else {
+                remoteGroupRepository.getGroups(0)
+            }
+        }
+    }
+
+    private suspend fun getAllRoles(): Resource<List<Role>> {
+        return withContext(Dispatchers.IO) {
+            remoteRoleRepository.getRoles()
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // INSERTS EN ROOM DE LA INFORMACION RECOGIDA EN REMOTO
+    private suspend fun setAllData() {
+        setAllRoles()
+        setAllUsers()
+        setAllGroups()
+        setAllUsersToGroups()
+        setAllMessages()
+//        updateAllPendingMessages()
+//        updateAllPendingGroups()
+
+    }
+
+    private suspend fun setAllRoles() {
+        return withContext(Dispatchers.IO) {
+//            val allRole = _allRole.value?.data
+//            if (allRole != null) {
+            val roles = listOf(
+                Role(2, UserRoleType.Profesor.toString()),
+                Role(3, UserRoleType.Alumno.toString())
+            )
+            for (role in roles) {
+                localRoleRepository.createRole(role)
+            }
+//            }
+        }
+    }
+
+    private suspend fun setAllUsers() {
+        return withContext(Dispatchers.IO) {
+            val allUser = _allUser.value?.data
+            if (allUser != null) {
+                for (userRequest in allUser) {
+                    Log.d("VENGA", ""+userRequest.phoneNumber1)
+                    val user = User(userRequest.id, userRequest.name, userRequest.surname, userRequest.email, userRequest.phoneNumber1, userRequest.roleId)
+                    localUserRepository.createUser(user)
+                    userChatInfo.addAll(userRequest.userChatInfo)
+                }
+            }
+        }
+    }
+
+    private suspend fun setAllGroups() {
+        return withContext(Dispatchers.IO) {
+            val allGroup = _allGroup.value?.data
+            if (allGroup != null) {
+                for (group in allGroup) {
+                    localGroupRepository.createGroup(group)
+                }
+            }
+        }
+    }
+
+    private suspend fun setAllUsersToGroups() {
+        return withContext(Dispatchers.IO) {
+            for (userChatInfo in userChatInfo) {
+                localGroupRepository.addUserToGroup(userChatInfo)
+            }
+        }
+    }
+
+    private suspend fun setAllMessages() {
+        Log.d("HOLA", "LLEGA AL SET")
+        return withContext(Dispatchers.IO) {
+            val allMessage = _allMessage.value?.data
+            if (allMessage != null) {
+                for (messageResponse in allMessage) {
+                    if (messageResponse.type == MessageEnumClass.FILE.toString()) {
+                        val filePath = fileManager.saveBase64ToFile(messageResponse.text) // Use the instance
+
+                        val message = Message(
+                            messageResponse.id,
+                            filePath,
+                            messageResponse.sent,
+                            messageResponse.saved,
+                            messageResponse.type,
+                            messageResponse.chatId,
+                            messageResponse.userId)
+                        localMessageRepository.createMessage(message)
+                    }else{
+                        val message = Message(
+                            messageResponse.id,
+                            messageResponse.text,
+                            messageResponse.sent,
+                            messageResponse.saved,
+                            messageResponse.type,
+                            messageResponse.chatId,
+                            messageResponse.userId)
+                        localMessageRepository.createMessage(message)
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun updateAllPendingMessages() {
+        return withContext(Dispatchers.IO) {
+            val allPendingMessagesResponse = _allPendingMessages.value?.data
+            if (allPendingMessagesResponse != null) {
+                for (pendingMessageResponse in allPendingMessagesResponse) {
+                    val pendingMessage = Message(
+                        pendingMessageResponse.id,
+                        pendingMessageResponse.text,
+                        pendingMessageResponse.sent,
+                        pendingMessageResponse.saved,
+                        pendingMessageResponse.type,
+                        pendingMessageResponse.chatId,
+                        pendingMessageResponse.userId)
+                    localMessageRepository.updateMessage(pendingMessage)
+                }
+            }
+
+        }
+    }
+
+    private suspend fun updateAllPendingGroups() {
+        return withContext(Dispatchers.IO) {
+            val allPendingGroupsResponse = _allPendingGroups.value?.data
+            if (allPendingGroupsResponse != null) {
+                for (pendingGroupResponse in allPendingGroupsResponse) {
+                    val pendingGroup = Group(
+                        pendingGroupResponse.id,
+                        pendingGroupResponse.name,
+                        pendingGroupResponse.type,
+                        pendingGroupResponse.created,
+                        pendingGroupResponse.deleted,
+                        pendingGroupResponse.localDeleted,
+                        pendingGroupResponse.adminId)
+                    localGroupRepository.updateGroup(pendingGroup)
+                }
+            }
+
+        }
+    }
+
+    private fun Group.toPendingGroupRequest() =
+        PendingGroupRequest(
+            id,
+            name,
+            type,
+            created,
+            deleted,
+            adminId)
+    private fun Message.toPendingMessageRequest() =
+        id?.let { PendingMessageRequest(
+            chatId,
+            userId,
+            it,
+            text,
+            sent,
+            type) }
 
     private fun SocketMessageRes.toMessage() = Message(localId, messageServerId, message, sent, saved, room, authorId, type)
 

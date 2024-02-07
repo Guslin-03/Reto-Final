@@ -408,6 +408,13 @@ class MessageActivity : AppCompatActivity() {
 
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(message: List<Message>) {
+        if (group.id != null) {
+            messageViewModel.updateMessageList(group.id!!)
+        }
+    }
+
     @SuppressLint("RestrictedApi")
     private fun showAttachmentOptions(view: View) {
         val popupMenu = PopupMenu(this, view)
