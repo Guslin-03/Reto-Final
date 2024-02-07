@@ -157,10 +157,10 @@ class ChatsService : Service() {
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_CONNECT.value, onConnect())
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_DISCONNECT.value, onDisconnect())
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_MESSAGE_RECEIVED.value, onNewMessage())
-        MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_JOIN.value, onChatJoin())
-        MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_LEFT.value, onChatLeft())
-        MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_ADDED.value, onChatAdded())
-        MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_THROW_OUT.value, onChatThrowOut())
+        MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_JOIN_RECEIVED.value, onChatJoin())
+        MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_LEAVE_RECEIVED.value, onChatLeft())
+        MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_ADD_RECEIVED.value, onChatAdded())
+        MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_THROW_OUT_RECEIVED.value, onChatThrowOut())
         serviceScope.launch {
             connect()
         }
