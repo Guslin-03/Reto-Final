@@ -39,7 +39,7 @@ class UserFragment(private val selectedGroup: Group) : DialogFragment() {
             remoteGroupRepository,
             requireContext().applicationContext
         ) }
-
+    private var onDismissListener: (() -> Unit)? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.CustomDialogFragmentStyle)
@@ -120,7 +120,11 @@ class UserFragment(private val selectedGroup: Group) : DialogFragment() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        (requireActivity() as? GroupInfo)?.onDismissUserFragment()
+        onDismissListener?.invoke()
+    }
+
+    fun setOnDismissListener(listener: () -> Unit) {
+        onDismissListener = listener
     }
 
     private fun onUserListClickItem(user : User) {
