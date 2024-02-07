@@ -41,11 +41,6 @@ class UserViewModel(private val userRepository: CommonUserRepository,
             _users.value = response
         }
     }
-    private suspend fun usersGroupRemote(idGroup: Int) : Resource<List<User>> {
-        return withContext(Dispatchers.IO) {
-            remoteUserRepository.getUserByChatId(idGroup)
-        }
-    }
     private suspend fun usersGroup(idGroup: Int) : Resource<List<User>> {
         return withContext(Dispatchers.IO) {
             userRepository.getUsersFromGroup(idGroup)

@@ -55,6 +55,8 @@ class GroupViewModel(
     private val _throwOutFromChat = MutableLiveData<Resource<Int>>()
     val throwOutFromChat : LiveData<Resource<Int>> get() = _throwOutFromChat
 
+    init { updateGroupList() }
+
     fun updateGroupList() {
         val userId= MyApp.userPreferences.getUser()?.id
         viewModelScope.launch {

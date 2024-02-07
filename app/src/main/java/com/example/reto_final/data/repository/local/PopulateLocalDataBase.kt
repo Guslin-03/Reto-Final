@@ -178,9 +178,9 @@ class PopulateLocalDataBase(
         _allUser.value = getAllUsers(_lastUser.value?.data)
         _allGroup.value = getAllGroups(_lastGroup.value?.data)
         _allMessage.value = getAllMessages(_lastMessage.value?.data)
-//        val pendingMessage = _pendingMessage.value?.data
-//        val pendingMessageRequest = pendingMessage?.map { it.toPendingMessageRequest()}
-//        _allPendingMessages.value = setPendingMessages(pendingMessageRequest)
+        val pendingMessage = _pendingMessage.value?.data
+        val pendingMessageRequest = pendingMessage?.map { it.toPendingMessageRequest()}
+        _allPendingMessages.value = setPendingMessages(pendingMessageRequest)
 //        val pendingGroup = _pendingGroup.value?.data
 //        val pendingGroupRequest = pendingGroup?.map { it.toPendingGroupRequest()}
 //        _allPendingGroups.value = setPendingGroups(pendingGroupRequest)
@@ -188,12 +188,9 @@ class PopulateLocalDataBase(
 
     private suspend fun getAllMessages(message: Message?): Resource<List<MessageResponse>> {
         return withContext(Dispatchers.IO) {
-            Log.d("HOLA", "ENTRA EN GET ALL")
             if (message != null) {
-                Log.d("HOLA", "ENTRA IF")
                 remoteMessageRepository.getMessages(message.id)
             } else {
-                Log.d("HOLA", "ENTRA ELSE")
                 remoteMessageRepository.getMessages(0)
             }
         }
@@ -253,7 +250,7 @@ class PopulateLocalDataBase(
         setAllGroups()
         setAllUsersToGroups()
         setAllMessages()
-//        updateAllPendingMessages()
+        updateAllPendingMessages()
         updateAllPendingGroups()
     }
 
