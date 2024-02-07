@@ -18,14 +18,14 @@ class RoomGroupDataSource : CommonGroupRepository {
 
     private val groupDao: GroupDao = MyApp.db.groupDao()
 
-    override suspend fun getGroups(): Resource<List<Group>> {
-        val response = groupDao.getGroups().map { it.toGroup() }
+    override suspend fun getGroups(userId: Int): Resource<List<Group>> {
+        val response = groupDao.getGroups(userId).map { it.toGroup() }
         return Resource.success(response)
     }
 
     override suspend fun createGroupAsAdmin(group: Group): Resource<Void> {
         return try {
-            val dbGroup = groupDao.createGroup(group.toDbGroup())
+            groupDao.createGroup(group.toDbGroup())
             val user = MyApp.userPreferences.getUser()
             val currentDate = System.currentTimeMillis()
 
@@ -139,8 +139,8 @@ fun Group.toDbGroup() = DbGroup(id, name, type, created?.let { Date(it) }, delet
 
 @Dao
 interface GroupDao {
-    @Query("SELECT * FROM groups WHERE deleted IS NULL order by id")
-    suspend fun getGroups(): List<DbGroup>
+    @Query("SELECT * FROM groups WHERE (type = 'PUBLIC' AND deleted IS NULL) OR (type = 'PRIVATE' AND id IN (SELECT groupId FROM group_user WHERE userId = :userId) AND deleted IS NULL) ORDER BY id")
+    suspend fun getGroups(userId:Int): List<DbGroup>
     @Insert
     suspend fun createGroup(group: DbGroup) : Long
     @Query("UPDATE groups SET deleted = :deleted WHERE id = :idGroup")

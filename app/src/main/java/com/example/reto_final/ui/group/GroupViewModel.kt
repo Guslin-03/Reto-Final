@@ -56,14 +56,18 @@ class GroupViewModel(
     val throwOutFromChat : LiveData<Resource<Int>> get() = _throwOutFromChat
 
     fun updateGroupList() {
+        val userId= MyApp.userPreferences.getUser()?.id
         viewModelScope.launch {
-            _group.value = getGroups()
+            if (userId!=null){
+                _group.value = getGroups(userId)
+            }
+
         }
     }
 
-    private suspend fun getGroups() : Resource<List<Group>> {
+    private suspend fun getGroups(userId:Int) : Resource<List<Group>> {
         return withContext(Dispatchers.IO) {
-            localGroupRepository.getGroups()
+            localGroupRepository.getGroups(userId)
         }
     }
 
@@ -135,17 +139,7 @@ class GroupViewModel(
     // FUNCIONES PERMISOS ENTRAR AL GRUPO
     fun onUserHasPermission(idGroup: Int, idLoginUser: Int) {
         viewModelScope.launch {
-            if (InternetChecker.isNetworkAvailable(context)) {
-                _groupPermission.value = userHasPermissionRemote(idGroup)
-            } else {
-                _groupPermission.value = userHasPermissionLocal(idGroup, idLoginUser)
-            }
-        }
-    }
-
-    private suspend fun userHasPermissionRemote(idGroup: Int) : Resource<Int> {
-        return withContext(Dispatchers.IO) {
-            remoteGroupRepository.canEnterUserChat(idGroup)
+            _groupPermission.value = userHasPermissionLocal(idGroup, idLoginUser)
         }
     }
 
@@ -176,18 +170,11 @@ class GroupViewModel(
     // FUNCIONES VALIDACION USUARIO YA ESTA EN EL GRUPO
     fun onUserHasAlreadyInGroup(idGroup: Int, idUser: Int) {
         viewModelScope.launch {
-            if (InternetChecker.isNetworkAvailable(context)) {
-                _userHasAlreadyInGroup.value = userHasAlreadyInGroupRemote(idGroup)
-            } else{
                 _userHasAlreadyInGroup.value = userHasAlreadyInGroup(idGroup, idUser)
-            }
+
         }
     }
-    private suspend fun userHasAlreadyInGroupRemote(idGroup: Int) : Resource<Int> {
-        return withContext(Dispatchers.IO) {
-            remoteGroupRepository.existsByIdAndUsersId(idGroup)
-        }
-    }
+
     private suspend fun userHasAlreadyInGroup(idGroup: Int, idUser: Int) : Resource<Int> {
         return withContext(Dispatchers.IO) {
             localGroupRepository.userHasAlreadyInGroup(idGroup, idUser)
