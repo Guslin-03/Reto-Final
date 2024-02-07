@@ -312,10 +312,7 @@ class MessageActivity : AppCompatActivity() {
     }
 
     private fun userCanLeaveGroup() {
-        if (!InternetChecker.isNetworkAvailable(applicationContext)) {
-            Toast.makeText(this, "No se puede abandonar un grupo sin internet", Toast.LENGTH_LONG)
-                .show()
-        } else if (group.type == ChatEnumType.PUBLIC.toString()) {
+        if (group.type == ChatEnumType.PUBLIC.toString()) {
             if (user != null) {
                 if (group.id != null) {
                     groupViewModel.onLeaveGroup(group.id!!, user.id)
