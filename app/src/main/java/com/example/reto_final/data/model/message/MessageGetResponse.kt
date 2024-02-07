@@ -1,11 +1,10 @@
 package com.example.reto_final.data.model.message
 
 import android.os.Parcelable
-import com.example.reto_final.data.repository.local.message.MessageEnumClass
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class MessageResponse(
+data class MessageGetResponse(
     var id: Int,
     val text: String,
     val sent: Long,

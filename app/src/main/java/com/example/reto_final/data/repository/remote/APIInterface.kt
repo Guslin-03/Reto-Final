@@ -8,14 +8,13 @@ import com.example.reto_final.data.model.Role
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.model.user.User
 import com.example.reto_final.data.model.user.UserRequest
-import com.example.reto_final.data.model.message.MessageResponse
+import com.example.reto_final.data.model.message.MessageGetResponse
 import com.example.reto_final.data.model.ProfileRequest
 import com.example.reto_final.data.model.RegisterRequest
 import com.example.reto_final.data.model.group.GroupResponse
 import com.example.reto_final.data.model.group.PendingGroupRequest
-import com.example.reto_final.data.model.message.PendingMessageRequest
+import com.example.reto_final.data.model.message.PendingMessages
 import com.example.reto_final.data.model.userGroup.UserChatInfo
-import com.example.reto_final.data.socket.SocketMessageReq
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -64,7 +63,7 @@ interface APIInterface {
     @DELETE("chats/throwFromChat/{idChat}/{idUser}")
     suspend fun chatThrowOut(@Path("idChat")idGroup: Int, @Path("idUser")idUser: Int) : Response<UserChatInfo>
     @GET("messages/findAll/{id}")
-    suspend fun getMessages(@Path("id") messageId: Int?) : Response<List<MessageResponse>>
+    suspend fun getMessages(@Path("id") messageId: Int?) : Response<List<MessageGetResponse>>
     @GET("messages/chat/{chatId}")
     suspend fun getMessageByChatId(@Path("chatId") idChat:Int) : Response<List<Message>>
     @POST("messages")
@@ -79,9 +78,9 @@ interface APIInterface {
     suspend fun findUsers(@Path("id") userId: Int?) : Response<List<UserRequest>>
     @GET("roles")
     suspend fun getRoles() : Response<List<Role>>
-    @POST("pendingMessages")
-    suspend fun setPendingMessages(@Body listPendingMessage: List<PendingMessageRequest?>) : Response<List<MessageResponse>>
-    @POST("pendingGroups")
+    @POST("messages/pendingMessages")
+    suspend fun setPendingMessages(@Body listPendingMessage: List<PendingMessages?>) : Response<List<MessageGetResponse>>
+    @POST("chats/pendingUserChat")
     suspend fun setPendingGroups(@Body listPendingGroup: List<PendingGroupRequest?>) : Response<List<GroupResponse>>
 
 }

@@ -21,8 +21,8 @@ import com.example.reto_final.data.model.group.GroupResponse
 import com.example.reto_final.data.model.group.PendingGroupRequest
 import com.example.reto_final.data.model.userGroup.UserGroup
 import com.example.reto_final.data.model.message.Message
-import com.example.reto_final.data.model.message.MessageResponse
-import com.example.reto_final.data.model.message.PendingMessageRequest
+import com.example.reto_final.data.model.message.MessageGetResponse
+import com.example.reto_final.data.model.message.PendingMessages
 import com.example.reto_final.data.model.user.User
 import com.example.reto_final.data.model.user.UserRequest
 import com.example.reto_final.data.model.userGroup.UserChatInfo
@@ -74,7 +74,7 @@ class ChatsService : Service() {
     private val fileManager = FileManager(this)
     private val _savedMessage = MutableLiveData<Resource<Message>>()
 
-    private val _allMessage = MutableLiveData<Resource<List<MessageResponse>>>()
+    private val _allMessage = MutableLiveData<Resource<List<MessageGetResponse>>>()
 
     private val _allGroup = MutableLiveData<Resource<List<Group>>>()
 
@@ -88,7 +88,7 @@ class ChatsService : Service() {
 
     private val _lastMessage = MutableLiveData<Resource<Message?>>()
 
-    private val _allPendingMessages = MutableLiveData<Resource<List<MessageResponse>>>()
+    private val _allPendingMessages = MutableLiveData<Resource<List<MessageGetResponse>>>()
 
     private val _pendingMessage = MutableLiveData<Resource<List<Message>>>()
 
@@ -308,22 +308,24 @@ class ChatsService : Service() {
             Log.d("p1", "${_lastGroup.value?.status}")
             Log.d("p1", "${_lastMessage.value?.status}")
             Log.d("p1", "${_lastUser.value?.status}")
-//            Log.d("p1", "${_pendingMessage.value?.status}")
+            Log.d("p1", "${_pendingMessage.value?.status}")
             if (_lastUser.value?.status == Resource.Status.SUCCESS
                 && _lastGroup.value?.status == Resource.Status.SUCCESS
                 && _lastMessage.value?.status == Resource.Status.SUCCESS
-//                && _pendingMessage.value?.status == Resource.Status.SUCCESS
+                && _pendingMessage.value?.status == Resource.Status.SUCCESS
             ) {
 //                Log.d("p1", "GetAllLastData")
                 getAllData()
                 Log.d("p1", "${_allMessage.value?.data}")
                 Log.d("p1", "${_allUser.value?.data}")
                 Log.d("p1", "${_allGroup.value?.data}")
-//                Log.d("p1", "${_allPendingMessages.value?.status}")
+                Log.d("p1", "${_allPendingMessages.value?.status}")
+                Log.d("p1", "${_allPendingMessages.value?.data}")
+                Log.d("p1", "${_allPendingMessages.value?.message}")
                 if (_allMessage.value?.status == Resource.Status.SUCCESS
                     && _allUser.value?.status == Resource.Status.SUCCESS
                     && _allGroup.value?.status == Resource.Status.SUCCESS
-//                    && _allPendingMessages.value?.status == Resource.Status.SUCCESS
+                    && _allPendingMessages.value?.status == Resource.Status.SUCCESS
                 ) {
 
                     setAllData()
@@ -334,6 +336,9 @@ class ChatsService : Service() {
                     }
                     if (_allMessage.value!!.data?.isNotEmpty() == true) {
                         EventBus.getDefault().post(_allMessage.value!!.data)
+                    }
+                    if (_allPendingMessages.value!!.data?.isNotEmpty() == true) {
+                        EventBus.getDefault().post(_allPendingMessages.value!!.data)
                     }
 
                 }
@@ -348,7 +353,7 @@ class ChatsService : Service() {
         _lastUser.value = getLastUser()
         _lastGroup.value = getLastGroup()
         _lastMessage.value = getLastMessage()
-//        _pendingMessage.value = getPendingMessages()
+        _pendingMessage.value = getPendingMessages()
 //        _pendingGroup.value = getPendingGroups()
     }
 
@@ -389,15 +394,15 @@ class ChatsService : Service() {
         _allUser.value = getAllUsers(_lastUser.value?.data)
         _allGroup.value = getAllGroups(_lastGroup.value?.data)
         _allMessage.value = getAllMessages(_lastMessage.value?.data)
-//        val pendingMessage = _pendingMessage.value?.data
-//        val pendingMessageRequest = pendingMessage?.map { it.toPendingMessageRequest()}
-//        _allPendingMessages.value = setPendingMessages(pendingMessageRequest)
+        val pendingMessage = _pendingMessage.value?.data
+        val pendingMessageRequest = pendingMessage?.map { it.toPendingMessageRequest()}
+        _allPendingMessages.value = setPendingMessages(pendingMessageRequest)
 //        val pendingGroup = _pendingGroup.value?.data
 //        val pendingGroupRequest = pendingGroup?.map { it.toPendingGroupRequest()}
 //        _allPendingGroups.value = setPendingGroups(pendingGroupRequest)
     }
 
-    private suspend fun getAllMessages(message: Message?): Resource<List<MessageResponse>> {
+    private suspend fun getAllMessages(message: Message?): Resource<List<MessageGetResponse>> {
         return withContext(Dispatchers.IO) {
             if (message != null) {
                 remoteMessageRepository.getMessages(message.id)
@@ -407,7 +412,7 @@ class ChatsService : Service() {
         }
     }
 
-    private suspend fun setPendingMessages(listPendingMessages: List<PendingMessageRequest?>?) : Resource<List<MessageResponse>> {
+    private suspend fun setPendingMessages(listPendingMessages: List<PendingMessages?>?) : Resource<List<MessageGetResponse>> {
         return withContext(Dispatchers.IO) {
             if (listPendingMessages != null) {
                 remoteMessageRepository.setPendingMessages(listPendingMessages)
@@ -461,7 +466,7 @@ class ChatsService : Service() {
         setAllGroups()
         setAllUsersToGroups()
         setAllMessages()
-//        updateAllPendingMessages()
+        updateAllPendingMessages()
 //        updateAllPendingGroups()
 
     }
@@ -515,34 +520,11 @@ class ChatsService : Service() {
     }
 
     private suspend fun setAllMessages() {
-        Log.d("HOLA", "LLEGA AL SET")
         return withContext(Dispatchers.IO) {
             val allMessage = _allMessage.value?.data
             if (allMessage != null) {
                 for (messageResponse in allMessage) {
-                    if (messageResponse.type == MessageEnumClass.FILE.toString()) {
-                        val filePath = fileManager.saveBase64ToFile(messageResponse.text) // Use the instance
-
-                        val message = Message(
-                            messageResponse.id,
-                            filePath,
-                            messageResponse.sent,
-                            messageResponse.saved,
-                            messageResponse.type,
-                            messageResponse.chatId,
-                            messageResponse.userId)
-                        localMessageRepository.createMessage(message)
-                    }else{
-                        val message = Message(
-                            messageResponse.id,
-                            messageResponse.text,
-                            messageResponse.sent,
-                            messageResponse.saved,
-                            messageResponse.type,
-                            messageResponse.chatId,
-                            messageResponse.userId)
-                        localMessageRepository.createMessage(message)
-                    }
+                    onNewMessageOwner(messageResponse.toMessage())
                 }
             }
         }
@@ -597,13 +579,23 @@ class ChatsService : Service() {
             deleted,
             adminId)
     private fun Message.toPendingMessageRequest() =
-        id?.let { PendingMessageRequest(
+        id?.let { PendingMessages(
             chatId,
             userId,
             it,
             text,
             sent,
             type) }
+
+    private fun MessageGetResponse.toMessage() =
+        Message(
+            id,
+            text,
+            sent,
+            saved,
+            type,
+            chatId,
+            userId)
 
     private fun SocketMessageRes.toMessage() = Message(localId, messageServerId, message, sent, saved, room, authorId, type)
 

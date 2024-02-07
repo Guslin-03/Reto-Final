@@ -15,12 +15,10 @@ import com.example.reto_final.data.model.user.User
 import com.example.reto_final.data.model.userGroup.UserChatInfo
 import com.example.reto_final.data.model.user.UserRequest
 import com.example.reto_final.data.model.message.Message
-import com.example.reto_final.data.model.message.MessageResponse
-import com.example.reto_final.data.model.message.PendingMessageRequest
-import com.example.reto_final.data.repository.local.group.DbGroup
+import com.example.reto_final.data.model.message.MessageGetResponse
+import com.example.reto_final.data.model.message.PendingMessages
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.message.MessageEnumClass
-import com.example.reto_final.data.repository.local.group.toGroup
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
 import com.example.reto_final.data.repository.local.role.RoomRoleDataSource
 import com.example.reto_final.data.repository.local.user.RoomUserDataSource
@@ -29,7 +27,6 @@ import com.example.reto_final.data.repository.remote.RemoteGroupRepository
 import com.example.reto_final.data.repository.remote.RemoteMessageRepository
 import com.example.reto_final.data.repository.remote.RemoteRoleRepository
 import com.example.reto_final.data.repository.remote.RemoteUserRepository
-import com.example.reto_final.data.socket.SocketMessageReq
 import com.example.reto_final.ui.message.FileManager
 import com.example.reto_final.utils.MyApp
 import com.example.reto_final.utils.Resource
@@ -52,7 +49,7 @@ class PopulateLocalDataBase(
 
 ) : ViewModel() {
 
-    private val _allMessage = MutableLiveData<Resource<List<MessageResponse>>>()
+    private val _allMessage = MutableLiveData<Resource<List<MessageGetResponse>>>()
 
     private val _allGroup = MutableLiveData<Resource<List<Group>>>()
 
@@ -66,7 +63,7 @@ class PopulateLocalDataBase(
 
     private val _lastMessage = MutableLiveData<Resource<Message?>>()
 
-    private val _allPendingMessages = MutableLiveData<Resource<List<MessageResponse>>>()
+    private val _allPendingMessages = MutableLiveData<Resource<List<MessageGetResponse>>>()
 
     private val _pendingMessage = MutableLiveData<Resource<List<Message>>>()
 
@@ -186,7 +183,7 @@ class PopulateLocalDataBase(
 //        _allPendingGroups.value = setPendingGroups(pendingGroupRequest)
     }
 
-    private suspend fun getAllMessages(message: Message?): Resource<List<MessageResponse>> {
+    private suspend fun getAllMessages(message: Message?): Resource<List<MessageGetResponse>> {
         return withContext(Dispatchers.IO) {
             if (message != null) {
                 remoteMessageRepository.getMessages(message.id)
@@ -196,7 +193,7 @@ class PopulateLocalDataBase(
         }
     }
 
-    private suspend fun setPendingMessages(listPendingMessages: List<PendingMessageRequest?>?) : Resource<List<MessageResponse>> {
+    private suspend fun setPendingMessages(listPendingMessages: List<PendingMessages?>?) : Resource<List<MessageGetResponse>> {
         return withContext(Dispatchers.IO) {
             if (listPendingMessages != null) {
                 remoteMessageRepository.setPendingMessages(listPendingMessages)
@@ -371,7 +368,7 @@ class PopulateLocalDataBase(
             deleted,
             adminId)
     private fun Message.toPendingMessageRequest() =
-        id?.let { PendingMessageRequest(
+        id?.let { PendingMessages(
             chatId,
             userId,
             it,
