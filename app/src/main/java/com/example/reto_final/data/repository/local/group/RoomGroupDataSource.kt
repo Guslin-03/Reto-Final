@@ -153,7 +153,7 @@ interface GroupDao {
     suspend fun userHasPermissionToDelete(idGroup: Int?, idUser: Int): Int
     @Insert
     suspend fun addUserToGroup(userGroup: DbUserGroup) : Long
-    @Query("SELECT COUNT(groupId) FROM group_user WHERE groupId = :idGroup AND userId = :idUser")
+    @Query("SELECT COUNT(groupId) FROM group_user WHERE groupId = :idGroup AND userId = :idUser AND deleted IS NULL")
     suspend fun userHasAlreadyInGroup(idGroup: Int?, idUser: Int): Int
     @Query("SELECT COUNT(userId) FROM group_user WHERE groupId = :idGroup AND userId = :idUser")
     suspend fun getCountByUserIdAndChatId(idGroup: Int, idUser: Int): Int
