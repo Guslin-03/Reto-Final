@@ -1,6 +1,7 @@
 package com.example.reto_final.ui.message
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -44,6 +45,7 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
     }
     private suspend fun saveIncomingMessage(message: Message) : Resource<Message> {
         return withContext(IO) {
+            //Cambiar
             messageLocalRepository.updateMessage(message)
         }
     }
@@ -52,6 +54,7 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
         viewModelScope.launch {
             val newMessage = saveIncomingMessage(message)
             if (newMessage.data?.chatId == selectedGroup.id) {
+                Log.d("prueba2", ""+ (newMessage.data?.text))
                 newMessage.status = Resource.Status.SUCCESS
                 _incomingMessage.value = newMessage
             }

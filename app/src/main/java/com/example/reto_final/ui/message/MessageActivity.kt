@@ -109,6 +109,7 @@ class MessageActivity : AppCompatActivity() {
         messageViewModel.message.observe(this) {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
+                    Log.d("prueba3", ""+ (it.data))
                     messageAdapter.submitList(it.data)
                 }
 
@@ -125,6 +126,7 @@ class MessageActivity : AppCompatActivity() {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
                     if (group.id != null) {
+                        Log.d("prueba1", ""+ (it.data?.text))
                         messageViewModel.updateMessageList(group.id!!)
                     }
 
@@ -398,15 +400,10 @@ class MessageActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onSocketIncomingMessage(message: Message) {
-
-        if (message.type == MessageEnumClass.FILE.toString()){
-        val location=fileManager.saveBase64ToFile(message.text)
-            message.text=location
-            val newMessage=Message(message.id,message.idServer, location, message.sent, message.saved, message.chatId, message.userId, message.type)
-            Log.d("MensajePrueba", ""+newMessage.text)
-            messageViewModel.onSaveIncomingMessage(newMessage, group)
-        }else{
-            messageViewModel.onSaveIncomingMessage(message, group)
+        Log.d("Hola", "$message")
+        if (message.chatId == group.id) {
+            Log.d("Hola", "Ta kbron")
+            messageViewModel.updateMessageList(group.id!!)
         }
 
     }

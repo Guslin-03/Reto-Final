@@ -1,7 +1,6 @@
 package com.example.reto_final.data.repository.local.message
 
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.repository.local.CommonMessageRepository
@@ -19,8 +18,9 @@ class RoomMessageDataSource : CommonMessageRepository {
     }
 
     override suspend fun createMessage(message: Message): Resource<Message> {
-        val dbMessage = messageDao.createMessage(message.toDbMessage())
-        message.id = dbMessage.toInt()
+        val dbMessage = message.toDbMessage()
+        val dbMessageId = messageDao.createMessage(dbMessage.idServer, dbMessage.text, dbMessage.sentDate, dbMessage.saveDate, dbMessage.type, dbMessage.groupId, dbMessage.userId)
+        message.id = dbMessageId.toInt()
         return Resource.success(message)
     }
 
@@ -60,8 +60,9 @@ interface MessageDao {
     @Query("SELECT * FROM messages WHERE saved IS NULL")
     suspend fun getPendingMessages(): List<DbMessage>
 
-    @Insert
-    suspend fun createMessage(message: DbMessage) : Long
+    @Query("INSERT INTO messages (idServer, text, sent, saved, type, groupId, userId) " +
+            "VALUES (:idServer, :text, :sentDate, :savedDate, :type, :chatId, :userId)")
+    suspend fun createMessage(idServer: Int?, text: String, sentDate: Date, savedDate: Date?, type: String, chatId: Int, userId: Int) : Long
 
     @Query("UPDATE messages SET saved = :saved, idServer= :idServer WHERE id = :messageId")
     suspend fun updateMessage(messageId: Int?, idServer: Int?, saved: Long?) : Int

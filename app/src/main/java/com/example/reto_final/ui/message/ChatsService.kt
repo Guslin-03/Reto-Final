@@ -13,10 +13,13 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
+import androidx.lifecycle.MutableLiveData
 import com.example.reto_final.R
 import com.example.reto_final.data.model.userGroup.UserGroup
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
+import com.example.reto_final.data.repository.local.message.MessageEnumClass
+import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
 import com.example.reto_final.data.socket.SocketEvents
 import com.example.reto_final.data.socket.SocketMessageRes
 import com.example.reto_final.utils.MyApp
@@ -24,6 +27,7 @@ import com.example.reto_final.utils.MyApp.Companion.API_SERVER
 import com.example.reto_final.utils.MyApp.Companion.API_SOCKET_PORT
 import com.example.reto_final.utils.MyApp.Companion.AUTHORIZATION_HEADER
 import com.example.reto_final.utils.MyApp.Companion.BEARER
+import com.example.reto_final.utils.Resource
 import com.google.gson.Gson
 import io.socket.client.IO
 import io.socket.emitter.Emitter
@@ -40,7 +44,10 @@ class ChatsService : Service() {
     private val notificationId = 1
     private lateinit var serviceScope: CoroutineScope
 
-    private val groupRepository = RoomGroupDataSource()
+    private val localGroupRepository = RoomGroupDataSource()
+    private val localMessageRepository = RoomMessageDataSource()
+    private val fileManager = FileManager(this)
+    private val _savedMessage = MutableLiveData<Resource<Message>>()
 
     override fun onCreate() {
         super.onCreate()
@@ -133,9 +140,37 @@ class ChatsService : Service() {
         return Emitter.Listener {
             Log.d("Prueba", "Lo recibio")
             val response = onJSONtoAnyClass(it[0], SocketMessageRes::class.java) as SocketMessageRes
-            Log.d("Prueba", "$response")
-            EventBus.getDefault().post(response.toMessage())
+            val newMessage = response.toMessage()
+            val updatedMessage = onNewMessageOwner(newMessage)
+            Log.d("Hola", "$updatedMessage")
+            if (_savedMessage.value?.status != Resource.Status.ERROR) {
+                EventBus.getDefault().post(newMessage)
+            }
             updateNotification(response.message)
+        }
+    }
+
+    private fun onNewMessageOwner(incomingMessage : Message) {
+        serviceScope.launch {
+            val loginUser = MyApp.userPreferences.getUser()
+            if (loginUser != null) {
+                val updateMessage = onIsFile(incomingMessage)
+                _savedMessage.value = if (incomingMessage.userId == loginUser.id) {
+                    localMessageRepository.updateMessage(updateMessage)
+                } else {
+                    Log.d("prueba1", "$updateMessage")
+                    localMessageRepository.createMessage(updateMessage)
+                }
+            }
+        }
+    }
+
+    private fun onIsFile(incomingMessage : Message) : Message {
+        return if (incomingMessage.type == MessageEnumClass.FILE.toString()){
+            val location = fileManager.saveBase64ToFile(incomingMessage.text)
+            Message(incomingMessage.id,incomingMessage.idServer, location, incomingMessage.sent, incomingMessage.saved, incomingMessage.chatId, incomingMessage.userId, incomingMessage.type)
+        }else{
+            incomingMessage
         }
     }
 
@@ -184,7 +219,7 @@ class ChatsService : Service() {
     }
 
     private suspend fun leaveGroup(userGroupRes: UserGroup) {
-        groupRepository.leaveGroup(userGroupRes.roomId, userGroupRes.userId)
+        localGroupRepository.leaveGroup(userGroupRes.roomId, userGroupRes.userId)
     }
 
     private fun updateNotification(contentText: String) {
