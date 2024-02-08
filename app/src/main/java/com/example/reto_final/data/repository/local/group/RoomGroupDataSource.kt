@@ -29,7 +29,7 @@ class RoomGroupDataSource : CommonGroupRepository {
             val currentDate = System.currentTimeMillis()
 
             Log.d("p1", "Entra")
-            if (user != null) group.id?.let { DbUserGroup(group.id!!, user.id, Date(currentDate), null) }
+            if (user != null) group.id?.let { DbUserGroup(group.id!!, user.id, Date(currentDate), null, null) }
                 ?.let { groupDao.addUserToGroup(it) }
             Resource.success()
         } catch (exception: SQLiteConstraintException) {
@@ -81,7 +81,7 @@ class RoomGroupDataSource : CommonGroupRepository {
         val dbUserChatInfo = DbUserGroup(userChatInfo.chatId,
             userChatInfo.userId,
             Date(userChatInfo.joined),
-            userChatInfo.deleted?.let { Date(it) })
+            userChatInfo.deleted?.let { Date(it) }, null)
         //logica de solo crear el nuevo en la base de datos si es la primera carga o el usuario aun no existia en la n:m
         //Significa que ya existia esa relacion asi que solo tenemos que quitar el deleted
         if(groupDao.getCountByUserIdAndChatId(userChatInfo.chatId, userChatInfo.userId) > 0 ){
@@ -92,7 +92,7 @@ class RoomGroupDataSource : CommonGroupRepository {
                 return Resource.error("Failed to update join date in group user")
             }
         }else{
-            val response = groupDao.addUserToGroup(DbUserGroup(userChatInfo.chatId, userChatInfo.userId, Date(userChatInfo.joined), null))
+            val response = groupDao.addUserToGroup(DbUserGroup(userChatInfo.chatId, userChatInfo.userId, Date(userChatInfo.joined), null, null))
             return Resource.success(response.toInt())
         }
     }
@@ -120,9 +120,15 @@ class RoomGroupDataSource : CommonGroupRepository {
         return Resource.success(response)
     }
 
-    override suspend fun getPendingGroups(): Resource<List<Group>> {
-        val pendingGroups = groupDao.getPendingGroups().map { it.toGroup() }
+    override suspend fun getPendingGroups(): Resource<List<UserChatInfo?>> {
+        val pendingGroups = groupDao.getPendingGroups().map { it.toUserChatInfo() }
         return Resource.success(pendingGroups)
+    }
+
+    override suspend fun updateUserChatInfo(userChatInfoResponse: UserChatInfo): Resource<UserChatInfo> {
+        groupDao.updateUserChatInfo(userChatInfoResponse.chatId, userChatInfoResponse.userId,
+            userChatInfoResponse.deleted?.let { Date(it) })
+        return Resource.success(userChatInfoResponse)
     }
 
     //TESTEAR
@@ -136,6 +142,10 @@ class RoomGroupDataSource : CommonGroupRepository {
 
 fun DbGroup.toGroup() = Group(id, name, chatEnumType, created?.time, deleted?.time, adminId)
 fun Group.toDbGroup() = DbGroup(id, name, type, created?.let { Date(it) }, deleted?.let { Date(it) }, adminId)
+fun DbUserGroup.toUserChatInfo() = joined?.time?.let {
+    UserChatInfo(userId, groupId,
+        it, deleted?.time)
+}
 
 @Dao
 interface GroupDao {
@@ -161,11 +171,13 @@ interface GroupDao {
     suspend fun getCountByUserIdAndChatId(idGroup: Int, idUser: Int): Int
     @Query("SELECT * FROM groups WHERE id = (SELECT MAX(id) FROM groups)")
     suspend fun getLastGroup(): Group?
-    @Query("SELECT * FROM groups WHERE id = (SELECT MAX(id) FROM groups)")
-    suspend fun getPendingGroups(): List<DbGroup>
+    @Query("SELECT * FROM group_user WHERE localDeleted IS NOT NULL")
+    suspend fun getPendingGroups(): List<DbUserGroup>
+    @Query("UPDATE group_user SET deleted = :deleted, localDeleted = null WHERE groupId = :chatId AND userId = :userId")
+    suspend fun updateUserChatInfo(chatId: Int, userId: Int, deleted: Date?)
     @Query("UPDATE group_user SET joined = :joined, deleted = null WHERE groupId = :idGroup AND userId = :idUser")
     suspend fun updateJoinDateInGroupUser(idGroup: Int, idUser: Int, joined: Long): Int
-    @Query("UPDATE group_user SET deleted = :deleted WHERE groupId = :idGroup AND userId = :idUser")
+    @Query("UPDATE group_user SET localDeleted = :deleted WHERE groupId = :idGroup AND userId = :idUser")
     suspend fun updateDeleteDateInGroup(idGroup: Int, idUser: Int, deleted: Long?): Int
     @Query("UPDATE groups SET deleted = :deleted WHERE id = :groupId")
     suspend fun updateGroup(groupId: Int?, deleted: Long?) : Int

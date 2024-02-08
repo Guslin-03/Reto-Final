@@ -94,9 +94,9 @@ class ChatsService : Service() {
 
     private val _pendingMessage = MutableLiveData<Resource<List<Message>>>()
 
-    private val _allPendingGroups = MutableLiveData<Resource<List<GroupResponse>>>()
+    private val _allPendingGroups = MutableLiveData<Resource<List<UserChatInfo>>>()
 
-    private val _pendingGroup = MutableLiveData<Resource<List<Group>>>()
+    private val _pendingGroup = MutableLiveData<Resource<List<UserChatInfo?>>>()
 
     private val userChatInfo = mutableListOf<UserChatInfo>()
 
@@ -338,27 +338,30 @@ class ChatsService : Service() {
 
         serviceScope.launch {
             getAllLastData()
-            Log.d("p1", "${_lastGroup.value?.status}")
-            Log.d("p1", "${_lastMessage.value?.status}")
-            Log.d("p1", "${_lastUser.value?.status}")
-//            Log.d("p1", "${_pendingMessage.value?.status}")
+//            Log.d("p1", "${_lastGroup.value?.status}")
+//            Log.d("p1", "${_lastMessage.value?.status}")
+//            Log.d("p1", "${_lastUser.value?.status}")
+            Log.d("p1", "${_pendingGroup.value?.status}")
+            Log.d("p1", "${_pendingGroup.value?.data}")
             if (_lastUser.value?.status == Resource.Status.SUCCESS
                 && _lastGroup.value?.status == Resource.Status.SUCCESS
                 && _lastMessage.value?.status == Resource.Status.SUCCESS
-//                && _pendingMessage.value?.status == Resource.Status.SUCCESS
+                && _pendingMessage.value?.status == Resource.Status.SUCCESS
+                && _pendingGroup.value?.status == Resource.Status.SUCCESS
             ) {
 //              Log.d("p1", "GetAllLastData")
                 getAllData()
-                Log.d("p1", "${_allMessage.value?.data}")
-                Log.d("p1", "${_allUser.value?.data}")
-                Log.d("p1", "${_allGroup.value?.data}")
-//                Log.d("p1", "${_allPendingMessages.value?.status}")
-//                Log.d("p1", "${_allPendingMessages.value?.data}")
-//                Log.d("p1", "${_allPendingMessages.value?.message}")
+//                Log.d("p1", "${_allMessage.value?.data}")
+//                Log.d("p1", "${_allUser.value?.data}")
+//                Log.d("p1", "${_allGroup.value?.data}")
+                Log.d("p1", "${_allPendingGroups.value?.status}")
+                Log.d("p1", "${_allPendingGroups.value?.data}")
+                Log.d("p1", "${_allPendingGroups.value?.message}")
                 if (_allMessage.value?.status == Resource.Status.SUCCESS
                     && _allUser.value?.status == Resource.Status.SUCCESS
                     && _allGroup.value?.status == Resource.Status.SUCCESS
-//                    && _allPendingMessages.value?.status == Resource.Status.SUCCESS
+                    && _allPendingMessages.value?.status == Resource.Status.SUCCESS
+                    && _allPendingGroups.value?.status == Resource.Status.SUCCESS
                 ) {
                     setAllData()
 //                    Log.d("p1", "getAllData")
@@ -368,9 +371,12 @@ class ChatsService : Service() {
                     if (_allMessage.value!!.data?.isNotEmpty() == true) {
                         EventBus.getDefault().post(_allMessage.value!!.data)
                     }
-//                    if (_allPendingMessages.value!!.data?.isNotEmpty() == true) {
-//                        EventBus.getDefault().post(_allPendingMessages.value!!.data)
-//                    }
+                    if (_allPendingMessages.value!!.data?.isNotEmpty() == true) {
+                        EventBus.getDefault().post(_allPendingMessages.value!!.data)
+                    }
+                    if (_allPendingGroups.value!!.data?.isNotEmpty() == true) {
+                        EventBus.getDefault().post(_allPendingGroups.value!!.data)
+                    }
 
                 }
             }
@@ -383,8 +389,8 @@ class ChatsService : Service() {
         _lastUser.value = getLastUser()
         _lastGroup.value = getLastGroup()
         _lastMessage.value = getLastMessage()
-//        _pendingMessage.value = getPendingMessages()
-//        _pendingGroup.value = getPendingGroups()
+        _pendingMessage.value = getPendingMessages()
+        _pendingGroup.value = getPendingGroups()
     }
 
     private suspend fun getLastMessage(): Resource<Message?> {
@@ -393,17 +399,17 @@ class ChatsService : Service() {
         }
     }
 
-    private suspend fun getPendingGroups(): Resource<List<Group>> {
+    private suspend fun getPendingGroups(): Resource<List<UserChatInfo?>> {
         return withContext(Dispatchers.IO) {
             localGroupRepository.getPendingGroups()
         }
     }
 
-//    private suspend fun getPendingMessages(): Resource<List<Message>> {
-//        return withContext(Dispatchers.IO) {
-//            localMessageRepository.getPendingMessages()
-//        }
-//    }
+    private suspend fun getPendingMessages(): Resource<List<Message>> {
+        return withContext(Dispatchers.IO) {
+            localMessageRepository.getPendingMessages()
+        }
+    }
 
     private suspend fun getLastGroup(): Resource<Group?> {
         return withContext(Dispatchers.IO) {
@@ -424,12 +430,10 @@ class ChatsService : Service() {
         _allUser.value = getAllUsers(_lastUser.value?.data)
         _allGroup.value = getAllGroups(_lastGroup.value?.data)
         _allMessage.value = getAllMessages(_lastMessage.value?.data)
-//        val pendingMessage = _pendingMessage.value?.data
-//        val pendingMessageRequest = pendingMessage?.map { it.toPendingMessageRequest()}
-//        _allPendingMessages.value = setPendingMessages(pendingMessageRequest)
-//        val pendingGroup = _pendingGroup.value?.data
-//        val pendingGroupRequest = pendingGroup?.map { it.toPendingGroupRequest()}
-//        _allPendingGroups.value = setPendingGroups(pendingGroupRequest)
+        val pendingMessage = _pendingMessage.value?.data
+        val pendingMessageRequest = pendingMessage?.map { it.toPendingMessageRequest()}
+        _allPendingMessages.value = setPendingMessages(pendingMessageRequest)
+        _allPendingGroups.value = setPendingGroups(_pendingGroup.value?.data)
     }
 
     private suspend fun getAllMessages(message: Message?): Resource<List<MessageGetResponse>> {
@@ -442,17 +446,17 @@ class ChatsService : Service() {
         }
     }
 
-//    private suspend fun setPendingMessages(listPendingMessages: List<PendingMessages?>?) : Resource<List<MessageGetResponse>> {
-//        return withContext(Dispatchers.IO) {
-//            if (listPendingMessages != null) {
-//                remoteMessageRepository.setPendingMessages(listPendingMessages)
-//            } else {
-//                Resource.success()
-//            }
-//        }
-//    }
+    private suspend fun setPendingMessages(listPendingMessages: List<PendingMessages?>?) : Resource<List<MessageGetResponse>> {
+        return withContext(Dispatchers.IO) {
+            if (listPendingMessages != null) {
+                remoteMessageRepository.setPendingMessages(listPendingMessages)
+            } else {
+                Resource.success()
+            }
+        }
+    }
 
-    private suspend fun setPendingGroups(listPendingGroups: List<PendingGroupRequest?>?) : Resource<List<GroupResponse>> {
+    private suspend fun setPendingGroups(listPendingGroups: List<UserChatInfo?>?) : Resource<List<UserChatInfo>> {
         return withContext(Dispatchers.IO) {
             if (listPendingGroups != null) {
                 remoteGroupRepository.setPendingGroups(listPendingGroups)
@@ -496,8 +500,8 @@ class ChatsService : Service() {
         setAllGroups()
         setAllUsersToGroups()
         setAllMessages()
-//        updateAllPendingMessages()
-//        updateAllPendingGroups()
+        updateAllPendingMessages()
+        updateAllPendingGroups()
     }
 
     private suspend fun setAllRoles() {
@@ -571,30 +575,15 @@ class ChatsService : Service() {
 
     private suspend fun updateAllPendingGroups() {
         return withContext(Dispatchers.IO) {
-            val allPendingGroupsResponse = _allPendingGroups.value?.data
-            if (allPendingGroupsResponse != null) {
-                for (pendingGroupResponse in allPendingGroupsResponse) {
-                    val pendingGroup = Group(
-                        pendingGroupResponse.id,
-                        pendingGroupResponse.name,
-                        pendingGroupResponse.type,
-                        pendingGroupResponse.created,
-                        pendingGroupResponse.deleted,
-                        pendingGroupResponse.adminId)
-                    localGroupRepository.updateGroup(pendingGroup)
+            val allPendingUserChatInfoResponse = _allPendingGroups.value?.data
+            if (allPendingUserChatInfoResponse != null) {
+                for (pendingUserChatInfoResponse in allPendingUserChatInfoResponse) {
+                    localGroupRepository.updateUserChatInfo(pendingUserChatInfoResponse)
                 }
             }
         }
     }
 
-    private fun Group.toPendingGroupRequest() =
-        PendingGroupRequest(
-            id,
-            name,
-            type,
-            created,
-            deleted,
-            adminId)
     private fun Message.toPendingMessageRequest() =
         id?.let { PendingMessages(
             chatId,

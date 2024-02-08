@@ -29,6 +29,7 @@ import com.example.reto_final.data.model.group.Group
 import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.model.message.MessageGetResponse
+import com.example.reto_final.data.model.userGroup.UserChatInfo
 import com.example.reto_final.data.repository.local.group.ChatEnumType
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.message.MessageEnumClass
@@ -390,6 +391,17 @@ class MessageActivity : AppCompatActivity() {
     fun onPendingMessageEvent(message: List<MessageGetResponse>) {
         if (group.id != null) {
             messageViewModel.updateMessageList(group.id!!)
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onPendingLeaveGroup(listUserChatInfo: List<UserChatInfo>) {
+        if (group.id != null) {
+            for (userChatInfo in listUserChatInfo) {
+                if (userChatInfo.chatId == group.id) {
+                    goToGroups()
+                }
+            }
         }
     }
 

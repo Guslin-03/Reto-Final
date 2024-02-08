@@ -171,8 +171,7 @@ class GroupViewModel(
     // FUNCIONES VALIDACION USUARIO YA ESTA EN EL GRUPO
     fun onUserHasAlreadyInGroup(idGroup: Int, idUser: Int) {
         viewModelScope.launch {
-                _userHasAlreadyInGroup.value = userHasAlreadyInGroup(idGroup, idUser)
-
+            _userHasAlreadyInGroup.value = userHasAlreadyInGroup(idGroup, idUser)
         }
     }
 

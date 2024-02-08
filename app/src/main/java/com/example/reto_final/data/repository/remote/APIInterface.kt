@@ -81,6 +81,6 @@ interface APIInterface {
     @POST("messages/pendingMessages")
     suspend fun setPendingMessages(@Body listPendingMessage: List<PendingMessages?>) : Response<List<MessageGetResponse>>
     @POST("chats/pendingUserChat")
-    suspend fun setPendingGroups(@Body listPendingGroup: List<PendingGroupRequest?>) : Response<List<GroupResponse>>
+    suspend fun setPendingGroups(@Body listPendingUserChatInfo: List<UserChatInfo?>) : Response<List<UserChatInfo>>
 
 }

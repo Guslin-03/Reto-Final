@@ -25,5 +25,6 @@ data class DbUserGroup (
     val groupId: Int,
     val userId: Int,
     val joined: Date?,
-    val deleted: Date?
+    val deleted: Date?,
+    val localDeleted: Date?
 )

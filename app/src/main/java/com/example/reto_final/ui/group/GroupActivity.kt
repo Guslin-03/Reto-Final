@@ -302,6 +302,7 @@ class GroupActivity: AppCompatActivity() {
         val intent = Intent(this, MessageActivity::class.java)
         intent.putExtra("grupo_seleccionado", this.group)
         startActivity(intent)
+        finish()
     }
 
     private fun popUpCreate() {
@@ -345,7 +346,7 @@ class GroupActivity: AppCompatActivity() {
     }
 
     private fun checkBd(){
-        context=this
+        context = this
         val dbFile = context.getDatabasePath("chat-db")
       if (dbFile.exists() && !MyApp.userPreferences.getRememberMeState()){
             dbFile.delete()
@@ -431,6 +432,11 @@ class GroupActivity: AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onNewGroupEvent(group: Group) {
+        groupViewModel.updateGroupList()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onGroupEvent(listPendingGroup: List<Group>) {
         groupViewModel.updateGroupList()
     }
 

@@ -17,6 +17,7 @@ interface CommonGroupRepository {
     suspend fun chatThrowOutLocal(userChatInfo: UserChatInfo): Resource<Int>
     suspend fun userHasAlreadyInGroup(idGroup: Int?, idUser: Int): Resource<Int>
     suspend fun getLastGroup(): Resource<Group?>
-    suspend fun getPendingGroups(): Resource<List<Group>>
+    suspend fun getPendingGroups(): Resource<List<UserChatInfo?>>
+    suspend fun updateUserChatInfo(userChatInfoResponse: UserChatInfo): Resource<UserChatInfo>
     suspend fun updateGroup(group: Group): Resource<Group>
 }
