@@ -146,8 +146,6 @@ class ChangePasswordActivity: AppCompatActivity() {
     }
 
     private fun backToGroupActivity() {
-        val intent = Intent(this, GroupActivity::class.java)
-        startActivity(intent)
         finish()
     }
 

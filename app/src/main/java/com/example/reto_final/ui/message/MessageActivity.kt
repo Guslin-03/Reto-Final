@@ -263,6 +263,11 @@ class MessageActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        group.id?.let { messageViewModel.updateMessageList(it) }
+    }
+
     private fun onMapClickItem(message: Message) {
         val messageClick = message.text
         if (messageClick.startsWith("https://www.google.com/maps?q=")) {
@@ -302,12 +307,9 @@ class MessageActivity : AppCompatActivity() {
         val intent = Intent(this, GroupInfo::class.java)
         intent.putExtra("grupo_seleccionado", this.group)
         startActivity(intent)
-        finish()
     }
 
     private fun goToGroups() {
-        val intent = Intent(this, GroupActivity::class.java)
-        startActivity(intent)
         finish()
     }
 

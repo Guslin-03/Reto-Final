@@ -125,8 +125,6 @@ class ConfigurationActivity : AppCompatActivity() {
     }
 
     private fun backToGroupActivity() {
-        val intent = Intent(this, GroupActivity::class.java)
-        startActivity(intent)
         finish()
     }
 

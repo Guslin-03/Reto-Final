@@ -239,6 +239,11 @@ class GroupActivity: AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        groupViewModel.updateGroupList()
+    }
+
     private fun filterByText(s: CharSequence?): List<Group>{
         val searchText = s.toString().trim()
         var originalList = groupViewModel.group.value?.data
@@ -302,7 +307,6 @@ class GroupActivity: AppCompatActivity() {
         val intent = Intent(this, MessageActivity::class.java)
         intent.putExtra("grupo_seleccionado", this.group)
         startActivity(intent)
-        finish()
     }
 
     private fun popUpCreate() {
@@ -376,14 +380,12 @@ class GroupActivity: AppCompatActivity() {
     private fun showProfile() {
         val intent = Intent(this, PersonalConfigurationActivity::class.java)
         startActivity(intent)
-        finish()
     }
 
     private fun changePassword() {
         if (InternetChecker.isNetworkAvailable(applicationContext)){
             val intent = Intent(this, ChangePasswordActivity::class.java)
             startActivity(intent)
-            finish()
         }else{
             Toast.makeText(this, "No puedes cambiar la contraseña sin internet", Toast.LENGTH_LONG).show()
         }
