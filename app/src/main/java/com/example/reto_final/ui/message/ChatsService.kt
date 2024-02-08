@@ -234,7 +234,7 @@ class ChatsService : Service() {
     private fun onChatJoin(): Emitter.Listener {
         return Emitter.Listener {
             val response = onJSONtoAnyClass(it[0], UserGroup::class.java) as UserGroup
-            updateNotification("${response.name} se ha unido al grupo.")
+            updateNotification("${response.userName} se ha unido al grupo.")
             serviceScope.launch {
                 addUserToGroup(response)
             }
@@ -244,7 +244,7 @@ class ChatsService : Service() {
     private fun onChatAdded(): Emitter.Listener {
         return Emitter.Listener {
             val response = onJSONtoAnyClass(it[0], UserGroup::class.java) as UserGroup
-            updateNotification("${response.adminName} ha añadido a ${response.name}.")
+            updateNotification("${response.adminName} ha añadido a ${response.userName}.")
             serviceScope.launch {
                 addUserToGroup(response)
             }
@@ -252,13 +252,13 @@ class ChatsService : Service() {
     }
 
     private suspend fun addUserToGroup(userGroupRes: UserGroup) {
-//        groupRepository.addUserToGroup(userGroupRes.roomId, userGroupRes.userId)
+//        localGroupRepository.addUserToGroup(userGroupRes.roomId, userGroupRes.userId)
     }
 
     private fun onChatLeft(): Emitter.Listener {
         return Emitter.Listener {
             val response = onJSONtoAnyClass(it[0], UserGroup::class.java) as UserGroup
-            updateNotification("${response.name} ha salido del grupo.")
+            updateNotification("${response.userName} ha salido del grupo.")
             serviceScope.launch {
                 leaveGroup(response)
             }
@@ -268,7 +268,7 @@ class ChatsService : Service() {
     private fun onChatThrowOut(): Emitter.Listener {
         return Emitter.Listener {
             val response = onJSONtoAnyClass(it[0], UserGroup::class.java) as UserGroup
-            updateNotification("${response.adminName} ha expulsado a ${response.name}.")
+            updateNotification("${response.adminName} ha expulsado a ${response.userName}.")
             serviceScope.launch {
                 addUserToGroup(response)
             }
@@ -495,7 +495,7 @@ class ChatsService : Service() {
             val allUser = _allUser.value?.data
             if (allUser != null) {
                 for (userRequest in allUser) {
-                    val user = User(userRequest.id, userRequest.name, userRequest.surname, userRequest.email, userRequest.phoneNumber1, userRequest.roleId)
+                    val user = User(userRequest.id, userRequest.name, userRequest.surname, userRequest.email, userRequest.phone_number1, userRequest.roleId)
                     localUserRepository.createUser(user)
                     userChatInfo.addAll(userRequest.userChatInfo)
                 }

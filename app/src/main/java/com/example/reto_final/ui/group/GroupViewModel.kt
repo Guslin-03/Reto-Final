@@ -79,7 +79,6 @@ class GroupViewModel(
         viewModelScope.launch {
              if (InternetChecker.isNetworkAvailable(context)) {
                  val createdGroup = createRemote(name, chatEnumType, idAdmin)
-                 Log.d("LOLO", createdGroup.status.toString())
                  if (createdGroup.status == Resource.Status.SUCCESS) {
                      createdGroup.data?.let { createLocal(it) }
                      _create.value = createdGroup

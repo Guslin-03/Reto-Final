@@ -88,7 +88,7 @@ class GroupActivity: AppCompatActivity() {
                     groupViewModel.updateGroupList()
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, "El nombre del grupo ya existe", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }

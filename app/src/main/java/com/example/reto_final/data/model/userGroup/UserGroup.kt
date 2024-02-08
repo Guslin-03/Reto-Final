@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class UserGroup (
     val roomId: Int,
     val userId: Int,
-    val name: String,
     val adminId: Int?,
+    val userName: String,
     val adminName: String?
 ):Parcelable

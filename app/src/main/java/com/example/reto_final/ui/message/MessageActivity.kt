@@ -103,7 +103,6 @@ class MessageActivity : AppCompatActivity() {
         messageViewModel.message.observe(this) {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
-                    Log.d("prueba3", ""+ (it.data))
                     messageAdapter.submitList(it.data)
                 }
 
