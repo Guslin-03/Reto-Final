@@ -430,7 +430,7 @@ class GroupActivity: AppCompatActivity() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(group: List<Group>) {
+    fun onNewGroupEvent(group: Group) {
         groupViewModel.updateGroupList()
     }
 

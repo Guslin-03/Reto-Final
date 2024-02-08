@@ -9,8 +9,8 @@ enum class SocketEvents(val value: String) {
     ON_CONNECT("connect"),
     ON_DISCONNECT("disconnect"),
 
-    ON_CHAT_RECEIVED("send chat"),
-    ON_SEND_CHAT("receive chat"),
+    ON_CHAT_RECEIVED("receive chat"),
+    ON_SEND_CHAT("send chat"),
     ON_CHAT_NOT_SENT("not sent chat"),
 
 

@@ -26,6 +26,5 @@ data class DbGroup (
     @ColumnInfo(name = "type") val chatEnumType: String,
     @ColumnInfo(name = "created") val created: Date?,
     @ColumnInfo(name = "deleted") val deleted: Date?,
-    @ColumnInfo(name = "localDeleted") val localDeleted: Date?,
     @ColumnInfo(name = "adminId") val adminId: Int,
     )

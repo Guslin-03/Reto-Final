@@ -7,7 +7,6 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import com.example.reto_final.data.model.group.Group
-import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.model.userGroup.UserChatInfo
 import com.example.reto_final.data.repository.local.CommonGroupRepository
 import com.example.reto_final.utils.MyApp
@@ -18,14 +17,14 @@ class RoomGroupDataSource : CommonGroupRepository {
 
     private val groupDao: GroupDao = MyApp.db.groupDao()
 
-    override suspend fun getGroups(userId: Int): Resource<List<Group>> {
-        val response = groupDao.getGroups(userId).map { it.toGroup() }
+    override suspend fun getGroups(idUser: Int): Resource<List<Group>> {
+        val response = groupDao.getGroups(idUser).map { it.toGroup() }
         return Resource.success(response)
     }
 
     override suspend fun createGroupAsAdmin(group: Group): Resource<Void> {
         return try {
-            groupDao.createGroup(group.toDbGroup())
+            groupDao.createGroupAsAdmin(group.toDbGroup())
             val user = MyApp.userPreferences.getUser()
             val currentDate = System.currentTimeMillis()
 
@@ -42,7 +41,8 @@ class RoomGroupDataSource : CommonGroupRepository {
     //NUNCA SE CREA CON EL ADMIN
     override suspend fun createGroup(group: Group): Resource<Group> {
         return try {
-            val idGroupCreated = groupDao.createGroup(group.toDbGroup())
+            val dbGroup = group.toDbGroup()
+            val idGroupCreated = groupDao.createGroup(dbGroup.name, dbGroup.chatEnumType, dbGroup.created, dbGroup.deleted, dbGroup.adminId)
             group.id = idGroupCreated.toInt()
             Resource.success(group)
         } catch (exception: SQLiteConstraintException) {
@@ -134,15 +134,17 @@ class RoomGroupDataSource : CommonGroupRepository {
 
 }
 
-fun DbGroup.toGroup() = Group(id, name, chatEnumType, created?.time, deleted?.time, localDeleted?.time, adminId)
-fun Group.toDbGroup() = DbGroup(id, name, type, created?.let { Date(it) }, deleted?.let { Date(it) }, localDeleted?.let { Date(it) }, adminId)
+fun DbGroup.toGroup() = Group(id, name, chatEnumType, created?.time, deleted?.time, adminId)
+fun Group.toDbGroup() = DbGroup(id, name, type, created?.let { Date(it) }, deleted?.let { Date(it) }, adminId)
 
 @Dao
 interface GroupDao {
     @Query("SELECT * FROM groups WHERE (type = 'PUBLIC' AND deleted IS NULL) OR (type = 'PRIVATE' AND id IN (SELECT groupId FROM group_user WHERE userId = :userId) AND deleted IS NULL) ORDER BY id")
     suspend fun getGroups(userId:Int): List<DbGroup>
     @Insert
-    suspend fun createGroup(group: DbGroup) : Long
+    suspend fun createGroupAsAdmin(dbGroup: DbGroup) : Long
+    @Query("INSERT INTO groups (name, type, created, deleted, adminId) VALUES (:name, :type, :created, :deleted, :adminId)")
+    suspend fun createGroup(name: String, type: String, created: Date?, deleted: Date?, adminId: Int) : Long
     @Query("UPDATE groups SET deleted = :deleted WHERE id = :idGroup")
     suspend fun softDeleteGroup(idGroup: Int?, deleted: Long?) : Int
     @Query("UPDATE group_user SET deleted = :deleted WHERE groupId = :groupId")

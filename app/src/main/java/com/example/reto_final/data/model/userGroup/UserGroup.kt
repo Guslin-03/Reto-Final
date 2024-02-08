@@ -9,5 +9,7 @@ data class UserGroup (
     val userId: Int,
     val adminId: Int?,
     val userName: String,
-    val adminName: String?
+    val adminName: String?,
+    val joined: Long,
+    val deleted: Long?
 ):Parcelable

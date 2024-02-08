@@ -10,7 +10,6 @@ data class Group (
     val type: String,
     val created: Long?,
     val deleted: Long?,
-    val localDeleted: Long?,
     val adminId: Int
 ) : Parcelable {
 
@@ -20,7 +19,6 @@ data class Group (
         type = "",
         created = null,
         deleted = null,
-        localDeleted = null,
         adminId = 0
     )
 

@@ -73,6 +73,8 @@ class ChatsService : Service() {
     private val remoteRoleRepository = RemoteRoleDataSource()
     private val fileManager = FileManager(this)
     private val _savedMessage = MutableLiveData<Resource<Message>>()
+    private val _savedGroup = MutableLiveData<Resource<Group>>()
+
 
     private val _allMessage = MutableLiveData<Resource<List<MessageGetResponse>>>()
 
@@ -161,6 +163,7 @@ class ChatsService : Service() {
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_LEAVE_RECEIVED.value, onChatLeft())
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_ADD_RECEIVED.value, onChatAdded())
         MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_THROW_OUT_RECEIVED.value, onChatThrowOut())
+        MyApp.userPreferences.mSocket.on(SocketEvents.ON_CHAT_RECEIVED.value, onChatReceive())
         serviceScope.launch {
             connect()
         }
@@ -252,7 +255,7 @@ class ChatsService : Service() {
     }
 
     private suspend fun addUserToGroup(userGroupRes: UserGroup) {
-//        localGroupRepository.addUserToGroup(userGroupRes.roomId, userGroupRes.userId)
+        localGroupRepository.addUserToGroup(userGroupRes.toUserChatInfo())
     }
 
     private fun onChatLeft(): Emitter.Listener {
@@ -268,15 +271,37 @@ class ChatsService : Service() {
     private fun onChatThrowOut(): Emitter.Listener {
         return Emitter.Listener {
             val response = onJSONtoAnyClass(it[0], UserGroup::class.java) as UserGroup
+            Log.d("p1", "$response")
             updateNotification("${response.adminName} ha expulsado a ${response.userName}.")
             serviceScope.launch {
-                addUserToGroup(response)
+                chatThrowOut(response)
             }
         }
     }
 
+    private suspend fun chatThrowOut(userGroupRes: UserGroup) {
+        localGroupRepository.chatThrowOutLocal(userGroupRes.toUserChatInfo())
+    }
+
     private suspend fun leaveGroup(userGroupRes: UserGroup) {
         localGroupRepository.leaveGroup(userGroupRes.roomId, userGroupRes.userId)
+    }
+
+    private fun onChatReceive(): Emitter.Listener {
+        return Emitter.Listener {
+            val response = onJSONtoAnyClass(it[0], Group::class.java) as Group
+            updateNotification("El grupo ${response.name} ha sido creado.")
+            chatReceive(response)
+            if (_savedGroup.value?.status != Resource.Status.ERROR) {
+                EventBus.getDefault().post(response)
+            }
+        }
+    }
+
+    private fun chatReceive(newGroup: Group) {
+        serviceScope.launch {
+            _savedGroup.value = localGroupRepository.createGroup(newGroup)
+        }
     }
 
     private fun updateNotification(contentText: String) {
@@ -495,7 +520,7 @@ class ChatsService : Service() {
             val allUser = _allUser.value?.data
             if (allUser != null) {
                 for (userRequest in allUser) {
-                    val user = User(userRequest.id, userRequest.name, userRequest.surname, userRequest.email, userRequest.phone_number1, userRequest.roleId)
+                    val user = User(userRequest.id, userRequest.name, userRequest.surname, userRequest.email, userRequest.phoneNumber1, userRequest.roleId)
                     localUserRepository.createUser(user)
                     userChatInfo.addAll(userRequest.userChatInfo)
                 }
@@ -555,7 +580,6 @@ class ChatsService : Service() {
                         pendingGroupResponse.type,
                         pendingGroupResponse.created,
                         pendingGroupResponse.deleted,
-                        pendingGroupResponse.localDeleted,
                         pendingGroupResponse.adminId)
                     localGroupRepository.updateGroup(pendingGroup)
                 }
@@ -589,6 +613,8 @@ class ChatsService : Service() {
             type,
             chatId,
             userId)
+
+    private fun UserGroup.toUserChatInfo() = UserChatInfo(userId, roomId, joined, deleted)
 
     private fun SocketMessageRes.toMessage() = Message(localId, messageServerId, message, sent, saved, room, authorId, type, null)
 
