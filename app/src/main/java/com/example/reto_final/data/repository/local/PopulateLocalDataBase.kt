@@ -256,8 +256,8 @@ class PopulateLocalDataBase(
             val allUser = _allUser.value?.data
             if (allUser != null) {
                 for (userRequest in allUser) {
-                    Log.d("VENGA", ""+userRequest.phoneNumber1)
-                    val user = User(userRequest.id, userRequest.name, userRequest.surname, userRequest.email, userRequest.phoneNumber1, userRequest.roleId)
+                    Log.d("VENGA", ""+userRequest.phone_number1)
+                    val user = User(userRequest.id, userRequest.name, userRequest.surname, userRequest.email, userRequest.phone_number1, userRequest.roleId)
                     userLocalRepository.createUser(user)
                     userChatInfo.addAll(userRequest.userChatInfo)
                 }

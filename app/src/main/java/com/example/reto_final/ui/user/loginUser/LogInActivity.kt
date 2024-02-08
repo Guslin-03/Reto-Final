@@ -66,7 +66,6 @@ class LogInActivity : AppCompatActivity(){
                         .show()
                 }
             }
-//            mockData()
         }
 
         viewModel.loginUser.observe(this) {
@@ -193,30 +192,6 @@ class LogInActivity : AppCompatActivity(){
         }else {
             MyApp.userPreferences.removeData()
         }
-    }
-    private fun mockData() {
-
-        val listRoles = arrayOf(Role(1, UserRoleType.Profesor.toString()))
-        val loginUser = LoginUser(
-            1,
-            "78771912V",
-            "David",
-            "Comeron",
-            601269008,
-            601269008,
-            "address",
-            "photo",
-            1,
-            "davidcomeron@elorrieta.com",
-            emptyArray(),
-            listRoles,
-            1,
-            "",
-            "")
-        MyApp.userPreferences.saveUser(loginUser)
-
-        chat()
-
     }
 
     private fun checkData(): Boolean {
