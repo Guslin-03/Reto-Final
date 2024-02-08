@@ -2,10 +2,15 @@ package com.example.reto_final.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Base64
 import com.example.reto_final.data.model.user.LoginUser
 import com.google.gson.Gson
 import io.socket.client.Socket
 import org.greenrobot.eventbus.EventBus
+import java.io.ByteArrayOutputStream
 
 class UserPreferences {
     private val sharedPreferences: SharedPreferences by lazy{
@@ -20,8 +25,43 @@ class UserPreferences {
         const val PASS = "pass"
         const val HIBERNATE_TOKEN = "hibernate_token"
         const val DATABASE_CREATED = "isDatabaseCreated"
+        const val PROFILE_PICTURE = "profile_picture"
+        const val PROFILE_PICTURE_CAMERA = "profile_picture_camera"
+
 
     }
+    fun saveProfilePicture(uri: Uri) {
+        val editor = sharedPreferences.edit()
+        editor.putString(PROFILE_PICTURE, uri?.toString())
+        editor.apply()
+    }
+
+    fun getProfilePictureUri(): Uri? {
+        val uriString = sharedPreferences.getString(PROFILE_PICTURE, null)
+        return uriString?.let { Uri.parse(it) }
+    }
+
+    fun saveProfilePictureCamera(uri: Uri) {
+        val editor = sharedPreferences.edit()
+        editor.putString(PROFILE_PICTURE_CAMERA, uri?.toString())
+        editor.apply()
+    }
+
+    fun getProfilePictureUriCamera(): Uri? {
+        val uriString = sharedPreferences.getString(PROFILE_PICTURE_CAMERA, null)
+        return uriString?.let { Uri.parse(it) }
+    }
+    fun removeProfilePictureUri() {
+        val editor = sharedPreferences.edit()
+        editor.remove("profile_picture")
+        editor.apply()
+    }
+    fun removeProfilePictureUriCamera() {
+        val editor = sharedPreferences.edit()
+        editor.remove("profile_picture_camera")
+        editor.apply()
+    }
+
 
     fun saveDataBaseIsCreated(isDatabaseCreated: Boolean) {
         val editor = sharedPreferences.edit()
@@ -81,6 +121,8 @@ class UserPreferences {
         editor.remove("user_token")
         editor.remove("user_info")
         editor.remove("hibernate_token")
+        editor.remove("profile_picture_camera")
+        editor.remove("profile_picture")
         editor.putBoolean(REMEMBER_ME, false)
         editor.apply()
     }

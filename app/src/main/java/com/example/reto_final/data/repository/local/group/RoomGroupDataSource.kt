@@ -99,7 +99,7 @@ class RoomGroupDataSource : CommonGroupRepository {
 
     override suspend fun leaveGroup(idGroup: Int, idUser: Int): Resource<Int> {
         return try {
-            val affectedRowCount = groupDao.updateDeleteDateInGroup(idGroup, idUser, Date().time)
+            val affectedRowCount = groupDao.leaveGroupLocalPending(idGroup, idUser, Date().time)
             Resource.success(affectedRowCount)
         } catch (exception: Exception) {
             Resource.error("Failed leave a group")
@@ -108,7 +108,7 @@ class RoomGroupDataSource : CommonGroupRepository {
 
     override suspend fun chatThrowOutLocal(userChatInfo: UserChatInfo): Resource<Int> {
         return try {
-            val affectedRowCount = groupDao.updateDeleteDateInGroup(userChatInfo.chatId, userChatInfo.userId, userChatInfo.deleted)
+            val affectedRowCount = groupDao.removeUserGroup(userChatInfo.chatId, userChatInfo.userId, userChatInfo.deleted)
             Resource.success(affectedRowCount)
         } catch (exception: Exception) {
             Resource.error("Failed to throw out a user from group")
@@ -177,8 +177,10 @@ interface GroupDao {
     suspend fun updateUserChatInfo(chatId: Int, userId: Int, deleted: Date?)
     @Query("UPDATE group_user SET joined = :joined, deleted = null WHERE groupId = :idGroup AND userId = :idUser")
     suspend fun updateJoinDateInGroupUser(idGroup: Int, idUser: Int, joined: Long): Int
+    @Query("UPDATE group_user SET deleted = :deleted WHERE groupId = :idGroup AND userId = :idUser")
+    suspend fun removeUserGroup(idGroup: Int, idUser: Int, deleted: Long?): Int
     @Query("UPDATE group_user SET localDeleted = :deleted WHERE groupId = :idGroup AND userId = :idUser")
-    suspend fun updateDeleteDateInGroup(idGroup: Int, idUser: Int, deleted: Long?): Int
+    suspend fun leaveGroupLocalPending(idGroup: Int, idUser: Int, deleted: Long?): Int
     @Query("UPDATE groups SET deleted = :deleted WHERE id = :groupId")
     suspend fun updateGroup(groupId: Int?, deleted: Long?) : Int
 

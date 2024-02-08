@@ -214,7 +214,8 @@ class MessageActivity : AppCompatActivity() {
                 }
 
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Eres el administrador, solo puedes eliminar el grupo", Toast.LENGTH_LONG)
+                        .show()
                 }
 
                 Resource.Status.LOADING -> {

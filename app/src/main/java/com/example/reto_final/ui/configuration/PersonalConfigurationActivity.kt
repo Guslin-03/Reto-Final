@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -28,6 +29,7 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
+import java.io.ByteArrayOutputStream
 
 class PersonalConfigurationActivity: AppCompatActivity() {
 
@@ -44,6 +46,7 @@ class PersonalConfigurationActivity: AppCompatActivity() {
         if(user != null) {
             setData(user)
         }
+        showPhoto()
 
         binding.next.setOnClickListener {
             if (user != null) {
@@ -200,25 +203,36 @@ class PersonalConfigurationActivity: AppCompatActivity() {
         if (resultCode == RESULT_OK) {
 
             if (requestCode == 1) {
-
-                val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(resources, data?.extras?.get("data") as? Bitmap)
-                roundedBitmapDrawable.isCircular = true
-
-                binding.profilePicture.setImageDrawable(roundedBitmapDrawable)
-
-            }else if (requestCode == 2) {
-
-                Glide.with(this)
-                    .load(data?.data)
-                    .apply(RequestOptions().transform(CircleCrop()))
-                    .into(binding.profilePicture)
-
+                if (data != null && data.extras != null) {
+                    val bitmap = data.extras!!.get("data") as Bitmap
+                    val uri = getImageUri(bitmap)
+                    MyApp.userPreferences.removeProfilePictureUri()
+                    MyApp.userPreferences.saveProfilePictureCamera(uri)
+                    val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(resources, bitmap)
+                    roundedBitmapDrawable.isCircular = true
+                    binding.profilePicture.setImageDrawable(roundedBitmapDrawable)
+                }
+            } else if (requestCode == 2) {
+                if (data != null && data.data != null) {
+                    MyApp.userPreferences.removeProfilePictureUriCamera()
+                    MyApp.userPreferences.saveProfilePicture(data.data!!)
+                    Glide.with(this)
+                        .load(data.data)
+                        .apply(RequestOptions().transform(CircleCrop()))
+                        .into(binding.profilePicture)
+                }
             }
+
 
         }
 
     }
-
+private fun getImageUri(bitmap: Bitmap): Uri {
+    val bytes = ByteArrayOutputStream()
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+    val path = MediaStore.Images.Media.insertImage(applicationContext.contentResolver, bitmap, "Title", null)
+    return Uri.parse(path)
+}
     private fun validatePhone(cadena: String): Boolean {
         val regex = Regex("\\d{9}")
         return cadena.matches(regex)
@@ -239,4 +253,20 @@ class PersonalConfigurationActivity: AppCompatActivity() {
         finish()
     }
 
+    private fun showPhoto(){
+        val cameraPhoto = MyApp.userPreferences.getProfilePictureUriCamera()
+        val savedPhotoLocal= MyApp.userPreferences.getProfilePictureUri()
+        if(cameraPhoto !=null){
+            var photo= Uri.parse(cameraPhoto.toString())
+            Glide.with(this)
+                .load(photo)
+                .apply(RequestOptions().transform(CircleCrop()))
+                .into(binding.profilePicture)
+        }else if(savedPhotoLocal!=null ){
+            Glide.with(this)
+                .load(savedPhotoLocal)
+                .apply(RequestOptions().transform(CircleCrop()))
+                .into(binding.profilePicture)
+        }
+    }
 }
