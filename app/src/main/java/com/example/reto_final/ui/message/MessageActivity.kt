@@ -87,6 +87,7 @@ class MessageActivity : AppCompatActivity() {
     private val CAMERA_REQUEST_CODE = 1
     private val IMAGE_REQUEST_CODE = 2
     private val FILE_REQUEST_CODE = 3
+    private val CAMERA_PERMISSION_CODE = 4
     private val fileManager = FileManager(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -481,11 +482,22 @@ class MessageActivity : AppCompatActivity() {
     }
 
     private fun openCamera() {
-        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
+        if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE)
         } else {
-            Toast.makeText(this, "Este dispositivo no tiene una cámara", Toast.LENGTH_SHORT).show()
+            // Solicitar permiso si no está otorgado
+            requestPermissions(arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
+        }
+    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera()
+            } else {
+                Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
