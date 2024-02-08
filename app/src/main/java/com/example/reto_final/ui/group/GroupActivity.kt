@@ -44,7 +44,7 @@ class GroupActivity: AppCompatActivity() {
     private lateinit var binding: GroupActivityBinding
     private lateinit var groupAdapter: GroupAdapter
     private val loginUserRepository = RemoteLoginUserDataSource()
-    private val loginUserViewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(loginUserRepository,applicationContext) }
+    private val loginUserViewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(loginUserRepository) }
     private val groupRepository = RoomGroupDataSource()
     private val remoteGroupRepository = RemoteGroupDataSource()
     private lateinit var group: Group

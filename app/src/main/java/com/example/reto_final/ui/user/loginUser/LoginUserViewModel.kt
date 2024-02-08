@@ -1,6 +1,5 @@
 package com.example.reto_final.ui.user.loginUser
 
-import android.content.Context
 import android.os.Build
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -21,8 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class LoginUserViewModel(
-    private val userRepository: CommonLoginUserRepository,
-    private val context: Context
+    private val userRepository: CommonLoginUserRepository
 ) : ViewModel() {
 
     private val _login_user = MutableLiveData<Resource<LoginUser>>()
@@ -145,11 +143,10 @@ class LoginUserViewModel(
 }
 
 class LoginUserViewModelFactory(
-    private val userRepository: CommonLoginUserRepository,
-    private val context: Context
+    private val userRepository: CommonLoginUserRepository
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-        return LoginUserViewModel(userRepository, context) as T
+        return LoginUserViewModel(userRepository) as T
     }
 
 }

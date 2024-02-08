@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.reto_final.R
+import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
 import com.example.reto_final.databinding.ChangePasswordActivityBinding
 import com.example.reto_final.ui.user.loginUser.LogInActivity
@@ -20,7 +21,7 @@ class RegisterChangePasswordActivity : AppCompatActivity() {
 
     private lateinit var binding: ChangePasswordActivityBinding
     private val userRepository = RemoteLoginUserDataSource()
-    private val viewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(userRepository, applicationContext) }
+    private val viewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(userRepository) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +32,7 @@ class RegisterChangePasswordActivity : AppCompatActivity() {
 
         binding.changePassword.setOnClickListener {
 
-            if (user != null) {
+            if (user != null && InternetChecker.isNetworkAvailable(applicationContext)) {
                 if (checkData())  {
                     viewModel.onRegister(
                         user.DNI,
@@ -46,8 +47,10 @@ class RegisterChangePasswordActivity : AppCompatActivity() {
                         binding.newPassword1.text.toString()
                     )
                 }
+            }else{
+                Toast.makeText(this, "No se ha podido actualizar el perfil", Toast.LENGTH_LONG).show()
+              backToLogIn()
             }
-            //backToLogIn()
         }
 
         binding.back.setOnClickListener {

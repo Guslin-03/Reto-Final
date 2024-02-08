@@ -17,10 +17,7 @@ import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.content.ContextCompat
 import com.example.reto_final.R
 import com.example.reto_final.data.model.InternetChecker
-import com.example.reto_final.data.model.user.LoginUser
-import com.example.reto_final.data.model.Role
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
-import com.example.reto_final.data.repository.local.user.UserRoleType
 import com.example.reto_final.databinding.LoginActivityBinding
 import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.ui.register.RegisterPersonalConfigurationActivity
@@ -33,7 +30,7 @@ class LogInActivity : AppCompatActivity(){
 
     private lateinit var binding: LoginActivityBinding
     private val userRepository = RemoteLoginUserDataSource()
-    private val viewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(userRepository,applicationContext) }
+    private val viewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(userRepository) }
     private lateinit var rememberMeCheckBox: AppCompatCheckBox
     private lateinit var email:String
     private lateinit var loginButton: Button
@@ -42,8 +39,10 @@ class LogInActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         binding = LoginActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         loginButton = binding.login
         loginButton.isEnabled=false
+
         handler.postDelayed({
             loginButton.isEnabled=true
         }, 2000)
@@ -123,13 +122,11 @@ class LogInActivity : AppCompatActivity(){
                     if(it.data==1){
                         viewModel.onResetPassword(email)
                     }
-
                 }
                 Resource.Status.ERROR -> {
                     Toast.makeText(this, "Ha habido algun error procesando la solicitud", Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
-
                 }
             }
         }
@@ -155,10 +152,12 @@ class LogInActivity : AppCompatActivity(){
         builder.setView(dialogView)
         builder.setTitle("Introduce tu correo electrónico")
         val editText = dialogView.findViewById<EditText>(R.id.editText)
+
         builder.setPositiveButton("Aceptar") { _, _ ->
             email = editText.text.toString()
            sendEmail(email)
         }
+
         builder.setNegativeButton("Cancelar") { dialog, _ ->
             dialog.dismiss()
         }

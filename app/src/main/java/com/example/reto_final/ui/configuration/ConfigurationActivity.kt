@@ -25,7 +25,7 @@ class ConfigurationActivity : AppCompatActivity() {
     private lateinit var moduleAdapter: ModuleAdapter
     private lateinit var nombresDeGrados: Array<String>
     private val userRepository = RemoteLoginUserDataSource()
-    private val viewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(userRepository, applicationContext) }
+    private val viewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(userRepository) }
     private val user = MyApp.userPreferences.getUser()
 
     override fun onCreate(savedInstanceState: Bundle?) {
