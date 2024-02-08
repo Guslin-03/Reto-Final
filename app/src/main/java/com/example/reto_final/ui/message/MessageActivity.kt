@@ -35,7 +35,6 @@ import com.example.reto_final.data.repository.local.message.MessageEnumClass
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
 import com.example.reto_final.data.repository.local.user.UserRoleType
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
-import com.example.reto_final.data.repository.remote.RemoteMessageDataSource
 import com.example.reto_final.data.socket.SocketEvents
 import com.example.reto_final.data.socket.SocketMessageReq
 import com.example.reto_final.databinding.MessageActivityBinding
@@ -65,16 +64,9 @@ class MessageActivity : AppCompatActivity() {
     private lateinit var binding: MessageActivityBinding
     private lateinit var messageAdapter: MessageAdapter
     private val messageRepository = RoomMessageDataSource()
-    private val messageViewModel: MessageViewModel by viewModels {
-        RoomMessageViewModelFactory(
-            messageRepository,
-            remoteMessageRepository,
-            applicationContext
-        )
-    }
+    private val messageViewModel: MessageViewModel by viewModels { RoomMessageViewModelFactory(messageRepository) }
     private val groupRepository = RoomGroupDataSource()
     private val remoteGroupRepository = RemoteGroupDataSource()
-    private val remoteMessageRepository = RemoteMessageDataSource()
     private val groupViewModel: GroupViewModel by viewModels {
         RoomGroupViewModelFactory(
             groupRepository,
@@ -113,25 +105,6 @@ class MessageActivity : AppCompatActivity() {
                 Resource.Status.SUCCESS -> {
                     Log.d("prueba3", ""+ (it.data))
                     messageAdapter.submitList(it.data)
-                }
-
-                Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
-                }
-
-                Resource.Status.LOADING -> {
-                }
-            }
-        }
-
-        messageViewModel.incomingMessage.observe(this) {
-            when (it.status) {
-                Resource.Status.SUCCESS -> {
-                    if (group.id != null) {
-                        Log.d("prueba1", ""+ (it.data?.text))
-                        messageViewModel.updateMessageList(group.id!!)
-                    }
-
                 }
 
                 Resource.Status.ERROR -> {

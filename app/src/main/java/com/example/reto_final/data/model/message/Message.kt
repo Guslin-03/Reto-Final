@@ -1,8 +1,6 @@
 package com.example.reto_final.data.model.message
 
 import android.os.Parcelable
-import androidx.room.ColumnInfo
-import com.example.reto_final.data.repository.local.message.MessageEnumClass
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -14,7 +12,8 @@ data class Message(
     val saved: Long?,
     var chatId: Int,
     val userId: Int,
-    val type: String
+    val type: String,
+    var userName: String?
 
 ) : Parcelable {
     constructor(
@@ -23,7 +22,7 @@ data class Message(
         type:String,
         chatId: Int,
         userId: Int
-    ) : this(null, null, text, sent, null, chatId, userId,type)
+    ) : this(null, null, text, sent, null, chatId, userId, type, null)
 
     constructor(
         idServer: Int,
@@ -33,7 +32,7 @@ data class Message(
         type: String,
         chatId: Int,
         userId: Int
-    ) : this(null, idServer, text, sent, saved, chatId, userId,type)
+    ) : this(null, idServer, text, sent, saved, chatId, userId, type, null)
 
     constructor(
         id: Int,
@@ -42,6 +41,16 @@ data class Message(
         type: String,
         chatId: Int,
         userId: Int
-    ) : this(id, null, text, sent, null, chatId, userId, type)
+    ) : this(id, null, text, sent, null, chatId, userId, type, null)
+
+    constructor(
+        id: Int,
+        text: String,
+        sent: Long,
+        type: String,
+        chatId: Int,
+        userId: Int,
+        userName: String
+    ) : this(id, null, text, sent, null, chatId, userId, type, userName)
 
 }

@@ -1,34 +1,24 @@
 package com.example.reto_final.ui.message
 
-import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.example.reto_final.data.model.group.Group
-import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
-import com.example.reto_final.data.repository.remote.RemoteMessageRepository
 import com.example.reto_final.utils.Resource
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
 
-class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource,
-                       private val remoteMessageRepository: RemoteMessageRepository,
-                        private val context: Context
+class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
 ) : ViewModel() {
 
     private val _message = MutableLiveData<Resource<List<Message>>>()
     val message : LiveData<Resource<List<Message>>> get() = _message
-
-    private val _incomingMessage = MutableLiveData<Resource<Message>>()
-    val incomingMessage : LiveData<Resource<Message>> get() = _incomingMessage
 
     private val _createLocalMessage = MutableLiveData<Resource<Message>>()
     val createLocalMessage : LiveData<Resource<Message>> get() = _createLocalMessage
@@ -41,23 +31,6 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
     private suspend fun getMessagesFromGroup(groupId: Int) : Resource<List<Message>> {
         return withContext(IO) {
             messageLocalRepository.getMessagesFromGroup(groupId)
-        }
-    }
-    private suspend fun saveIncomingMessage(message: Message) : Resource<Message> {
-        return withContext(IO) {
-            //Cambiar
-            messageLocalRepository.updateMessage(message)
-        }
-    }
-
-    fun onSaveIncomingMessage(message: Message, selectedGroup: Group) {
-        viewModelScope.launch {
-            val newMessage = saveIncomingMessage(message)
-            if (newMessage.data?.chatId == selectedGroup.id) {
-                Log.d("prueba2", ""+ (newMessage.data?.text))
-                newMessage.status = Resource.Status.SUCCESS
-                _incomingMessage.value = newMessage
-            }
         }
     }
 
@@ -80,12 +53,9 @@ class MessageViewModel(private val messageLocalRepository: RoomMessageDataSource
 }
 
 class RoomMessageViewModelFactory(
-    private val roomMessageRepository: RoomMessageDataSource,
-    private val remoteMessageRepository: RemoteMessageRepository,
-    private val context:Context
-): ViewModelProvider.Factory {
+    private val roomMessageRepository: RoomMessageDataSource): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-        return MessageViewModel(roomMessageRepository, remoteMessageRepository, context) as T
+        return MessageViewModel(roomMessageRepository) as T
     }
 
 }

@@ -45,9 +45,13 @@ class MessageAdapter(
         fun bind(message: Message) {
 
             binding.image.visibility = View.GONE
+            binding.name.text = message.userName.toString()
+            showMedia(message)
+            setMessageFormat(message)
+        }
+
+        private fun showMedia(message:Message) {
             if (message.text.startsWith(context.getExternalFilesDir(null).toString()+ "/RetoFinalImage")){
-                Log.d("ADIOS", ""+message)
-                Log.d("ADIOS", "Encuentra una imagen")
                 Glide.with(context)
                     .load(File(message.text))
                     .into(binding.image)
@@ -58,9 +62,8 @@ class MessageAdapter(
             }else{
                 binding.text.text = message.text
             }
-
-            setMessageFormat(message)
         }
+
         private fun setMessageFormat(message:Message){
             if (MyApp.userPreferences.getUser()?.id == message.userId) {
                 binding.name.visibility = View.GONE
@@ -84,8 +87,6 @@ class MessageAdapter(
                 val drawable = ContextCompat.getDrawable(context, R.drawable.background_received)
                 binding.linearLayout1.background = drawable
 
-                binding.name.text = message.userId.toString()
-
                 binding.sentHour.text = message.saved?.let { parseDate(it) }
 
             }
@@ -95,7 +96,6 @@ class MessageAdapter(
         private fun parseDate(hour: Long): String {
             val hora = Date(hour)
             val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
-
             return formatter.format(hora)
         }
     }

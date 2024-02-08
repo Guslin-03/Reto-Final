@@ -217,7 +217,15 @@ class ChatsService : Service() {
     private fun onIsFile(incomingMessage : Message) : Message {
         return if (incomingMessage.type == MessageEnumClass.FILE.toString()){
             val location = fileManager.saveBase64ToFile(incomingMessage.text)
-            Message(incomingMessage.id,incomingMessage.idServer, location, incomingMessage.sent, incomingMessage.saved, incomingMessage.chatId, incomingMessage.userId, incomingMessage.type)
+            Message(
+                incomingMessage.id,
+                incomingMessage.idServer,
+                location, incomingMessage.sent,
+                incomingMessage.saved,
+                incomingMessage.chatId,
+                incomingMessage.userId,
+                incomingMessage.type,
+                null)
         }else{
             incomingMessage
         }
@@ -314,7 +322,7 @@ class ChatsService : Service() {
                 && _lastMessage.value?.status == Resource.Status.SUCCESS
                 && _pendingMessage.value?.status == Resource.Status.SUCCESS
             ) {
-//                Log.d("p1", "GetAllLastData")
+//              Log.d("p1", "GetAllLastData")
                 getAllData()
                 Log.d("p1", "${_allMessage.value?.data}")
                 Log.d("p1", "${_allUser.value?.data}")
@@ -327,9 +335,7 @@ class ChatsService : Service() {
                     && _allGroup.value?.status == Resource.Status.SUCCESS
                     && _allPendingMessages.value?.status == Resource.Status.SUCCESS
                 ) {
-
                     setAllData()
-
 //                    Log.d("p1", "getAllData")
                     if (_allGroup.value!!.data?.isNotEmpty() == true) {
                         EventBus.getDefault().post(_allGroup.value!!.data)
@@ -340,11 +346,9 @@ class ChatsService : Service() {
                     if (_allPendingMessages.value!!.data?.isNotEmpty() == true) {
                         EventBus.getDefault().post(_allPendingMessages.value!!.data)
                     }
-
                 }
             }
         }
-
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -468,7 +472,6 @@ class ChatsService : Service() {
         setAllMessages()
         updateAllPendingMessages()
 //        updateAllPendingGroups()
-
     }
 
     private suspend fun setAllRoles() {
@@ -491,8 +494,7 @@ class ChatsService : Service() {
             val allUser = _allUser.value?.data
             if (allUser != null) {
                 for (userRequest in allUser) {
-                    Log.d("VENGA", ""+userRequest.phone_number1)
-                    val user = User(userRequest.id, userRequest.name, userRequest.surname, userRequest.email, userRequest.phone_number1, userRequest.roleId)
+                    val user = User(userRequest.id, userRequest.name, userRequest.surname, userRequest.email, userRequest.phoneNumber1, userRequest.roleId)
                     localUserRepository.createUser(user)
                     userChatInfo.addAll(userRequest.userChatInfo)
                 }
@@ -535,18 +537,9 @@ class ChatsService : Service() {
             val allPendingMessagesResponse = _allPendingMessages.value?.data
             if (allPendingMessagesResponse != null) {
                 for (pendingMessageResponse in allPendingMessagesResponse) {
-                    val pendingMessage = Message(
-                        pendingMessageResponse.id,
-                        pendingMessageResponse.text,
-                        pendingMessageResponse.sent,
-                        pendingMessageResponse.saved,
-                        pendingMessageResponse.type,
-                        pendingMessageResponse.chatId,
-                        pendingMessageResponse.userId)
-                    localMessageRepository.updateMessage(pendingMessage)
+                    onNewMessageOwner(pendingMessageResponse.toMessage())
                 }
             }
-
         }
     }
 
@@ -566,7 +559,6 @@ class ChatsService : Service() {
                     localGroupRepository.updateGroup(pendingGroup)
                 }
             }
-
         }
     }
 
@@ -597,6 +589,6 @@ class ChatsService : Service() {
             chatId,
             userId)
 
-    private fun SocketMessageRes.toMessage() = Message(localId, messageServerId, message, sent, saved, room, authorId, type)
+    private fun SocketMessageRes.toMessage() = Message(localId, messageServerId, message, sent, saved, room, authorId, type, null)
 
 }

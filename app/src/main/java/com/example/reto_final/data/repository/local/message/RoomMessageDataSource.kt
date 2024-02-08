@@ -13,8 +13,19 @@ class RoomMessageDataSource : CommonMessageRepository {
     private val messageDao: MessageDao = MyApp.db.messageDao()
 
     override suspend fun getMessagesFromGroup(idGroup: Int): Resource<List<Message>> {
-        val response = messageDao.getMessagesFromGroup(idGroup).map { it.toMessage() }
+        val allMessages = messageDao.getMessagesFromGroup(idGroup).map { it.toMessage() }
+        val response = getUserNameMessage(allMessages)
         return Resource.success(response)
+    }
+
+    override suspend fun getUserNameMessage(allMessages : List<Message>): List<Message> {
+        for (message in allMessages) {
+            if (message.id != null) {
+                val response = messageDao.getUserNameForMessage(message.userId, message.id!!)
+                message.userName = response
+            }
+        }
+        return allMessages
     }
 
     override suspend fun createMessage(message: Message): Resource<Message> {
@@ -46,13 +57,16 @@ class RoomMessageDataSource : CommonMessageRepository {
 
 }
 
-fun DbMessage.toMessage() = Message(id, idServer, text, sentDate.time, saveDate?.time, groupId, userId, type)
+fun DbMessage.toMessage() = Message(id, idServer, text, sentDate.time, saveDate?.time, groupId, userId, type, null)
 fun Message.toDbMessage() = DbMessage(id, idServer, text, Date(sent), saved?.let { Date(it) }, type, chatId, userId)
 
 @Dao
 interface MessageDao {
     @Query("SELECT * FROM messages WHERE groupId = :groupId ORDER BY id ASC")
     suspend fun getMessagesFromGroup(groupId: Int): List<DbMessage>
+
+    @Query("SELECT users.name FROM users JOIN messages ON users.id = messages.userId WHERE messages.userId = :userId AND messages.id = :messageId")
+    suspend fun getUserNameForMessage(userId: Int, messageId: Int): String
 
     @Query("SELECT * FROM messages WHERE idServer = (SELECT MAX(idServer) FROM messages)")
     suspend fun getLastMessage(): DbMessage?

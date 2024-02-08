@@ -2,6 +2,7 @@ package com.example.reto_final.data.model.message
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+
 @Parcelize
 data class PendingMessages(
     val room: Int,

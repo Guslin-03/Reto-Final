@@ -20,18 +20,10 @@ import com.example.reto_final.R
 import com.example.reto_final.data.model.group.Group
 import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
-import com.example.reto_final.data.repository.local.PopulateLocalDataBase
-import com.example.reto_final.data.repository.local.PopulateLocalDataBaseFactory
 import com.example.reto_final.data.repository.local.group.ChatEnumType
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
-import com.example.reto_final.data.repository.local.message.RoomMessageDataSource
-import com.example.reto_final.data.repository.local.role.RoomRoleDataSource
-import com.example.reto_final.data.repository.local.user.RoomUserDataSource
 import com.example.reto_final.data.repository.local.user.UserRoleType
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
-import com.example.reto_final.data.repository.remote.RemoteMessageDataSource
-import com.example.reto_final.data.repository.remote.RemoteRoleDataSource
-import com.example.reto_final.data.repository.remote.RemoteUserDataSource
 import com.example.reto_final.databinding.GroupActivityBinding
 import com.example.reto_final.ui.message.MessageActivity
 import com.example.reto_final.ui.configuration.ChangePasswordActivity
@@ -53,19 +45,10 @@ class GroupActivity: AppCompatActivity() {
     private lateinit var groupAdapter: GroupAdapter
     private val loginUserRepository = RemoteLoginUserDataSource()
     private val loginUserViewModel: LoginUserViewModel by viewModels { LoginUserViewModelFactory(loginUserRepository,applicationContext) }
-    private val userRepository = RoomUserDataSource()
-    private val remoteUserRepository = RemoteUserDataSource()
     private val groupRepository = RoomGroupDataSource()
     private val remoteGroupRepository = RemoteGroupDataSource()
     private lateinit var group: Group
     private val groupViewModel: GroupViewModel by viewModels { RoomGroupViewModelFactory(groupRepository, remoteGroupRepository, applicationContext) }
-    private val messageRepository = RoomMessageDataSource()
-    private val remoteMessageRepository = RemoteMessageDataSource()
-    private val localRoleRepository = RoomRoleDataSource()
-    private val remoteRoleRepository = RemoteRoleDataSource()
-    private val populateLocalDataBase: PopulateLocalDataBase by viewModels {
-        PopulateLocalDataBaseFactory(
-            groupRepository, remoteGroupRepository, messageRepository ,remoteMessageRepository ,userRepository, remoteUserRepository, localRoleRepository, remoteRoleRepository ) }
     private val loginUser = MyApp.userPreferences.getUser()
     private lateinit var radioButtonPrivate: RadioButton
     private lateinit var radioButtonPublic: RadioButton
@@ -84,20 +67,6 @@ class GroupActivity: AppCompatActivity() {
         )
 
         binding.groupList.adapter = groupAdapter
-
-        populateLocalDataBase.finish.observe(this) {
-            when(it.status) {
-                Resource.Status.SUCCESS -> {
-                    groupViewModel.updateGroupList()
-                }
-                Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
-                }
-                Resource.Status.LOADING -> {
-                }
-
-            }
-        }
 
         groupViewModel.group.observe(this) {
             when(it.status) {
