@@ -521,7 +521,6 @@ class MessageActivity : AppCompatActivity() {
             }
         }
         if (user!=null && resultCode==Activity.RESULT_OK){
-            Log.d("ADIOS", "Acabo de hacer una foto "+fileLocation)
             messageViewModel.onSendMessage(
                 fileLocation,
                 Date(),

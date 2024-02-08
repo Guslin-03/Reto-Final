@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.CheckBox
@@ -394,11 +393,13 @@ class GroupActivity: AppCompatActivity() {
         finish()
     }
     private fun deleteFolder(){
-        val folder = File(getExternalFilesDir(null), "RetoFinal")
+        val folder = File(getExternalFilesDir(null), "RetoFinalImage")
+        val folder2 = File(getExternalFilesDir(null), "RetoFinalPdf")
         try {
             folder.deleteRecursively()
+            folder2.deleteRecursively()
         } catch (e: SecurityException) {
-            false
+            Toast.makeText(this, "No se han podido borrar los datos locales del usuario", Toast.LENGTH_LONG).show()
         }
     }
 
