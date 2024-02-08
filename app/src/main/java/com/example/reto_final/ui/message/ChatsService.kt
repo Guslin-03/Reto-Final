@@ -495,7 +495,7 @@ class ChatsService : Service() {
             val allUser = _allUser.value?.data
             if (allUser != null) {
                 for (userRequest in allUser) {
-                    val user = User(userRequest.id, userRequest.name, userRequest.surname, userRequest.email, userRequest.phone_number1, userRequest.roleId)
+                    val user = User(userRequest.id, userRequest.name, userRequest.surname, userRequest.email, userRequest.phoneNumber1, userRequest.roleId)
                     localUserRepository.createUser(user)
                     userChatInfo.addAll(userRequest.userChatInfo)
                 }

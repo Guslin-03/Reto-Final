@@ -48,7 +48,7 @@ class RoomUserDataSource: CommonUserRepository {
 
 }
 
-fun DbUser.toUser() = User(id, name, surname, email, phoneNumber, roleId)
+fun DbUser.toUser() = User(id, name, surname, email, phone_number1, roleId)
 fun User.toDbUser() = DbUser(id, name, surname, email, phone_number1, roleId)
 
 @Dao

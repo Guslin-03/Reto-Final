@@ -20,6 +20,6 @@ data class DbUser (
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "surname") val surname: String,
     @ColumnInfo(name = "email") val email: String,
-    @ColumnInfo(name = "phoneNumber") val phoneNumber: Int,
+    @ColumnInfo(name = "phoneNumber") val phone_number1: Int,
     @ColumnInfo(name = "roleId") val roleId: Int
 )

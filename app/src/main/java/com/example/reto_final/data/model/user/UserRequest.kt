@@ -10,7 +10,7 @@ data class UserRequest (
     val name: String,
     val surname: String,
     val email: String,
-    val phone_number1: Int,
+    val phoneNumber1: Int,
     val roleId: Int,
     val chatId: List<Int>,
     val userChatInfo: List<UserChatInfo>
