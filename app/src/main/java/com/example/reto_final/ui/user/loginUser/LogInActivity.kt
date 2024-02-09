@@ -53,18 +53,7 @@ class LogInActivity : AppCompatActivity(){
             popUpCreate()
         }
         binding.login.setOnClickListener {
-
-            var email = binding.email.text.toString()
-            email = lowerCaseEmail(email)
-            val password = binding.password.text.toString()
-            if(checkData()) {
-                if (InternetChecker.isNetworkAvailable(applicationContext)) {
-                    viewModel.onLogIn(email, password)
-                }else {
-                    Toast.makeText(this, "No se puede hacer login sin internet", Toast.LENGTH_LONG)
-                        .show()
-                }
-            }
+            tryToLogin()
         }
 
         viewModel.loginUser.observe(this) {
@@ -171,6 +160,19 @@ class LogInActivity : AppCompatActivity(){
             Toast.makeText(this, "No se puede resetear la contraseña sin conexión", Toast.LENGTH_LONG).show()
         }
     }
+    private fun tryToLogin(){
+        var email = binding.email.text.toString()
+        email = lowerCaseEmail(email)
+        val password = binding.password.text.toString()
+        if(checkData()) {
+            if (InternetChecker.isNetworkAvailable(applicationContext)) {
+                viewModel.onLogIn(email, password)
+            }else {
+                Toast.makeText(this, "No se puede hacer login sin internet", Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
+    }
     private fun redirectAfterLogin(){
         if (binding.password.text.toString() == MyApp.DEFAULT_PASS) {
             logIn()
@@ -188,6 +190,7 @@ class LogInActivity : AppCompatActivity(){
         if(rememberMeCheckBox.isChecked){
             binding.email.setText(MyApp.userPreferences.getUser()!!.email)
             binding.password.setText(MyApp.userPreferences.getPass())
+            tryToLogin()
         }else {
             MyApp.userPreferences.removeData()
         }
