@@ -52,9 +52,10 @@ class RoomGroupDataSource : CommonGroupRepository {
     }
 
     override suspend fun softDeleteGroup(group: Group): Resource<Void> {
-        val response = groupDao.softDeleteGroup(group.id, group.deleted)
+        //FIX ME TRAPI TEMPORAL Date().time es group.deleted
+        val response = groupDao.softDeleteGroup(group.id, Date().time)
         return if (response == 1) {
-            groupDao.softDeleteRelations(group.id, group.deleted)
+            groupDao.softDeleteRelations(group.id, Date().time)
             Resource.success()
         } else {
             Resource.error("Se ha producido un error al eliminar el grupo")
