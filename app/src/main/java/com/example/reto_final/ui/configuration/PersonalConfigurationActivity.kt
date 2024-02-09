@@ -56,13 +56,13 @@ class PersonalConfigurationActivity: AppCompatActivity() {
 
         binding.back.setOnClickListener {
             val builder = AlertDialog.Builder(this)
-            builder.setTitle("¿Deseas continuar?")
-            builder.setMessage("Se perderán las modificaciones realizadas")
+            builder.setTitle(R.string.are_you_sure)
+            builder.setMessage(R.string.will_lose_info)
 
-            builder.setPositiveButton("Continuar") { _, _ ->
+            builder.setPositiveButton(R.string.accept) { _, _ ->
                 backToGroupActivity()
             }
-            builder.setNegativeButton("Cancelar", null)
+            builder.setNegativeButton(R.string.cancel, null)
 
             val dialog = builder.create()
             dialog.show()
@@ -71,9 +71,9 @@ class PersonalConfigurationActivity: AppCompatActivity() {
     }
 
     private fun pickPhoto() {
-        val options = arrayOf<CharSequence>("Tomar foto", "Elegir de la galería", "Cancelar")
+        val options = arrayOf<CharSequence>(getString(R.string.take_picture), getString(R.string.get_picture), getString(R.string.cancel))
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Elige una opción")
+        builder.setTitle(R.string.choose)
         builder.setItems(options) { dialog, which ->
             when (which) {
                 0 -> takePhotoFromCamera()
@@ -89,7 +89,7 @@ class PersonalConfigurationActivity: AppCompatActivity() {
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(takePictureIntent, 1)
         } else {
-            Toast.makeText(this, "Este dispositivo no tiene una cámara", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.toast_no_camera, Toast.LENGTH_SHORT).show()
         }
     }
 

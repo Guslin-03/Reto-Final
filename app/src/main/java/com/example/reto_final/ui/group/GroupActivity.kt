@@ -88,7 +88,7 @@ class GroupActivity: AppCompatActivity() {
                     groupViewModel.updateGroupList()
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.toast_error_generic, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }
@@ -101,7 +101,7 @@ class GroupActivity: AppCompatActivity() {
                     groupViewModel.updateGroupList()
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.toast_error_generic, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }
@@ -115,11 +115,11 @@ class GroupActivity: AppCompatActivity() {
                     if (groupPermission == 1) {
                         goToChat()
                     } else {
-                        Toast.makeText(this, "No tienes permiso para acceder al grupo", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, R.string.toast_no_permission_access, Toast.LENGTH_LONG).show()
                     }
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.toast_error_generic, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }
@@ -137,7 +137,7 @@ class GroupActivity: AppCompatActivity() {
                     }
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.toast_error_generic, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }
@@ -150,7 +150,7 @@ class GroupActivity: AppCompatActivity() {
                     goToChat()
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.toast_error_generic, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }
@@ -289,9 +289,9 @@ class GroupActivity: AppCompatActivity() {
     private fun joinGroup() {
         if (loginUser != null) {
             if (group.id != null) {
-                val options = arrayOf<CharSequence>("Aceptar", "Cancelar")
+                val options = arrayOf<CharSequence>(getString(R.string.accept), getString(R.string.cancel))
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("¿Quieres entrar al grupo?")
+                builder.setTitle(R.string.enter_group)
                 builder.setItems(options) { dialog, which ->
                     when (which) {
                         0 -> groupViewModel.onJoinGroup(group.id!!)
@@ -318,24 +318,24 @@ class GroupActivity: AppCompatActivity() {
         val checkBox = dialogView.findViewById<CheckBox>(R.id.checkBoxPrivate)
 
         builder.setView(dialogView)
-        builder.setTitle("Elige una opción")
+        builder.setTitle(R.string.choose)
 
-        builder.setPositiveButton("Aceptar") { _, _ ->
+        builder.setPositiveButton(R.string.accept) { _, _ ->
             val text = editText.text.toString()
             val isChecked = checkBox.isChecked
             if(!InternetChecker.isNetworkAvailable(applicationContext)){
-                Toast.makeText(this, "Necesitas internet para crear un grupo", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.toast_no_internet, Toast.LENGTH_LONG).show()
             }
             else if (isChecked && userIsTeacher()) {
                 MyApp.userPreferences.getUser()?.let { groupViewModel.onCreate(text, "PRIVATE", it.id) }
             } else if (isChecked) {
-                Toast.makeText(this, "No tienes permisos para crear grupos privados", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.toast_no_permission_create, Toast.LENGTH_LONG).show()
             } else {
                 MyApp.userPreferences.getUser()?.let { groupViewModel.onCreate(text, "PUBLIC", it.id) }
             }
 
         }
-        builder.setNegativeButton("Cancelar") { dialog, _ ->
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
             dialog.dismiss()
         }
 
@@ -374,7 +374,7 @@ class GroupActivity: AppCompatActivity() {
             folder.deleteRecursively()
             folder2.deleteRecursively()
         } catch (e: SecurityException) {
-            Toast.makeText(this, "No se han podido borrar los datos locales del usuario", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.toast_delete_data, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -388,7 +388,7 @@ class GroupActivity: AppCompatActivity() {
             val intent = Intent(this, ChangePasswordActivity::class.java)
             startActivity(intent)
         }else{
-            Toast.makeText(this, "No puedes cambiar la contraseña sin internet", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.toast_no_internet, Toast.LENGTH_LONG).show()
         }
 
     }

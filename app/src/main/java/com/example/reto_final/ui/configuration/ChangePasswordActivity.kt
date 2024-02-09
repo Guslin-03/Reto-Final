@@ -13,7 +13,6 @@ import androidx.core.view.isVisible
 import com.example.reto_final.R
 import com.example.reto_final.data.repository.RemoteLoginUserDataSource
 import com.example.reto_final.databinding.ChangePasswordActivityBinding
-import com.example.reto_final.ui.group.GroupActivity
 import com.example.reto_final.ui.user.loginUser.LogInActivity
 import com.example.reto_final.ui.user.loginUser.LoginUserViewModel
 import com.example.reto_final.ui.user.loginUser.LoginUserViewModelFactory
@@ -47,13 +46,13 @@ class ChangePasswordActivity: AppCompatActivity() {
 
         binding.back.setOnClickListener {
             val builder = AlertDialog.Builder(this)
-            builder.setTitle("¿Deseas continuar?")
-            builder.setMessage("Se perderán las modificaciones realizadas")
+            builder.setTitle(R.string.are_you_sure)
+            builder.setMessage(R.string.will_lose_info)
 
-            builder.setPositiveButton("Continuar") { _, _ ->
+            builder.setPositiveButton(R.string.accept) { _, _ ->
                 backToGroupActivity()
             }
-            builder.setNegativeButton("Cancelar", null)
+            builder.setNegativeButton(R.string.cancel, null)
 
             val dialog = builder.create()
             dialog.show()
@@ -67,7 +66,7 @@ class ChangePasswordActivity: AppCompatActivity() {
                     MyApp.userPreferences.removeData()
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, "No se ha podido cerrar la sesión", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.toast_no_logout, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }
@@ -81,7 +80,7 @@ class ChangePasswordActivity: AppCompatActivity() {
                     viewModel.onLogOut()
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, "No se ha podido actualizar la contraseña", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.toast_no_pass_update, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }

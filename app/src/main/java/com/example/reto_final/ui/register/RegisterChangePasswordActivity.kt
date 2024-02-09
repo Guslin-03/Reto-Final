@@ -48,7 +48,7 @@ class RegisterChangePasswordActivity : AppCompatActivity() {
                     )
                 }
             }else{
-                Toast.makeText(this, "No se ha podido actualizar el perfil", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.toast_profile_error, Toast.LENGTH_LONG).show()
               backToLogIn()
             }
         }
@@ -65,7 +65,7 @@ class RegisterChangePasswordActivity : AppCompatActivity() {
                     MyApp.userPreferences.removeData()
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.toast_error_generic, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }
@@ -78,7 +78,7 @@ class RegisterChangePasswordActivity : AppCompatActivity() {
                     viewModel.onLogOut()
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.toast_error_generic, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }

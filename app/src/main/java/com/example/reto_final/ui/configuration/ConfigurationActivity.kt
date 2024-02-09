@@ -66,7 +66,7 @@ class ConfigurationActivity : AppCompatActivity() {
                     user.email
                 )
             } else{
-                Toast.makeText(this, "No puedes cambiar datos personales sin internet", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.toast_no_internet, Toast.LENGTH_LONG).show()
         }
             backToGroupActivity()
         }
@@ -81,7 +81,7 @@ class ConfigurationActivity : AppCompatActivity() {
                     backToGroupActivity()
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, "No se ha podido actualizar el perfil", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.toast_no_profile_update, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }

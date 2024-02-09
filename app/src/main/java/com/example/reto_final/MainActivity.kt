@@ -40,13 +40,13 @@ class MainActivity : AppCompatActivity() {
     }
     private fun networkRetry() {
         if (count == 0) {
-            Toast.makeText(this, "Sin conexión, reintentando conexión...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.toast_loading_internet, Toast.LENGTH_SHORT).show()
             count++
             handler.postDelayed({
                 if (InternetChecker.isNetworkAvailable(context)) {
                     logIn()
                 } else {
-                    Toast.makeText(this, "Sin conexión, acceso a funcionalidades limitadas", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, R.string.toast_second_loading_internet, Toast.LENGTH_SHORT).show()
                      if (MyApp.userPreferences.getUser() != null && !InternetChecker.isNetworkAvailable(
                             applicationContext)) {
                          chat()

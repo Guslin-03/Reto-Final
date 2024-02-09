@@ -58,7 +58,7 @@ class MessageAdapter(
                 binding.text.text=""
                 binding.image.visibility = View.VISIBLE
             }else if (message.text.startsWith(context.getExternalFilesDir(null).toString()+ "/RetoFinalPdf")){
-                binding.text.text="Descargar PDF"
+                binding.text.setText(R.string.download_pdf)
             }else{
                 binding.text.text = message.text
             }

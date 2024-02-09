@@ -174,7 +174,7 @@ class MessageActivity : AppCompatActivity() {
                     if (groupPermission == 1) {
                         groupViewModel.onDelete(group)
                     } else {
-                        Toast.makeText(this, "No tienes permiso para eliminar el grupo", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, R.string.toast_delete_group_permission, Toast.LENGTH_LONG).show()
                     }
                 }
 
@@ -190,13 +190,13 @@ class MessageActivity : AppCompatActivity() {
         groupViewModel.delete.observe(this) {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
-                    Toast.makeText(this, "El grupo ha sido eliminado con éxito.", Toast.LENGTH_LONG)
+                    Toast.makeText(this, R.string.toast_delete_group, Toast.LENGTH_LONG)
                         .show()
                     goToGroups()
                 }
 
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.toast_error_generic, Toast.LENGTH_LONG).show()
                 }
 
                 Resource.Status.LOADING -> {
@@ -207,14 +207,13 @@ class MessageActivity : AppCompatActivity() {
         groupViewModel.leaveGroup.observe(this) {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
-                    Log.d("MensajeGrupo", "Entra en success")
-                    Toast.makeText(this, "Has abandonado el grupo con éxito.", Toast.LENGTH_LONG)
+                    Toast.makeText(this, R.string.toast_leave_group, Toast.LENGTH_LONG)
                         .show()
                     goToGroups()
                 }
 
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, "Eres el administrador, solo puedes eliminar el grupo", Toast.LENGTH_LONG)
+                    Toast.makeText(this, R.string.toast_leave_group_admin, Toast.LENGTH_LONG)
                         .show()
                 }
 
@@ -300,7 +299,7 @@ class MessageActivity : AppCompatActivity() {
                 }
             }
         } else {
-            Toast.makeText(this, "No puedes abandonar un grupo privado.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.toast_private_group, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -322,16 +321,16 @@ class MessageActivity : AppCompatActivity() {
                 popToDeleteGroup()
             }
         } else {
-            Toast.makeText(this, "No se puede eliminar un grupo sin internet", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.toast_no_internet, Toast.LENGTH_LONG).show()
         }
 
     }
 
     private fun popToDeleteGroup() {
         if (user != null) {
-            val options = arrayOf<CharSequence>("Aceptar", "Cancelar")
+            val options = arrayOf<CharSequence>(getString(R.string.accept), getString(R.string.cancel))
             val builder = AlertDialog.Builder(this)
-            builder.setTitle("¿Seguro que quieres eliminar el grupo?")
+            builder.setTitle(R.string.are_you_sure)
             builder.setItems(options) { dialog, which ->
                 when (which) {
                     0 -> groupViewModel.onUserHasPermissionToDelete(group.id!!)
@@ -377,7 +376,6 @@ class MessageActivity : AppCompatActivity() {
     fun onSocketIncomingMessage(message: Message) {
         Log.d("Hola", "$message")
         if (message.chatId == group.id) {
-            Log.d("Hola", "Ta kbron")
             messageViewModel.updateMessageList(group.id!!)
         }
 
@@ -483,7 +481,7 @@ class MessageActivity : AppCompatActivity() {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openCamera()
             } else {
-                Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, R.string.toast_permission_camera, Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Environment
 import android.util.Base64
 import android.widget.Toast
+import com.example.reto_final.R
 import com.example.reto_final.data.model.message.Message
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -20,7 +21,7 @@ class FileManager(private val context: Context) {
     fun convertFileToBase64(filePath: String): String {
         val file = File(filePath)
         if (!file.exists()) {
-            Toast.makeText(context, "No existe el archivo en local", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.toast_no_local_file, Toast.LENGTH_SHORT).show()
             return ""
         }
 
@@ -38,7 +39,7 @@ class FileManager(private val context: Context) {
             return Base64.encodeToString(byteArray, Base64.NO_WRAP)
         } catch (e: IOException) {
             e.printStackTrace()
-            Toast.makeText(context, "No se ha podido convertir el archivo", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.toast_error_conversion, Toast.LENGTH_SHORT).show()
         }
 
         return ""
@@ -82,7 +83,7 @@ class FileManager(private val context: Context) {
                 return filePath
             } catch (e: IOException) {
                 e.printStackTrace()
-                Toast.makeText(context, "Error al guardar el archivo", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.toast_error_generic, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -106,13 +107,13 @@ class FileManager(private val context: Context) {
                     }
                 }
 
-                Toast.makeText(context, "PDF descargado correctamente", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.toast_download, Toast.LENGTH_SHORT).show()
             } catch (e: IOException) {
                 e.printStackTrace()
-                Toast.makeText(context, "Error al descargar el PDF", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.toast_error_generic, Toast.LENGTH_SHORT).show()
             }
         } else {
-            Toast.makeText(context, "Error al obtener la ruta del PDF", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.toast_no_route, Toast.LENGTH_SHORT).show()
         }
     }
      fun saveImageToFolder(bitmap: Bitmap): String {

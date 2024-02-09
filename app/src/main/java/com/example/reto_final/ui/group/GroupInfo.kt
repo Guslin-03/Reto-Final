@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.reto_final.R
 import com.example.reto_final.data.model.group.Group
 import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.user.User
@@ -128,16 +129,16 @@ class GroupInfo: AppCompatActivity() {
             if (loginUser.id == selectedGroup.adminId && InternetChecker.isNetworkAvailable(applicationContext)) {
                 checkActionDelete()
             }else{
-                Toast.makeText(this, "No puedes eliminar a usuarios sin internet", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.toast_no_internet, Toast.LENGTH_LONG).show()
             }
         }
     }
 
     private fun checkActionDelete() {
         if (selectedUser.id != null && selectedGroup.id != null) {
-            val options = arrayOf<CharSequence>("Aceptar", "Cancelar")
+            val options = arrayOf<CharSequence>(getString(R.string.accept), getString(R.string.cancel))
             val builder = AlertDialog.Builder(this)
-            builder.setTitle("¿Seguro que quieres expulsar a ${selectedUser.name} ${selectedUser.surname} del grupo?")
+            builder.setTitle(getString(R.string.confirm_expulsion_message, selectedUser.name, selectedUser.surname))
             builder.setItems(options) { dialog, which ->
                 when (which) {
                     0 -> groupViewModel.onChatThrowOut(selectedGroup.id!!, selectedUser.id!!)
@@ -152,9 +153,9 @@ class GroupInfo: AppCompatActivity() {
 
     private fun setTotalUsersInGroup(totalUsers: String) {
         val completeText = if (totalUsers == "1") {
-            "$totalUsers Miembro"
+            getString(R.string.members_count, totalUsers)
         }else {
-            "$totalUsers Miembros"
+            getString(R.string.members_count_plural, totalUsers)
         }
         binding.totalUsers.text = completeText
     }
@@ -165,7 +166,7 @@ class GroupInfo: AppCompatActivity() {
             selectedGroup = receivedGroup
             receivedGroup.id?.let { userViewModel.onUsersGroup(receivedGroup.id!!) }
         } else {
-            Toast.makeText(this, "Ha sucedido un error!", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.toast_error_generic, Toast.LENGTH_LONG).show()
             finish()
         }
     }

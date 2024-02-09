@@ -108,7 +108,7 @@ class ChatsService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.i("services", "onStartCommand")
-        val contentText = "Iniciando socket"
+        val contentText = getString(R.string.start_socket)
         startForeground(notificationId, createNotification(contentText))
         startSocket()
         return START_NOT_STICKY
@@ -137,7 +137,7 @@ class ChatsService : Service() {
         )
 
         return NotificationCompat.Builder(context, channelId)
-            .setContentTitle("Chat en directo")
+            .setContentTitle(getString(R.string.live_chat))
             .setContentText(contentText)
             .setSmallIcon(R.drawable.resume_logo)
             .setContentIntent(pendingIntent)
@@ -177,14 +177,14 @@ class ChatsService : Service() {
 
     private fun onConnect(): Emitter.Listener {
         return Emitter.Listener {
-            updateNotification("conectado")
+            updateNotification(getString(R.string.connected))
             toInit()
         }
     }
 
     private fun onDisconnect(): Emitter.Listener {
         return Emitter.Listener {
-            updateNotification("disConnect")
+            updateNotification(getString(R.string.disconnected))
         }
     }
 
@@ -237,7 +237,7 @@ class ChatsService : Service() {
     private fun onChatJoin(): Emitter.Listener {
         return Emitter.Listener {
             val response = onJSONtoAnyClass(it[0], UserGroup::class.java) as UserGroup
-            updateNotification("${response.userName} se ha unido al grupo.")
+            updateNotification(getString(R.string.user_joined_group_message, response.userName))
             serviceScope.launch {
                 addUserToGroup(response)
             }
@@ -247,7 +247,7 @@ class ChatsService : Service() {
     private fun onChatAdded(): Emitter.Listener {
         return Emitter.Listener {
             val response = onJSONtoAnyClass(it[0], UserGroup::class.java) as UserGroup
-            updateNotification("${response.adminName} ha añadido a ${response.userName}.")
+            updateNotification(getString(R.string.admin_added_user_message))
             serviceScope.launch {
                 addUserToGroup(response)
             }
@@ -261,7 +261,7 @@ class ChatsService : Service() {
     private fun onChatLeft(): Emitter.Listener {
         return Emitter.Listener {
             val response = onJSONtoAnyClass(it[0], UserGroup::class.java) as UserGroup
-            updateNotification("${response.userName} ha salido del grupo.")
+            updateNotification(getString(R.string.user_left_group_message, response.userName))
             serviceScope.launch {
                 leaveGroup(response)
             }
@@ -272,7 +272,7 @@ class ChatsService : Service() {
         return Emitter.Listener {
             val response = onJSONtoAnyClass(it[0], UserGroup::class.java) as UserGroup
             Log.d("p1", "$response")
-            updateNotification("${response.adminName} ha expulsado a ${response.userName}.")
+            updateNotification(getString(R.string.admin_kicked_user_message, response.adminName, response.userName))
             serviceScope.launch {
                 chatThrowOut(response)
             }
@@ -290,7 +290,7 @@ class ChatsService : Service() {
     private fun onChatReceive(): Emitter.Listener {
         return Emitter.Listener {
             val response = onJSONtoAnyClass(it[0], Group::class.java) as Group
-            updateNotification("El grupo ${response.name} ha sido creado.")
+            updateNotification(getString(R.string.group_created_message, response.name))
             chatReceive(response)
             if (_savedGroup.value?.status != Resource.Status.ERROR) {
                 EventBus.getDefault().post(response)

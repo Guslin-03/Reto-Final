@@ -1,6 +1,7 @@
 package com.example.reto_final.ui.group
 
 import android.content.Context
+import android.provider.Settings.Global.getString
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.example.reto_final.R
 import com.example.reto_final.data.model.group.Group
 import com.example.reto_final.data.model.InternetChecker
 import com.example.reto_final.data.model.userGroup.UserChatInfo
@@ -82,11 +84,9 @@ class GroupViewModel(
                  if (createdGroup.status == Resource.Status.SUCCESS) {
                      createdGroup.data?.let { createLocal(it) }
                      _create.value = createdGroup
-                 } else {
-                     _create.value = Resource.error("Ha ocurrido un error, el grupo no se ha creado")
                  }
             } else {
-                 _create.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
+                 _create.value = Resource.error(context.getString(R.string.toast_no_internet))
             }
         }
     }
@@ -114,11 +114,9 @@ class GroupViewModel(
                 Log.d("DELETE", ""+deleted.data)
                 if (deleted.status == Resource.Status.SUCCESS) {
                     _delete.value = deleted.data?.let { softDeleteLocal(it) }
-                } else {
-                    _delete.value = Resource.error("Ha ocurrido un error, el grupo no se ha eliminado")
                 }
             } else {
-                _delete.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
+                _delete.value = Resource.error(context.getString(R.string.toast_no_internet))
             }
 
         }
@@ -157,7 +155,7 @@ class GroupViewModel(
             if (InternetChecker.isNetworkAvailable(context)) {
                 _groupPermissionToDelete.value = userHasPermissionToDeleteRemote(idGroup)
             } else {
-                _groupPermissionToDelete.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
+                _groupPermissionToDelete.value = Resource.error(context.getString(R.string.toast_no_internet))
             }
         }
     }
@@ -190,10 +188,10 @@ class GroupViewModel(
                 if (userAdded.status == Resource.Status.SUCCESS && userAdded.data != null) {
                     _addUserToGroup.value = addUserToGroupLocal(userAdded.data)
                 } else {
-                    _addUserToGroup.value = Resource.error("Ha ocurrido un error, no has unir al usuario al grupo")
+                    _addUserToGroup.value = Resource.error(context.getString(R.string.toast_error_generic))
                 }
             } else {
-                _addUserToGroup.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
+                _addUserToGroup.value = Resource.error(context.getString(R.string.toast_no_internet))
             }
         }
     }
@@ -221,11 +219,9 @@ class GroupViewModel(
                 if (joinUser.status == Resource.Status.SUCCESS && joinUser.data != null) {
                     //pasamos el userchatinfo
                     _joinGroup.value = joinGroupLocal(joinUser.data)
-                } else {
-                    _joinGroup.value = Resource.error("Ha ocurrido un error, no has podido unirte al grupo")
                 }
             } else {
-                _joinGroup.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
+                _joinGroup.value = Resource.error(context.getString(R.string.toast_no_internet))
             }
         }
     }
@@ -276,10 +272,11 @@ class GroupViewModel(
                     && throwOutFromChat.data.deleted != null) {
                     _throwOutFromChat.value = chatThrowOutLocal(throwOutFromChat.data)
                 } else {
-                    _throwOutFromChat.value = Resource.error("Ha ocurrido un error, no se ha podido realizar la acción solicitada")
+                    _throwOutFromChat.value = Resource.error(context.getString(R.string.toast_error_generic))
+
                 }
             } else {
-                _throwOutFromChat.value = Resource.error("Ha ocurrido un error, comprueba tu conexión a internet")
+                _throwOutFromChat.value = Resource.error(context.getString(R.string.toast_no_internet))
             }
         }
     }

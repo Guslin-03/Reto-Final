@@ -75,7 +75,7 @@ class LogInActivity : AppCompatActivity(){
                     }
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, "Los datos introducidos no pertenecen a un usuario del centro", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.toast_error_login, Toast.LENGTH_LONG).show()
                     loginButton.isEnabled=true
                 }
                 Resource.Status.LOADING -> {
@@ -96,7 +96,7 @@ class LogInActivity : AppCompatActivity(){
                     }
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.toast_no_backend, Toast.LENGTH_LONG).show()
                     loginButton.isEnabled=true
                 }
                 Resource.Status.LOADING -> {
@@ -110,10 +110,11 @@ class LogInActivity : AppCompatActivity(){
                 Resource.Status.SUCCESS -> {
                     if(it.data==1){
                         viewModel.onResetPassword(email)
+                        Toast.makeText(this, R.string.toast_wait_process, Toast.LENGTH_LONG).show()
                     }
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, "Ha habido algun error procesando la solicitud", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.toast_error_generic, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }
@@ -123,10 +124,10 @@ class LogInActivity : AppCompatActivity(){
         viewModel.reset.observe(this) {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
-                    Toast.makeText(this, "Si el correo introducido es correcto, recibirás una nueva contraseña", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.toast_reset_email, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.toast_error_generic, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }
@@ -139,15 +140,15 @@ class LogInActivity : AppCompatActivity(){
         val dialogView = inflater.inflate(R.layout.custom_dialog_forgot, null)
 
         builder.setView(dialogView)
-        builder.setTitle("Introduce tu correo electrónico")
+        builder.setTitle(R.string.insert_email)
         val editText = dialogView.findViewById<EditText>(R.id.editText)
 
-        builder.setPositiveButton("Aceptar") { _, _ ->
+        builder.setPositiveButton(R.string.accept) { _, _ ->
             email = editText.text.toString()
            sendEmail(email)
         }
 
-        builder.setNegativeButton("Cancelar") { dialog, _ ->
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
             dialog.dismiss()
         }
 
@@ -157,7 +158,7 @@ class LogInActivity : AppCompatActivity(){
         if (InternetChecker.isNetworkAvailable(applicationContext)) {
             viewModel.onFindByMail(email)
         } else {
-            Toast.makeText(this, "No se puede resetear la contraseña sin conexión", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.toast_no_internet, Toast.LENGTH_LONG).show()
         }
     }
     private fun tryToLogin(){
@@ -168,7 +169,7 @@ class LogInActivity : AppCompatActivity(){
             if (InternetChecker.isNetworkAvailable(applicationContext)) {
                 viewModel.onLogIn(email, password)
             }else {
-                Toast.makeText(this, "No se puede hacer login sin internet", Toast.LENGTH_LONG)
+                Toast.makeText(this, R.string.toast_no_internet, Toast.LENGTH_LONG)
                     .show()
             }
         }

@@ -13,18 +13,15 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.example.reto_final.R
 import com.example.reto_final.data.model.group.Group
-import com.example.reto_final.data.model.message.Message
 import com.example.reto_final.data.model.user.User
 import com.example.reto_final.data.repository.local.group.RoomGroupDataSource
 import com.example.reto_final.data.repository.local.user.RoomUserDataSource
 import com.example.reto_final.data.repository.remote.RemoteGroupDataSource
 import com.example.reto_final.data.repository.remote.RemoteUserDataSource
 import com.example.reto_final.databinding.UserFragmentBinding
-import com.example.reto_final.ui.group.GroupInfo
 import com.example.reto_final.ui.group.GroupViewModel
 import com.example.reto_final.ui.group.RoomGroupViewModelFactory
 import com.example.reto_final.utils.Resource
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -77,11 +74,11 @@ class UserFragment(private val selectedGroup: Group) : DialogFragment() {
         groupViewModel.addUserToGroup.observe(this) {
             when(it.status) {
                 Resource.Status.SUCCESS -> {
-                    Toast.makeText(requireContext().applicationContext, "Usuario añadido con éxito", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext().applicationContext, R.string.toast_success_add_user, Toast.LENGTH_LONG).show()
                     dismiss()
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(requireContext().applicationContext, it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext().applicationContext, R.string.toast_error_generic, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                 }
@@ -132,20 +129,21 @@ class UserFragment(private val selectedGroup: Group) : DialogFragment() {
 
     private fun onUserListClickItem(user : User) {
 
-        if (user.id != null) {
-            if (selectedGroup.id != null) {
-                val options = arrayOf<CharSequence>("Aceptar", "Cancelar")
-                val builder = AlertDialog.Builder(requireContext())
-                builder.setTitle("¿Quieres añadir a ${user.name} ${user.surname} al grupo?")
-                builder.setItems(options) { dialog, which ->
-                    when (which) {
-                        0 -> groupViewModel.onAddUserToGroup(selectedGroup.id!!, user.id!!)
-                        1 -> dialog.dismiss()
-                    }
+        if (user.id != null && selectedGroup.id != null) {
+            val options = arrayOf<CharSequence>(
+                getString(R.string.accept),
+                getString(R.string.cancel)
+            )
+            val message = getString(R.string.toast_add_user, user.name, user.surname)
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle(message)
+            builder.setItems(options) { dialog, which ->
+                when (which) {
+                    0 -> groupViewModel.onAddUserToGroup(selectedGroup.id!!, user.id!!)
+                    1 -> dialog.dismiss()
                 }
-                builder.show()
             }
-
+            builder.show()
         }
     }
 
