@@ -207,6 +207,7 @@ class RegisterPersonalConfigurationActivity : AppCompatActivity() {
     }
 
     private fun backToLogIn() {
+        MyApp.userPreferences.saveRememberMeState(false)
         val intent = Intent(this, LogInActivity::class.java)
         startActivity(intent)
         finish()
