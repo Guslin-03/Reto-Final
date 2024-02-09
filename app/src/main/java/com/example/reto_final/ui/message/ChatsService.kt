@@ -247,7 +247,7 @@ class ChatsService : Service() {
     private fun onChatAdded(): Emitter.Listener {
         return Emitter.Listener {
             val response = onJSONtoAnyClass(it[0], UserGroup::class.java) as UserGroup
-            updateNotification(getString(R.string.admin_added_user_message))
+            updateNotification(getString(R.string.admin_added_user_message, response.adminName, response.userName))
             serviceScope.launch {
                 addUserToGroup(response)
             }
