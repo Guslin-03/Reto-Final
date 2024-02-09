@@ -362,6 +362,7 @@ class GroupActivity: AppCompatActivity() {
         checkBd()
         deleteFolder()
         MyApp.userPreferences.removeData()
+        MyApp.userPreferences.removePicture()
         val intent = Intent(this, LogInActivity::class.java)
         startActivity(intent)
         finish()

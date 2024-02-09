@@ -121,9 +121,13 @@ class UserPreferences {
         editor.remove("user_token")
         editor.remove("user_info")
         editor.remove("hibernate_token")
+        editor.putBoolean(REMEMBER_ME, false)
+        editor.apply()
+    }
+    fun removePicture(){
+        val editor = sharedPreferences.edit()
         editor.remove("profile_picture_camera")
         editor.remove("profile_picture")
-        editor.putBoolean(REMEMBER_ME, false)
         editor.apply()
     }
     fun savePass(pass: String) {
@@ -136,8 +140,4 @@ class UserPreferences {
         return sharedPreferences.getString(PASS,null)
     }
 
-    fun prueba() {
-
-        EventBus.getDefault().post("asd")
-    }
 }

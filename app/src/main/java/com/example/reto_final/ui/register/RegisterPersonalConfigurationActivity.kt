@@ -3,12 +3,14 @@ package com.example.reto_final.ui.register
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -27,6 +29,7 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
+import java.io.ByteArrayOutputStream
 
 class RegisterPersonalConfigurationActivity : AppCompatActivity() {
 
@@ -40,7 +43,10 @@ class RegisterPersonalConfigurationActivity : AppCompatActivity() {
         val user = MyApp.userPreferences.getUser()
         if(user != null) {
             setData(user)
+            showPhoto()
         }
+
+
 
         binding.next.setOnClickListener {
             if (user != null) {
@@ -82,13 +88,17 @@ class RegisterPersonalConfigurationActivity : AppCompatActivity() {
     }
 
     private fun takePhotoFromCamera() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(takePictureIntent, 1)
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(takePictureIntent, 1)
+        } else {
+            Toast.makeText(this, "Este dispositivo no tiene una cámara", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun pickPhotoFromGallery() {
         Dexter.withContext(this).withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-            .withListener(object : PermissionListener{
+            .withListener(object : PermissionListener {
 
                 override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
                     val intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -211,6 +221,34 @@ class RegisterPersonalConfigurationActivity : AppCompatActivity() {
         val regex = Regex("\\d{8}[A-Z]")
         return cadena.matches(regex)
     }
+    private fun showPhoto(){
+        val cameraPhoto = MyApp.userPreferences.getProfilePictureUriCamera()
+        val savedPhotoLocal= MyApp.userPreferences.getProfilePictureUri()
+        if(cameraPhoto !=null){
+            var photo= Uri.parse(cameraPhoto.toString())
+            Glide.with(this)
+                .load(photo)
+                .apply(RequestOptions().transform(CircleCrop()))
+                .into(binding.profilePicture)
+        }else if(savedPhotoLocal!=null ){
+            Glide.with(this)
+                .load(savedPhotoLocal)
+                .apply(RequestOptions().transform(CircleCrop()))
+                .into(binding.profilePicture)
+        }else{
+            Glide.with(this)
+                .load(R.drawable.user1)
+                .apply(RequestOptions().transform(CircleCrop()))
+                .into(binding.profilePicture)
+        }
+    }
+
+    private fun getImageUri(bitmap: Bitmap): Uri {
+        val bytes = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path = MediaStore.Images.Media.insertImage(applicationContext.contentResolver, bitmap, "Title", null)
+        return Uri.parse(path)
+    }
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -219,19 +257,25 @@ class RegisterPersonalConfigurationActivity : AppCompatActivity() {
         if (resultCode == RESULT_OK) {
 
             if (requestCode == 1) {
+                if (data != null && data.extras != null) {
+                    val bitmap = data.extras!!.get("data") as Bitmap
+                    val uri = getImageUri(bitmap)
+                    MyApp.userPreferences.removeProfilePictureUri()
+                    MyApp.userPreferences.saveProfilePictureCamera(uri)
 
-                val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(resources, data?.extras?.get("data") as? Bitmap)
-                roundedBitmapDrawable.isCircular = true
-
-                binding.profilePicture.setImageDrawable(roundedBitmapDrawable)
-
-            }else if (requestCode == 2) {
-
-                Glide.with(this)
-                    .load(data?.data)
-                    .apply(RequestOptions().transform(CircleCrop()))
-                    .into(binding.profilePicture)
-
+                    val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(resources, bitmap)
+                    roundedBitmapDrawable.isCircular = true
+                    binding.profilePicture.setImageDrawable(roundedBitmapDrawable)
+                }
+            } else if (requestCode == 2) {
+                if (data != null && data.data != null) {
+                    MyApp.userPreferences.removeProfilePictureUriCamera()
+                    MyApp.userPreferences.saveProfilePicture(data.data!!)
+                    Glide.with(this)
+                        .load(data.data)
+                        .apply(RequestOptions().transform(CircleCrop()))
+                        .into(binding.profilePicture)
+                }
             }
 
         }

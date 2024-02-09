@@ -45,8 +45,8 @@ class PersonalConfigurationActivity: AppCompatActivity() {
         val user = MyApp.userPreferences.getUser()
         if(user != null) {
             setData(user)
+            showPhoto()
         }
-        showPhoto()
 
         binding.next.setOnClickListener {
             if (user != null) {
