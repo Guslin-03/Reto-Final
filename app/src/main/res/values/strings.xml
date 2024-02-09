@@ -135,6 +135,8 @@
     <string name="admin_added_user_message">%1$s ha añadido a %2$s.</string>
     <string name="user_left_group_message">%1$s ha salido del grupo.</string>
     <string name="admin_kicked_user_message">%1$s ha expulsado a %2$s.</string>
+    <string name="add">Añadir</string>
+    <string name="group_info">Informacion del Grupo</string>
 
 
 </resources>

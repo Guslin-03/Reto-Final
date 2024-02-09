@@ -116,4 +116,6 @@
     <string name="user_left_group_message">\"%1$s has left the group.</string>
     <string name="admin_kicked_user_message">%1$s has expelled %2$s</string>
     <string name="toast_error_conversion">The file could not be converted</string>
+    <string name="add">Add</string>
+    <string name="group_info">Group Information</string>
 </resources>

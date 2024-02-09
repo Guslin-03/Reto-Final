@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="Informacion del Grupo"
+                android:text="@string/group_info"
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 android:textStyle="bold"
@@ -79,7 +79,7 @@
                 android:id="@+id/addUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Añadir" />
+                android:text="@string/add" />
 
             <ImageButton
                 android:id="@+id/filterUser"

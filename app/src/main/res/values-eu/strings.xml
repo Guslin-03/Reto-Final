@@ -116,4 +116,6 @@
     <string name="user_left_group_message">%1$s taldean utzi da</string>
     <string name="admin_kicked_user_message">%1$s %2$sak kanpoan saiatu da</string>
     <string name="toast_error_conversion">Fitxategia ezin izan da bihurtu</string>
+    <string name="add">Gehitu</string>
+    <string name="group_info">Taldearen Informazioa</string>
 </resources>
