@@ -26,10 +26,8 @@ class RoomGroupDataSource : CommonGroupRepository {
         return try {
             groupDao.createGroupAsAdmin(group.toDbGroup())
             val user = MyApp.userPreferences.getUser()
-            val currentDate = System.currentTimeMillis()
 
-            Log.d("p1", "Entra")
-            if (user != null) group.id?.let { DbUserGroup(group.id!!, user.id, Date(currentDate), null, null) }
+            if (user != null) group.id?.let { DbUserGroup(group.id!!, user.id, Date(), null, null) }
                 ?.let { groupDao.addUserToGroup(it) }
             Resource.success()
         } catch (exception: SQLiteConstraintException) {
@@ -52,8 +50,7 @@ class RoomGroupDataSource : CommonGroupRepository {
     }
 
     override suspend fun softDeleteGroup(group: Group): Resource<Void> {
-        //FIX ME TRAPI TEMPORAL Date().time es group.deleted
-        val response = groupDao.softDeleteGroup(group.id, Date().time)
+        val response = groupDao.softDeleteGroup(group.id, group.deleted)
         return if (response == 1) {
             groupDao.softDeleteRelations(group.id, Date().time)
             Resource.success()

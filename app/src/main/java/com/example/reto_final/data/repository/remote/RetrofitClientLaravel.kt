@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClientLaravel {
 
-    const val API_URI = "http://10.5.7.210/api/"
+    const val API_URI = "http://34.201.66.253/api/"
     private val client = OkHttpClient.Builder().addInterceptor { chain ->
         val authToken= MyApp.userPreferences.fetchAuthToken()
         val newRequest: Request = chain.request().newBuilder()

@@ -67,7 +67,7 @@ class MessageAdapter(
         private fun setMessageFormat(message:Message){
             if (MyApp.userPreferences.getUser()?.id == message.userId) {
                 binding.name.visibility = View.GONE
-                if(message.saved!==null){
+                if(message.saved != null){
                     binding.sentHour.text = parseDate(message.sent)
                 }else{
                     binding.sentHour.text = parseDate(message.sent)
